@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>wavd</name>
-	<comment></comment>
+	<comment>@key 323030373036323920776176642F55646169 </comment>
 	<projects>
+		<project>WebScarab</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -10,8 +11,14 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>com.omondo.uml.std.Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>com.omondo.uml.std.Nature</nature>
 	</natures>
 </projectDescription>
