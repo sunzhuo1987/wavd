@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="main/java"/>
-	<classpathentry kind="src" path="main/resources"/>
-	<classpathentry kind="src" path="test/java"/>
-	<classpathentry kind="src" path="test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/webscarab-selfcontained-20070504-1631.jar"/>
 	<classpathentry kind="lib" path="lib/jhall-2.0_02.jar"/>
