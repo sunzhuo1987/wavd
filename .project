@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>wavd</name>
+	<name>waat</name>
 	<comment>@key 323030373036323920776176642F55646169 </comment>
 	<projects>
 		<project>WebScarab</project>
@@ -8,11 +8,6 @@
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
-			<name>com.omondo.uml.std.Builder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
