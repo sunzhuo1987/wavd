@@ -182,49 +182,12 @@ public class WebScarab {
         ManualRequest manualRequest = new ManualRequest(framework);
         framework.addPlugin(manualRequest);
         uif.addPlugin(new ManualRequestPanel(manualRequest));
-        
-        WebService webservice = new WebService(framework);
-        framework.addPlugin(webservice);
-        uif.addPlugin(new WebServicePanel(webservice));
-        
-        Spider spider = new Spider(framework);
-        framework.addPlugin(spider);
-        uif.addPlugin(new SpiderPanel(spider));
-        
-        Extensions extensions = new Extensions(framework);
-        framework.addPlugin(extensions);
-        uif.addPlugin(new ExtensionsPanel(extensions));
-        
-        XSSCRLF xsscrlf = new XSSCRLF(framework);
-        framework.addPlugin(xsscrlf);
-        uif.addPlugin(new XSSCRLFPanel(xsscrlf));
-        
-        SessionIDAnalysis sessionIDAnalysis = new SessionIDAnalysis(framework);
-        framework.addPlugin(sessionIDAnalysis);
-        uif.addPlugin(new SessionIDPanel(sessionIDAnalysis));
-        
-        Scripted scripted = new Scripted(framework);
-        framework.addPlugin(scripted);
-        uif.addPlugin(new ScriptedPanel(scripted));
-        
-        Fragments fragments = new Fragments(framework);
-        framework.addPlugin(fragments);
-        uif.addPlugin(new FragmentsPanel(fragments));
-        
+                
         Fuzzer fuzzer = new Fuzzer(framework);
         framework.addPlugin(fuzzer);
         FuzzerPanel fuzzerPanel = new FuzzerPanel(fuzzer);
         uif.addPlugin(fuzzerPanel);
-        
-        Compare compare = new Compare(framework);
-        framework.addPlugin(compare);
-        ComparePanel comparePanel = new ComparePanel(compare);
-        uif.addPlugin(comparePanel);
-        
-        Search search = new Search(framework);
-        framework.addPlugin(search);
-        SearchPanel searchPanel = new SearchPanel(search);
-        uif.addPlugin(searchPanel);
+
     }
     
     public static void loadLitePlugins(Framework framework, Lite uif) {
