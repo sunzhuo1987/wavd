@@ -60,10 +60,10 @@ import org.owasp.webscarab.util.swing.ExceptionHandler;
  *
  * @author udai
  */
-public class WebScarab {
+public class Main {
     
     /** Creates a new instance of WebScarab */
-    private WebScarab() {
+    private Main() {
     }
     
     /* This class exists purely to ensure that the
