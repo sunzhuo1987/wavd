@@ -7,6 +7,14 @@
 	<classpathentry kind="lib" path="lib/jhall-2.0_02.jar"/>
 	<classpathentry kind="lib" path="lib/orizon-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/WebScarab"/>
+	<classpathentry kind="lib" path="lib/bsf-2.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/bsh-2.0b1.jar"/>
+	<classpathentry kind="lib" path="lib/chardet.jar"/>
+	<classpathentry kind="lib" path="lib/concurrent.jar"/>
+	<classpathentry kind="lib" path="lib/htmlparser.jar"/>
+	<classpathentry kind="lib" path="lib/jcommon-0.8.7.jar"/>
+	<classpathentry kind="lib" path="lib/jfreechart-0.9.12.jar"/>
+	<classpathentry kind="lib" path="lib/openamf.jar"/>
+	<classpathentry kind="lib" path="lib/tagsoup-1.0rc2.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

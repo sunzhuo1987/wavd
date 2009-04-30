@@ -1,0 +1,12 @@
+concurrent.jar 
+htmlparser.jar 
+bsh-2.0b1.jar 
+jfreechart-0.9.12.jar 
+jcommon-0.8.7.jar 
+bsf-2.3.0.jar
+jhall-2.0_02.jar 
+chardet.jar 
+tagsoup-1.0rc2.jar 
+wsdl4j.jar
+openamf.jar 
+commons-logging-1.0.4.jar
