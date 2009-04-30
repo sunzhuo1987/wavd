@@ -26,10 +26,9 @@ import java.util.EventListener;
 
 // TODO: Auto-generated Javadoc
 /**
- * The listener interface for receiving columnData events.
- * The class that is interested in processing a columnData
- * event implements this interface, and the object created
- * with that class is registered with a component using the
+ * The listener interface for receiving columnData events. The class that is
+ * interested in processing a columnData event implements this interface, and
+ * the object created with that class is registered with a component using the
  * component's <code>addColumnDataListener<code> method. When
  * the columnData event occurs, that object's appropriate
  * method is invoked.
@@ -37,12 +36,13 @@ import java.util.EventListener;
  * @see ColumnDataEvent
  */
 public interface ColumnDataListener extends EventListener {
-    
+
     /**
      * Data changed.
      * 
-     * @param cde the cde
+     * @param cde
+     *            the cde
      */
     public void dataChanged(ColumnDataEvent cde);
-    
+
 }

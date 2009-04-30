@@ -30,24 +30,27 @@ import edu.lnmiit.wavd.model.Response;
  * The Interface ManualEditUI.
  */
 public interface ManualEditUI {
-    
+
     /**
      * Edits the request.
      * 
-     * @param request the request
+     * @param request
+     *            the request
      * 
      * @return the request
      */
     Request editRequest(Request request);
-    
+
     /**
      * Edits the response.
      * 
-     * @param request the request
-     * @param response the response
+     * @param request
+     *            the request
+     * @param response
+     *            the response
      * 
      * @return the response
      */
     Response editResponse(Request request, Response response);
-    
+
 }

@@ -16,73 +16,95 @@
 
 package edu.lnmiit.wavd.model;
 
-import EDU.oswego.cs.dl.util.concurrent.Sync;
+import java.util.logging.Logger;
 
 import javax.swing.event.EventListenerList;
 
-import java.util.logging.Logger;
+import EDU.oswego.cs.dl.util.concurrent.Sync;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class AbstractUrlModel.
  */
 public abstract class AbstractUrlModel implements UrlModel {
-    
+
     /** The _listener list. */
     private EventListenerList _listenerList = new EventListenerList();
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger(getClass().getName());
-    
+
     /**
      * Instantiates a new abstract url model.
      */
     public AbstractUrlModel() {
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.model.UrlModel#getChildCount(edu.lnmiit.wavd.model.HttpUrl)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.model.UrlModel#getChildCount(edu.lnmiit.wavd.model.HttpUrl
+     * )
      */
     public abstract int getChildCount(HttpUrl parent);
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.model.UrlModel#getIndexOf(edu.lnmiit.wavd.model.HttpUrl)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.model.UrlModel#getIndexOf(edu.lnmiit.wavd.model.HttpUrl)
      */
     public abstract int getIndexOf(HttpUrl url);
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.model.UrlModel#getChildAt(edu.lnmiit.wavd.model.HttpUrl, int)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.model.UrlModel#getChildAt(edu.lnmiit.wavd.model.HttpUrl,
+     * int)
      */
     public abstract HttpUrl getChildAt(HttpUrl parent, int index);
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.UrlModel#readLock()
      */
     public abstract Sync readLock();
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.model.UrlModel#addUrlListener(edu.lnmiit.wavd.model.UrlListener)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeedu.lnmiit.wavd.model.UrlModel#addUrlListener(edu.lnmiit.wavd.model.
+     * UrlListener)
      */
     public void addUrlListener(UrlListener listener) {
-        synchronized(_listenerList) {
+        synchronized (_listenerList) {
             _listenerList.add(UrlListener.class, listener);
         }
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.model.UrlModel#removeUrlListener(edu.lnmiit.wavd.model.UrlListener)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.model.UrlModel#removeUrlListener(edu.lnmiit.wavd.model
+     * .UrlListener)
      */
     public void removeUrlListener(UrlListener listener) {
-        synchronized(_listenerList) {
+        synchronized (_listenerList) {
             _listenerList.remove(UrlListener.class, listener);
         }
     }
-    
+
     /**
      * Fire url added.
      * 
-     * @param url the url
-     * @param position the position
+     * @param url
+     *            the url
+     * @param position
+     *            the position
      */
     protected void fireUrlAdded(HttpUrl url, int position) {
         // Guaranteed to return a non-null array
@@ -90,10 +112,10 @@ public abstract class AbstractUrlModel implements UrlModel {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         UrlEvent evt = new UrlEvent(this, url, position);
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==UrlListener.class) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == UrlListener.class) {
                 try {
-                    ((UrlListener)listeners[i+1]).urlAdded(evt);
+                    ((UrlListener) listeners[i + 1]).urlAdded(evt);
                 } catch (Exception e) {
                     _logger.severe("Unhandled exception: " + e);
                     e.printStackTrace();
@@ -101,12 +123,14 @@ public abstract class AbstractUrlModel implements UrlModel {
             }
         }
     }
-    
+
     /**
      * Fire url removed.
      * 
-     * @param url the url
-     * @param position the position
+     * @param url
+     *            the url
+     * @param position
+     *            the position
      */
     protected void fireUrlRemoved(HttpUrl url, int position) {
         // Guaranteed to return a non-null array
@@ -114,22 +138,24 @@ public abstract class AbstractUrlModel implements UrlModel {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         UrlEvent evt = new UrlEvent(this, url, position);
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==UrlListener.class) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == UrlListener.class) {
                 try {
-                    ((UrlListener)listeners[i+1]).urlRemoved(evt);
+                    ((UrlListener) listeners[i + 1]).urlRemoved(evt);
                 } catch (Exception e) {
                     _logger.severe("Unhandled exception: " + e);
                 }
             }
         }
     }
-    
+
     /**
      * Fire url changed.
      * 
-     * @param url the url
-     * @param position the position
+     * @param url
+     *            the url
+     * @param position
+     *            the position
      */
     protected void fireUrlChanged(HttpUrl url, int position) {
         // Guaranteed to return a non-null array
@@ -137,10 +163,10 @@ public abstract class AbstractUrlModel implements UrlModel {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         UrlEvent evt = new UrlEvent(this, url, position);
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==UrlListener.class) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == UrlListener.class) {
                 try {
-                    ((UrlListener)listeners[i+1]).urlChanged(evt);
+                    ((UrlListener) listeners[i + 1]).urlChanged(evt);
                 } catch (Exception e) {
                     _logger.severe("Unhandled exception: " + e);
                     e.printStackTrace();
@@ -148,7 +174,7 @@ public abstract class AbstractUrlModel implements UrlModel {
             }
         }
     }
-    
+
     /**
      * Fire urls changed.
      */
@@ -157,10 +183,10 @@ public abstract class AbstractUrlModel implements UrlModel {
         Object[] listeners = _listenerList.getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==UrlListener.class) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == UrlListener.class) {
                 try {
-                    ((UrlListener)listeners[i+1]).urlsChanged();
+                    ((UrlListener) listeners[i + 1]).urlsChanged();
                 } catch (Exception e) {
                     _logger.severe("Unhandled exception: " + e);
                     e.printStackTrace();
@@ -168,5 +194,5 @@ public abstract class AbstractUrlModel implements UrlModel {
             }
         }
     }
-    
+
 }

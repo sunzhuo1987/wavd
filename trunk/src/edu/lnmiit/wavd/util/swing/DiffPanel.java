@@ -15,6 +15,7 @@
  */
 package edu.lnmiit.wavd.util.swing;
 
+import java.awt.Adjustable;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -36,6 +37,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
@@ -50,72 +52,73 @@ import edu.lnmiit.wavd.util.Diff.Edit;
  * The Class DiffPanel.
  */
 public class DiffPanel extends JPanel {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1604132435765855634L;
-    
+
     /** The Constant SIDE_BY_SIDE. */
     public static final String SIDE_BY_SIDE = "SIDEBYSIDE";
-    
+
     /** The Constant COMBINED. */
     public static final String COMBINED = "COMBINED";
-    
+
     /** The Constant noWrapEditorKit. */
     private static final NoWrapEditorKit noWrapEditorKit = new NoWrapEditorKit();
-    
+
     /** The display layout. */
     private String displayLayout = "";
-    
+
     /** The src text pane. */
     private JTextPane srcTextPane = null;
-    
+
     /** The src doc. */
     private Document srcDoc = null;
-    
+
     /** The dst text pane. */
     private JTextPane dstTextPane = null;
-    
+
     /** The dst doc. */
     private Document dstDoc = null;
-    
+
     /** The combined text pane. */
     private JTextPane combinedTextPane = null;
-    
+
     /** The combined doc. */
     private Document combinedDoc = null;
-    
+
     /** The dst. */
     private CharSequence src = null, dst = null;
-    
+
     /** The edits. */
     private List edits = null;
-    
+
     /** The deleted color. */
     private Color changedColor, addedColor, deletedColor;
-    
+
     /** The deleted. */
     private SimpleAttributeSet unchanged, changed, added, deleted;
-    
+
     /** The layout. */
     private CardLayout layout;
-    
+
     /** The combined panel. */
     private JPanel combinedPanel;
-    
+
     /** The both panel. */
     private JPanel bothPanel;
-    
+
     /**
      * Instantiates a new diff panel.
      */
     public DiffPanel() {
         this(SIDE_BY_SIDE);
     }
-    
+
     /**
      * Instantiates a new diff panel.
      * 
-     * @param displayLayout the display layout
+     * @param displayLayout
+     *            the display layout
      */
     public DiffPanel(String displayLayout) {
         super();
@@ -125,7 +128,7 @@ public class DiffPanel extends JPanel {
         addKeyMappings();
         setDisplayLayout(displayLayout);
     }
-    
+
     /**
      * Gets the preferences.
      * 
@@ -146,24 +149,23 @@ public class DiffPanel extends JPanel {
             deletedColor = new Color(colorSpec);
         }
     }
-    
+
     /**
      * Adds the key mappings.
      */
     private void addKeyMappings() {
         getActionMap().put("TOGGLELAYOUT", new AbstractAction() {
             private static final long serialVersionUID = 1558804946998494321L;
-            
+
             public void actionPerformed(ActionEvent event) {
                 layout.next(DiffPanel.this);
                 DiffPanel.this.requestFocusInWindow();
             }
         });
         InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.CTRL_MASK),
-                "TOGGLELAYOUT");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_L, Event.CTRL_MASK), "TOGGLELAYOUT");
     }
-    
+
     /**
      * Creates the attributes.
      */
@@ -176,7 +178,7 @@ public class DiffPanel extends JPanel {
         deleted = new SimpleAttributeSet();
         deleted.addAttribute(StyleConstants.Background, deletedColor);
     }
-    
+
     /**
      * Creates the components.
      */
@@ -189,7 +191,7 @@ public class DiffPanel extends JPanel {
         combinedTextPane.setFont(new java.awt.Font("Monospaced", 0, 12));
         combinedTextPane.setEditable(false);
         combinedPanel.add(new JScrollPane(combinedTextPane));
-        
+
         srcTextPane = new JTextPane();
         srcTextPane.setEditorKit(noWrapEditorKit);
         srcTextPane.setFont(new java.awt.Font("Monospaced", 0, 12));
@@ -199,25 +201,17 @@ public class DiffPanel extends JPanel {
         dstTextPane.setFont(new java.awt.Font("Monospaced", 0, 12));
         dstTextPane.setEditable(false);
         JScrollPane srcScrollPane = new JScrollPane(srcTextPane);
-        srcScrollPane
-                .setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        srcScrollPane
-                .setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        srcScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        srcScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         JScrollPane dstScrollPane = new JScrollPane(dstTextPane);
-        dstScrollPane
-                .setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        dstScrollPane
-                .setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        JScrollBar horizontalScrollBar = new JScrollBar(JScrollBar.HORIZONTAL);
-        JScrollBar verticalScrollBar = new JScrollBar(JScrollBar.VERTICAL);
-        srcScrollPane.getHorizontalScrollBar().setModel(
-                horizontalScrollBar.getModel());
-        srcScrollPane.getVerticalScrollBar().setModel(
-                verticalScrollBar.getModel());
-        dstScrollPane.getHorizontalScrollBar().setModel(
-                horizontalScrollBar.getModel());
-        dstScrollPane.getVerticalScrollBar().setModel(
-                verticalScrollBar.getModel());
+        dstScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        dstScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        JScrollBar horizontalScrollBar = new JScrollBar(Adjustable.HORIZONTAL);
+        JScrollBar verticalScrollBar = new JScrollBar(Adjustable.VERTICAL);
+        srcScrollPane.getHorizontalScrollBar().setModel(horizontalScrollBar.getModel());
+        srcScrollPane.getVerticalScrollBar().setModel(verticalScrollBar.getModel());
+        dstScrollPane.getHorizontalScrollBar().setModel(horizontalScrollBar.getModel());
+        dstScrollPane.getVerticalScrollBar().setModel(verticalScrollBar.getModel());
         JPanel panel = new JPanel(new GridLayout(1, 2));
         panel.add(srcScrollPane);
         panel.add(dstScrollPane);
@@ -225,15 +219,16 @@ public class DiffPanel extends JPanel {
         bothPanel.add(panel, BorderLayout.CENTER);
         bothPanel.add(horizontalScrollBar, BorderLayout.SOUTH);
         bothPanel.add(verticalScrollBar, BorderLayout.EAST);
-        
+
         this.add(COMBINED, combinedPanel);
         this.add(SIDE_BY_SIDE, bothPanel);
     }
-    
+
     /**
      * Sets the display layout.
      * 
-     * @param displayLayout the new display layout
+     * @param displayLayout
+     *            the new display layout
      */
     public void setDisplayLayout(String displayLayout) {
         if (!displayLayout.equals(this.displayLayout)) {
@@ -241,7 +236,7 @@ public class DiffPanel extends JPanel {
             layout.show(this, displayLayout);
         }
     }
-    
+
     /**
      * Gets the display layout.
      * 
@@ -250,7 +245,7 @@ public class DiffPanel extends JPanel {
     public String getDisplayLayout() {
         return displayLayout;
     }
-    
+
     /**
      * Clear.
      */
@@ -259,24 +254,26 @@ public class DiffPanel extends JPanel {
         srcTextPane.setText("");
         dstTextPane.setText("");
     }
-    
+
     /**
      * Show differences.
      * 
-     * @param src the src
-     * @param dst the dst
-     * @param edits the edits
+     * @param src
+     *            the src
+     * @param dst
+     *            the dst
+     * @param edits
+     *            the edits
      */
-    public void showDifferences(CharSequence src, CharSequence dst,
-            List edits) {
+    public void showDifferences(CharSequence src, CharSequence dst, List edits) {
         this.src = src;
         this.dst = dst;
         this.edits = edits;
-        
+
         deleteDocuments();
         createDocuments();
     }
-    
+
     /**
      * Delete documents.
      */
@@ -289,7 +286,7 @@ public class DiffPanel extends JPanel {
         if (dstTextPane != null)
             dstTextPane.setText("");
     }
-    
+
     /**
      * Creates the documents.
      */
@@ -305,23 +302,19 @@ public class DiffPanel extends JPanel {
                 Edit edit = (Edit) it.next();
                 if (edit.getSrcLocation() > srcLast) {
                     // catch up common items in between edits
-                    String s = src.subSequence(srcLast, edit.getSrcLocation())
-                    .toString();
-                    combinedDoc.insertString(combinedDoc.getLength(), s,
-                            unchanged);
+                    String s = src.subSequence(srcLast, edit.getSrcLocation()).toString();
+                    combinedDoc.insertString(combinedDoc.getLength(), s, unchanged);
                     srcDoc.insertString(srcDoc.getLength(), s, unchanged);
                 }
                 if (edit.getDstLocation() > dstLast) {
-                    String d = dst.subSequence(dstLast, edit.getDstLocation())
-                    .toString();
+                    String d = dst.subSequence(dstLast, edit.getDstLocation()).toString();
                     // catch up common items in between edits
                     dstDoc.insertString(dstDoc.getLength(), d, unchanged);
                 }
                 String s = edit.getSrc().toString();
                 String d = edit.getDst().toString();
                 if (edit.getSrc().length() > 0 && edit.getDst().length() > 0) {
-                    combinedDoc.insertString(combinedDoc.getLength(), s,
-                            deleted);
+                    combinedDoc.insertString(combinedDoc.getLength(), s, deleted);
                     combinedDoc.insertString(combinedDoc.getLength(), d, added);
                     srcDoc.insertString(srcDoc.getLength(), s, changed);
                     dstDoc.insertString(dstDoc.getLength(), d, changed);
@@ -339,15 +332,12 @@ public class DiffPanel extends JPanel {
                         srcDoc.insertString(srcDoc.getLength(), cr, changed);
                     }
                 } else if (edit.getSrc().length() > 0) {
-                    combinedDoc.insertString(combinedDoc.getLength(), s,
-                            deleted);
+                    combinedDoc.insertString(combinedDoc.getLength(), s, deleted);
                     srcDoc.insertString(srcDoc.getLength(), s, added);
-                    dstDoc.insertString(dstDoc.getLength(), s.replaceAll(
-                            "[^\n]", " "), deleted);
+                    dstDoc.insertString(dstDoc.getLength(), s.replaceAll("[^\n]", " "), deleted);
                 } else if (edit.getDst().length() > 0) {
                     combinedDoc.insertString(combinedDoc.getLength(), d, added);
-                    srcDoc.insertString(srcDoc.getLength(), d.replaceAll(
-                            "[^\n]", " "), deleted);
+                    srcDoc.insertString(srcDoc.getLength(), d.replaceAll("[^\n]", " "), deleted);
                     dstDoc.insertString(dstDoc.getLength(), d, added);
                 }
                 srcLast = edit.getSrcLocation() + s.length();
@@ -369,11 +359,12 @@ public class DiffPanel extends JPanel {
             combinedTextPane.setText(ble.toString());
         }
     }
-    
+
     /**
      * Count lines.
      * 
-     * @param string the string
+     * @param string
+     *            the string
      * 
      * @return the int
      */
@@ -384,13 +375,15 @@ public class DiffPanel extends JPanel {
             lines++;
         return lines;
     }
-    
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      * 
-     * @throws Exception the exception
+     * @throws Exception
+     *             the exception
      */
     public static void main(String[] args) throws Exception {
         JFrame frame = new JFrame("Diff");
@@ -423,5 +416,5 @@ public class DiffPanel extends JPanel {
         System.out.println("Distance: " + Diff.getDistance(edits));
         panel.showDifferences(src, dst, edits);
     }
-    
+
 }

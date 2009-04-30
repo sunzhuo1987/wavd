@@ -29,21 +29,27 @@ import java.util.EventObject;
  * The Class ColumnDataEvent.
  */
 public class ColumnDataEvent extends EventObject {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8954100946557053876L;
     /** The _key. */
     private Object _key;
-    
+
     /**
      * Instantiates a new column data event.
      * 
-     * @param source the source
-     * @param key the key
+     * @param source
+     *            the source
+     * @param key
+     *            the key
      */
     public ColumnDataEvent(Object source, Object key) {
         super(source);
         _key = key;
     }
-    
+
     /**
      * Gets the key.
      * 
@@ -52,5 +58,5 @@ public class ColumnDataEvent extends EventObject {
     public Object getKey() {
         return _key;
     }
-    
+
 }

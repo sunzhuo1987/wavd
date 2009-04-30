@@ -27,36 +27,39 @@ package edu.lnmiit.wavd.ui.swing.editors;
  * The Interface ByteArrayEditor.
  */
 public interface ByteArrayEditor {
-    
+
     /**
      * Gets the name.
      * 
      * @return the name
      */
     String getName();
-    
+
     /**
      * Sets the editable.
      * 
-     * @param editable the new editable
+     * @param editable
+     *            the new editable
      */
     void setEditable(boolean editable);
-    
+
     /**
      * Sets the bytes.
      * 
-     * @param contentType the content type
-     * @param bytes the bytes
+     * @param contentType
+     *            the content type
+     * @param bytes
+     *            the bytes
      */
     void setBytes(String contentType, byte[] bytes);
-    
+
     /**
      * Checks if is modified.
      * 
      * @return true, if is modified
      */
     boolean isModified();
-    
+
     /**
      * Gets the bytes.
      * 

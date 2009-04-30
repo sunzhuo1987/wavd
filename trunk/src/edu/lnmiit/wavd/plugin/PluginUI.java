@@ -27,19 +27,20 @@ package edu.lnmiit.wavd.plugin;
  * The Interface PluginUI.
  */
 public interface PluginUI {
-    
+
     /**
      * Gets the plugin name.
      * 
      * @return the plugin name
      */
     String getPluginName();
-    
+
     /**
      * Sets the enabled.
      * 
-     * @param enabled the new enabled
+     * @param enabled
+     *            the new enabled
      */
     void setEnabled(boolean enabled);
-    
+
 }

@@ -20,9 +20,11 @@
 
 package edu.lnmiit.wavd.plugin.fuzz;
 
-
-
-
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Logger;
 
 import edu.lnmiit.wavd.httpclient.ConversationHandler;
 import edu.lnmiit.wavd.httpclient.FetcherQueue;
@@ -38,55 +40,38 @@ import edu.lnmiit.wavd.plugin.Hook;
 import edu.lnmiit.wavd.plugin.Plugin;
 import edu.lnmiit.wavd.util.Encoding;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-
-import java.util.logging.Logger;
-
-import java.net.URL;
-import java.io.IOException;
-import java.io.ByteArrayOutputStream;
-import java.net.MalformedURLException;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class Fuzzer.
  */
 public class Fuzzer implements Plugin, ConversationHandler {
-    
-    /** The N o_ params. */
-    private static Parameter[] NO_PARAMS = new Parameter[0];
-    
+
     /** The _model. */
     private FuzzerModel _model = null;
-    
+
     /** The _framework. */
     private Framework _framework = null;
-    
+
     /** The _fuzz factory. */
     private FuzzFactory _fuzzFactory = new FuzzFactory();
-    
+
     /** The _fetcher queue. */
     private FetcherQueue _fetcherQueue = null;
-    
+
     /** The _threads. */
     private int _threads = 4;
-    
+
     /** The _run thread. */
     private Thread _runThread = null;
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger(getClass().getName());
-    
-    /** The _fuzz priority. */
-    private int _fuzzPriority = -1;
-    
+
     /**
      * Instantiates a new fuzzer.
      * 
-     * @param framework the framework
+     * @param framework
+     *            the framework
      */
     public Fuzzer(Framework framework) {
         _framework = framework;
@@ -94,7 +79,7 @@ public class Fuzzer implements Plugin, ConversationHandler {
         loadFuzzStrings();
         _fetcherQueue = new FetcherQueue("Fuzzer", this, _threads, 0);
     }
-    
+
     /**
      * Load fuzz strings.
      */
@@ -108,13 +93,15 @@ public class Fuzzer implements Plugin, ConversationHandler {
                     URL url = new URL(location);
                     _fuzzFactory.loadFuzzStrings(description, url.openStream());
                 } catch (IOException ioe) {
-                    _logger.warning("Error loading \"" + description + "\" from " + location + " : " + ioe.getMessage());
+                    _logger
+                            .warning("Error loading \"" + description + "\" from " + location + " : "
+                                    + ioe.getMessage());
                 }
             }
             i++;
         }
     }
-    
+
     /**
      * Gets the fuzz factory.
      * 
@@ -123,7 +110,7 @@ public class Fuzzer implements Plugin, ConversationHandler {
     public FuzzFactory getFuzzFactory() {
         return _fuzzFactory;
     }
-    
+
     /**
      * Gets the model.
      * 
@@ -132,22 +119,26 @@ public class Fuzzer implements Plugin, ConversationHandler {
     public FuzzerModel getModel() {
         return _model;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.Plugin#getPluginName()
      */
     public String getPluginName() {
         return new String("Fuzzer");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.Plugin#run()
      */
     public void run() {
         _model.setStatus("Started");
         _model.setStopping(false);
         _runThread = Thread.currentThread();
-        
+
         _model.setRunning(true);
         while (!_model.isStopping()) {
             // queue them as fast as they come, sleep a bit otherwise
@@ -155,7 +146,8 @@ public class Fuzzer implements Plugin, ConversationHandler {
             if (!submittedRequest) {
                 try {
                     Thread.sleep(100);
-                } catch (InterruptedException ie) {}
+                } catch (InterruptedException ie) {
+                }
             }
         }
         _fetcherQueue.clearRequestQueue();
@@ -163,25 +155,26 @@ public class Fuzzer implements Plugin, ConversationHandler {
         _runThread = null;
         _model.setStatus("Stopped");
     }
-    
+
     /**
      * Start fuzzing.
      */
     public void startFuzzing() {
         int count = _model.getFuzzParameterCount();
-        if (count>0 && _model.getFuzzUrl() != null) {
+        if (count > 0 && _model.getFuzzUrl() != null) {
             _model.setBusyFuzzing(true);
         } else {
             _logger.warning("Can't fuzz if there are no parameters or URL");
         }
     }
-    
+
     /**
      * Construct current fuzz request.
      * 
      * @return the request
      * 
-     * @throws MalformedURLException the malformed url exception
+     * @throws MalformedURLException
+     *             the malformed url exception
      */
     private Request constructCurrentFuzzRequest() throws MalformedURLException {
         Request request = new Request();
@@ -189,13 +182,14 @@ public class Fuzzer implements Plugin, ConversationHandler {
         request.setVersion(_model.getFuzzVersion());
         int count = _model.getFuzzHeaderCount();
         // _logger.info("Got headers: " + count);
-        for (int i=0; i<count; i++) {
+        for (int i = 0; i < count; i++) {
             // _logger.info("Header is " + _model.getFuzzHeader(i));
             request.addHeader(_model.getFuzzHeader(i));
         }
-//        if (request.getMethod().equals("POST")) {
-//            request.setHeader("Content-Type", "application/x-www-form-urlencoded");
-//        }
+        // if (request.getMethod().equals("POST")) {
+        // request.setHeader("Content-Type",
+        // "application/x-www-form-urlencoded");
+        // }
         String url = _model.getFuzzUrl().toString();
         String path = null;
         String fragment = null;
@@ -203,7 +197,7 @@ public class Fuzzer implements Plugin, ConversationHandler {
         String cookie = null;
         ByteArrayOutputStream content = null;
         count = _model.getFuzzParameterCount();
-        for (int i=0; i<count; i++) {
+        for (int i = 0; i < count; i++) {
             Parameter parameter = _model.getFuzzParameter(i);
             Object value = _model.getFuzzParameterValue(i);
             String location = parameter.getLocation();
@@ -246,21 +240,29 @@ public class Fuzzer implements Plugin, ConversationHandler {
                 String b = parameter.getName() + "=" + Encoding.urlEncode((String) value);
                 if (content == null) {
                     content = new ByteArrayOutputStream();
-                    try { content.write(b.getBytes()); }
-                    catch (IOException ioe) {}
+                    try {
+                        content.write(b.getBytes());
+                    } catch (IOException ioe) {
+                    }
                 } else {
-                    try { content.write(("&"+b).getBytes()); }
-                    catch (IOException ioe) {}
+                    try {
+                        content.write(("&" + b).getBytes());
+                    } catch (IOException ioe) {
+                    }
                 }
             } else {
                 _logger.severe("Skipping unknown parameter location " + location);
             }
         }
-        if (path != null) url = url + "/" + path;
-        if (fragment != null) url = url + ";" + fragment;
-        if (query != null) url = url + "?" + query;
+        if (path != null)
+            url = url + "/" + path;
+        if (fragment != null)
+            url = url + ";" + fragment;
+        if (query != null)
+            url = url + "?" + query;
         request.setURL(new HttpUrl(url));
-        if (cookie != null) request.addHeader("Cookie", cookie);
+        if (cookie != null)
+            request.addHeader("Cookie", cookie);
         if (content != null) {
             request.setHeader("Content-Length", Integer.toString(content.size()));
             request.setContent(content.toByteArray());
@@ -269,29 +271,31 @@ public class Fuzzer implements Plugin, ConversationHandler {
         }
         return request;
     }
-    
+
     /**
      * Pause fuzzing.
      */
     public void pauseFuzzing() {
         _model.setBusyFuzzing(false);
     }
-    
+
     /**
      * Stop fuzzing.
      */
     public void stopFuzzing() {
         _model.setBusyFuzzing(false);
     }
-    
+
     /**
      * Queue requests.
      * 
      * @return true, if successful
      */
     private boolean queueRequests() {
-        if (!_model.isBusyFuzzing()) return false;
-        if (_fetcherQueue.getRequestsQueued()>=_threads) return false;
+        if (!_model.isBusyFuzzing())
+            return false;
+        if (_fetcherQueue.getRequestsQueued() >= _threads)
+            return false;
         try {
             Request request = constructCurrentFuzzRequest();
             _fetcherQueue.submit(request);
@@ -305,17 +309,25 @@ public class Fuzzer implements Plugin, ConversationHandler {
         }
         return true;
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.httpclient.ConversationHandler#requestError(edu.lnmiit.wavd.model.Request, java.io.IOException)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.httpclient.ConversationHandler#requestError(edu.lnmiit
+     * .wavd.model.Request, java.io.IOException)
      */
     public void requestError(Request request, IOException ioe) {
         _logger.warning("Caught exception : " + ioe.getMessage());
         _model.setBusyFuzzing(false);
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.httpclient.ConversationHandler#responseReceived(edu.lnmiit.wavd.model.Response)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.httpclient.ConversationHandler#responseReceived(edu.lnmiit
+     * .wavd.model.Response)
      */
     public void responseReceived(Response response) {
         if (response.getStatus().equals("400")) {
@@ -331,74 +343,96 @@ public class Fuzzer implements Plugin, ConversationHandler {
         ConversationID id = _framework.addConversation(request, response, "Fuzzer");
         _model.addConversation(id);
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.Plugin#stop()
      */
     public boolean stop() {
         _model.setStatus("Stopped");
         _model.setRunning(false);
-        return ! _model.isRunning();
+        return !_model.isRunning();
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.Plugin#setSession(java.lang.String, java.lang.Object, java.lang.String)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see edu.lnmiit.wavd.plugin.Plugin#setSession(java.lang.String,
+     * java.lang.Object, java.lang.String)
      */
     public void setSession(String type, Object store, String session) throws edu.lnmiit.wavd.model.StoreException {
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.Plugin#flush()
      */
     public void flush() throws StoreException {
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.Plugin#isBusy()
      */
     public boolean isBusy() {
         return _model.isBusy();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.Plugin#isRunning()
      */
     public boolean isRunning() {
         return _model.isRunning();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.Plugin#getStatus()
      */
     public String getStatus() {
         return _model.getStatus();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.Plugin#isModified()
      */
     public boolean isModified() {
         return _model.isModified();
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.Plugin#analyse(edu.lnmiit.wavd.model.ConversationID, edu.lnmiit.wavd.model.Request, edu.lnmiit.wavd.model.Response, java.lang.String)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.plugin.Plugin#analyse(edu.lnmiit.wavd.model.ConversationID
+     * , edu.lnmiit.wavd.model.Request, edu.lnmiit.wavd.model.Response,
+     * java.lang.String)
      */
     public void analyse(ConversationID id, Request request, Response response, String origin) {
         Signature signature = new Signature(request);
         _model.addSignature(signature);
         if (!response.getStatus().equals("304")) {
             byte[] content = response.getContent();
-            if (content == null) content = new byte[0];
+            if (content == null)
+                content = new byte[0];
             String checksum = Encoding.hashMD5(content);
             _model.addChecksum(signature.getUrl(), checksum);
         }
     }
-    
+
     /**
      * Load template from conversation.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      */
     public void loadTemplateFromConversation(ConversationID id) {
         if (_model.isBusyFuzzing()) {
@@ -406,43 +440,47 @@ public class Fuzzer implements Plugin, ConversationHandler {
         }
         Request request = _framework.getModel().getRequest(id);
         HttpUrl url = request.getURL();
-        if (url.getParameters()!=null)
+        if (url.getParameters() != null)
             url = url.getParentUrl();
         _model.setFuzzMethod(request.getMethod());
         _model.setFuzzUrl(url.toString());
         _model.setFuzzVersion(request.getVersion());
-        while(_model.getFuzzHeaderCount()>0) {
+        while (_model.getFuzzHeaderCount() > 0) {
             _model.removeFuzzHeader(0);
         }
-        while(_model.getFuzzParameterCount()>0) {
+        while (_model.getFuzzParameterCount() > 0) {
             _model.removeFuzzParameter(0);
         }
         NamedValue[] headers = request.getHeaders();
         if (headers != null) {
-            for (int i=0; i<headers.length; i++) {
+            for (int i = 0; i < headers.length; i++) {
                 if (headers[i].getName().equals("Cookie"))
                     continue;
                 _model.addFuzzHeader(_model.getFuzzHeaderCount(), headers[i]);
             }
         }
         Parameter[] params = Parameter.getParameters(request);
-        for (int i=0; i<params.length; i++) {
+        for (int i = 0; i < params.length; i++) {
             _model.addFuzzParameter(i, params[i], null, 0);
         }
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.Plugin#getScriptableObject()
      */
     public Object getScriptableObject() {
         return null;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.Plugin#getScriptingHooks()
      */
     public Hook[] getScriptingHooks() {
         return new Hook[0];
     }
-    
+
 }

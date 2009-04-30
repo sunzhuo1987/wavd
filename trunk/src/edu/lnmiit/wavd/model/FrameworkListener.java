@@ -18,10 +18,9 @@ package edu.lnmiit.wavd.model;
 
 // TODO: Auto-generated Javadoc
 /**
- * The listener interface for receiving framework events.
- * The class that is interested in processing a framework
- * event implements this interface, and the object created
- * with that class is registered with a component using the
+ * The listener interface for receiving framework events. The class that is
+ * interested in processing a framework event implements this interface, and the
+ * object created with that class is registered with a component using the
  * component's <code>addFrameworkListener<code> method. When
  * the framework event occurs, that object's appropriate
  * method is invoked.
@@ -29,38 +28,42 @@ package edu.lnmiit.wavd.model;
  * @see FrameworkEvent
  */
 public interface FrameworkListener extends java.util.EventListener {
-    
+
     /**
      * Cookie added.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void cookieAdded(FrameworkEvent evt);
-    
+
     /**
      * Cookie removed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void cookieRemoved(FrameworkEvent evt);
-    
+
     /**
      * Cookies changed.
      */
     void cookiesChanged();
-    
+
     /**
      * Conversation property changed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void conversationPropertyChanged(FrameworkEvent evt);
-    
+
     /**
      * Url property changed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void urlPropertyChanged(FrameworkEvent evt);
-    
+
 }

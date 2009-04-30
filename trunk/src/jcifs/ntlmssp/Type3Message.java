@@ -17,15 +17,9 @@
 package jcifs.ntlmssp;
 
 import java.io.IOException;
-
-import java.net.UnknownHostException;
-
 import java.security.SecureRandom;
 
 import jcifs.Config;
-
-// import jcifs.netbios.NbtAddress;
-
 import jcifs.smb.NtlmPasswordAuthentication;
 
 // TODO: Auto-generated Javadoc
@@ -74,18 +68,16 @@ public class Type3Message extends NtlmMessage {
     private byte[] sessionKey;
 
     static {
-        DEFAULT_FLAGS = NTLMSSP_NEGOTIATE_NTLM |
-                (Config.getBoolean("jcifs.smb.client.useUnicode", true) ?
-                        NTLMSSP_NEGOTIATE_UNICODE : NTLMSSP_NEGOTIATE_OEM);
+        DEFAULT_FLAGS = NTLMSSP_NEGOTIATE_NTLM
+                | (Config.getBoolean("jcifs.smb.client.useUnicode", true) ? NTLMSSP_NEGOTIATE_UNICODE
+                        : NTLMSSP_NEGOTIATE_OEM);
         DEFAULT_DOMAIN = Config.getProperty("jcifs.smb.client.domain", null);
         DEFAULT_USER = Config.getProperty("jcifs.smb.client.username", null);
-        DEFAULT_PASSWORD = Config.getProperty("jcifs.smb.client.password",
-                null);
-        String defaultWorkstation = null;
-//        try {
-//            defaultWorkstation = NbtAddress.getLocalHost().getHostName();
-//        } catch (UnknownHostException ex) { }
-//        DEFAULT_WORKSTATION = defaultWorkstation;
+        DEFAULT_PASSWORD = Config.getProperty("jcifs.smb.client.password", null);
+        // try {
+        // defaultWorkstation = NbtAddress.getLocalHost().getHostName();
+        // } catch (UnknownHostException ex) { }
+        // DEFAULT_WORKSTATION = defaultWorkstation;
         DEFAULT_WORKSTATION = "localhost";
         LM_COMPATIBILITY = Config.getInt("jcifs.smb.lmCompatibility", 0);
     }
@@ -103,7 +95,8 @@ public class Type3Message extends NtlmMessage {
     /**
      * Instantiates a new type3 message.
      * 
-     * @param type2 the type2
+     * @param type2
+     *            the type2
      */
     public Type3Message(Type2Message type2) {
         setFlags(getDefaultFlags(type2));
@@ -129,12 +122,11 @@ public class Type3Message extends NtlmMessage {
         case 5:
             byte[] clientChallenge = new byte[8];
             RANDOM.nextBytes(clientChallenge);
-            setLMResponse(getLMv2Response(type2, domain, user, password,
-                    clientChallenge));
+            setLMResponse(getLMv2Response(type2, domain, user, password, clientChallenge));
             /*
-            setNTResponse(getNTLMv2Response(type2, domain, user, password,
-                    clientChallenge));
-            */
+             * setNTResponse(getNTLMv2Response(type2, domain, user, password,
+             * clientChallenge));
+             */
             break;
         default:
             setLMResponse(getLMResponse(type2, password));
@@ -145,14 +137,18 @@ public class Type3Message extends NtlmMessage {
     /**
      * Instantiates a new type3 message.
      * 
-     * @param type2 the type2
-     * @param password the password
-     * @param domain the domain
-     * @param user the user
-     * @param workstation the workstation
+     * @param type2
+     *            the type2
+     * @param password
+     *            the password
+     * @param domain
+     *            the domain
+     * @param user
+     *            the user
+     * @param workstation
+     *            the workstation
      */
-    public Type3Message(Type2Message type2, String password, String domain,
-            String user, String workstation) {
+    public Type3Message(Type2Message type2, String password, String domain, String user, String workstation) {
         setFlags(getDefaultFlags(type2));
         setDomain(domain);
         setUser(user);
@@ -173,12 +169,11 @@ public class Type3Message extends NtlmMessage {
         case 5:
             byte[] clientChallenge = new byte[8];
             RANDOM.nextBytes(clientChallenge);
-            setLMResponse(getLMv2Response(type2, domain, user, password,
-                    clientChallenge));
+            setLMResponse(getLMv2Response(type2, domain, user, password, clientChallenge));
             /*
-            setNTResponse(getNTLMv2Response(type2, domain, user, password,
-                    clientChallenge));
-            */
+             * setNTResponse(getNTLMv2Response(type2, domain, user, password,
+             * clientChallenge));
+             */
             break;
         default:
             setLMResponse(getLMResponse(type2, password));
@@ -189,15 +184,20 @@ public class Type3Message extends NtlmMessage {
     /**
      * Instantiates a new type3 message.
      * 
-     * @param flags the flags
-     * @param lmResponse the lm response
-     * @param ntResponse the nt response
-     * @param domain the domain
-     * @param user the user
-     * @param workstation the workstation
+     * @param flags
+     *            the flags
+     * @param lmResponse
+     *            the lm response
+     * @param ntResponse
+     *            the nt response
+     * @param domain
+     *            the domain
+     * @param user
+     *            the user
+     * @param workstation
+     *            the workstation
      */
-    public Type3Message(int flags, byte[] lmResponse, byte[] ntResponse,
-            String domain, String user, String workstation) {
+    public Type3Message(int flags, byte[] lmResponse, byte[] ntResponse, String domain, String user, String workstation) {
         setFlags(flags);
         setLMResponse(lmResponse);
         setNTResponse(ntResponse);
@@ -209,9 +209,11 @@ public class Type3Message extends NtlmMessage {
     /**
      * Instantiates a new type3 message.
      * 
-     * @param material the material
+     * @param material
+     *            the material
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public Type3Message(byte[] material) throws IOException {
         parse(material);
@@ -229,7 +231,8 @@ public class Type3Message extends NtlmMessage {
     /**
      * Sets the lM response.
      * 
-     * @param lmResponse the new lM response
+     * @param lmResponse
+     *            the new lM response
      */
     public void setLMResponse(byte[] lmResponse) {
         this.lmResponse = lmResponse;
@@ -247,7 +250,8 @@ public class Type3Message extends NtlmMessage {
     /**
      * Sets the nT response.
      * 
-     * @param ntResponse the new nT response
+     * @param ntResponse
+     *            the new nT response
      */
     public void setNTResponse(byte[] ntResponse) {
         this.ntResponse = ntResponse;
@@ -265,7 +269,8 @@ public class Type3Message extends NtlmMessage {
     /**
      * Sets the domain.
      * 
-     * @param domain the new domain
+     * @param domain
+     *            the new domain
      */
     public void setDomain(String domain) {
         this.domain = domain;
@@ -283,7 +288,8 @@ public class Type3Message extends NtlmMessage {
     /**
      * Sets the user.
      * 
-     * @param user the new user
+     * @param user
+     *            the new user
      */
     public void setUser(String user) {
         this.user = user;
@@ -301,7 +307,8 @@ public class Type3Message extends NtlmMessage {
     /**
      * Sets the workstation.
      * 
-     * @param workstation the new workstation
+     * @param workstation
+     *            the new workstation
      */
     public void setWorkstation(String workstation) {
         this.workstation = workstation;
@@ -319,13 +326,16 @@ public class Type3Message extends NtlmMessage {
     /**
      * Sets the session key.
      * 
-     * @param sessionKey the new session key
+     * @param sessionKey
+     *            the new session key
      */
     public void setSessionKey(byte[] sessionKey) {
         this.sessionKey = sessionKey;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see jcifs.ntlmssp.NtlmMessage#toByteArray()
      */
     public byte[] toByteArray() {
@@ -336,35 +346,31 @@ public class Type3Message extends NtlmMessage {
             String domainName = getDomain();
             byte[] domain = null;
             if (domainName != null && domainName.length() != 0) {
-                domain = unicode ?
-                        domainName.toUpperCase().getBytes("UnicodeLittleUnmarked") :
-                                domainName.toUpperCase().getBytes(oem);
+                domain = unicode ? domainName.toUpperCase().getBytes("UnicodeLittleUnmarked") : domainName
+                        .toUpperCase().getBytes(oem);
             }
             int domainLength = (domain != null) ? domain.length : 0;
             String userName = getUser();
             byte[] user = null;
             if (userName != null && userName.length() != 0) {
-                user = unicode ? userName.getBytes("UnicodeLittleUnmarked") :
-                        userName.toUpperCase().getBytes(oem);
+                user = unicode ? userName.getBytes("UnicodeLittleUnmarked") : userName.toUpperCase().getBytes(oem);
             }
             int userLength = (user != null) ? user.length : 0;
             String workstationName = getWorkstation();
             byte[] workstation = null;
             if (workstationName != null && workstationName.length() != 0) {
-                workstation = unicode ?
-                        workstationName.getBytes("UnicodeLittleUnmarked") :
-                                workstationName.toUpperCase().getBytes(oem);
+                workstation = unicode ? workstationName.getBytes("UnicodeLittleUnmarked") : workstationName
+                        .toUpperCase().getBytes(oem);
             }
-            int workstationLength = (workstation != null) ?
-                    workstation.length : 0;
+            int workstationLength = (workstation != null) ? workstation.length : 0;
             byte[] lmResponse = getLMResponse();
             int lmLength = (lmResponse != null) ? lmResponse.length : 0;
             byte[] ntResponse = getNTResponse();
             int ntLength = (ntResponse != null) ? ntResponse.length : 0;
             byte[] sessionKey = getSessionKey();
             int keyLength = (sessionKey != null) ? sessionKey.length : 0;
-            byte[] type3 = new byte[64 + domainLength + userLength +
-                    workstationLength + lmLength + ntLength + keyLength];
+            byte[] type3 = new byte[64 + domainLength + userLength + workstationLength + lmLength + ntLength
+                    + keyLength];
             System.arraycopy(NTLMSSP_SIGNATURE, 0, type3, 0, 8);
             writeULong(type3, 8, 3);
             int offset = 64;
@@ -386,7 +392,9 @@ public class Type3Message extends NtlmMessage {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -402,15 +410,18 @@ public class Type3Message extends NtlmMessage {
             buffer.append("domain: ").append(domain);
         }
         if (user != null) {
-            if (buffer.length() > 0) buffer.append("; ");
+            if (buffer.length() > 0)
+                buffer.append("; ");
             buffer.append("user: ").append(user);
         }
         if (workstation != null) {
-            if (buffer.length() > 0) buffer.append("; ");
+            if (buffer.length() > 0)
+                buffer.append("; ");
             buffer.append("workstation: ").append(workstation);
         }
         if (lmResponse != null) {
-            if (buffer.length() > 0) buffer.append("; ");
+            if (buffer.length() > 0)
+                buffer.append("; ");
             buffer.append("lmResponse: ");
             buffer.append("0x");
             for (int i = 0; i < lmResponse.length; i++) {
@@ -419,7 +430,8 @@ public class Type3Message extends NtlmMessage {
             }
         }
         if (ntResponse != null) {
-            if (buffer.length() > 0) buffer.append("; ");
+            if (buffer.length() > 0)
+                buffer.append("; ");
             buffer.append("ntResponse: ");
             buffer.append("0x");
             for (int i = 0; i < ntResponse.length; i++) {
@@ -428,7 +440,8 @@ public class Type3Message extends NtlmMessage {
             }
         }
         if (sessionKey != null) {
-            if (buffer.length() > 0) buffer.append("; ");
+            if (buffer.length() > 0)
+                buffer.append("; ");
             buffer.append("sessionKey: ");
             buffer.append("0x");
             for (int i = 0; i < sessionKey.length; i++) {
@@ -437,7 +450,8 @@ public class Type3Message extends NtlmMessage {
             }
         }
         if (flags != 0) {
-            if (buffer.length() > 0) buffer.append("; ");
+            if (buffer.length() > 0)
+                buffer.append("; ");
             buffer.append("flags: ");
             buffer.append("0x");
             buffer.append(Integer.toHexString((flags >> 28) & 0x0f));
@@ -464,66 +478,75 @@ public class Type3Message extends NtlmMessage {
     /**
      * Gets the default flags.
      * 
-     * @param type2 the type2
+     * @param type2
+     *            the type2
      * 
      * @return the default flags
      */
     public static int getDefaultFlags(Type2Message type2) {
-        if (type2 == null) return DEFAULT_FLAGS;
+        if (type2 == null)
+            return DEFAULT_FLAGS;
         int flags = NTLMSSP_NEGOTIATE_NTLM;
-        flags |= ((type2.getFlags() & NTLMSSP_NEGOTIATE_UNICODE) != 0) ?
-                NTLMSSP_NEGOTIATE_UNICODE : NTLMSSP_NEGOTIATE_OEM;
+        flags |= ((type2.getFlags() & NTLMSSP_NEGOTIATE_UNICODE) != 0) ? NTLMSSP_NEGOTIATE_UNICODE
+                : NTLMSSP_NEGOTIATE_OEM;
         return flags;
     }
 
     /**
      * Gets the lM response.
      * 
-     * @param type2 the type2
-     * @param password the password
+     * @param type2
+     *            the type2
+     * @param password
+     *            the password
      * 
      * @return the lM response
      */
     public static byte[] getLMResponse(Type2Message type2, String password) {
-        if (type2 == null || password == null) return null;
-        return NtlmPasswordAuthentication.getPreNTLMResponse(password,
-                type2.getChallenge());
+        if (type2 == null || password == null)
+            return null;
+        return NtlmPasswordAuthentication.getPreNTLMResponse(password, type2.getChallenge());
     }
 
     /**
      * Gets the l mv2 response.
      * 
-     * @param type2 the type2
-     * @param domain the domain
-     * @param user the user
-     * @param password the password
-     * @param clientChallenge the client challenge
+     * @param type2
+     *            the type2
+     * @param domain
+     *            the domain
+     * @param user
+     *            the user
+     * @param password
+     *            the password
+     * @param clientChallenge
+     *            the client challenge
      * 
      * @return the l mv2 response
      */
-    public static byte[] getLMv2Response(Type2Message type2,
-            String domain, String user, String password,
-                    byte[] clientChallenge) {
-        if (type2 == null || domain == null || user == null ||
-                password == null || clientChallenge == null) {
+    public static byte[] getLMv2Response(Type2Message type2, String domain, String user, String password,
+            byte[] clientChallenge) {
+        if (type2 == null || domain == null || user == null || password == null || clientChallenge == null) {
             return null;
         }
-        return NtlmPasswordAuthentication.getLMv2Response(domain, user,
-                password, type2.getChallenge(), clientChallenge);
+        return NtlmPasswordAuthentication
+                .getLMv2Response(domain, user, password, type2.getChallenge(), clientChallenge);
     }
 
     /**
      * Gets the nT response.
      * 
-     * @param type2 the type2
-     * @param password the password
+     * @param type2
+     *            the type2
+     * @param password
+     *            the password
      * 
      * @return the nT response
      */
     public static byte[] getNTResponse(Type2Message type2, String password) {
-        if (type2 == null || password == null) return null;
-        return NtlmPasswordAuthentication.getNTLMResponse(password,
-                type2.getChallenge());
+        if (type2 == null || password == null)
+            return null;
+        return NtlmPasswordAuthentication.getNTLMResponse(password, type2.getChallenge());
     }
 
     /**
@@ -565,9 +588,11 @@ public class Type3Message extends NtlmMessage {
     /**
      * Parses the.
      * 
-     * @param material the material
+     * @param material
+     *            the material
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     private void parse(byte[] material) throws IOException {
         for (int i = 0; i < 8; i++) {
@@ -590,25 +615,24 @@ public class Type3Message extends NtlmMessage {
         int workstationOffset = readULong(material, 48);
         int flags;
         String charset;
-        if (lmResponseOffset == 52 || ntResponseOffset == 52 ||
-                domainOffset == 52 || userOffset == 52 ||
-                        workstationOffset == 52) {
+        if (lmResponseOffset == 52 || ntResponseOffset == 52 || domainOffset == 52 || userOffset == 52
+                || workstationOffset == 52) {
             flags = NTLMSSP_NEGOTIATE_NTLM | NTLMSSP_NEGOTIATE_OEM;
             charset = getOEMEncoding();
         } else {
             setSessionKey(readSecurityBuffer(material, 52));
             flags = readULong(material, 60);
-            charset = ((flags & NTLMSSP_NEGOTIATE_UNICODE) != 0) ?
-                "UnicodeLittleUnmarked" : getOEMEncoding();
+            charset = ((flags & NTLMSSP_NEGOTIATE_UNICODE) != 0) ? "UnicodeLittleUnmarked" : getOEMEncoding();
         }
         setFlags(flags);
         setLMResponse(lmResponse);
-        /* NTLMv2 issues w/cross-domain authentication; leave
-         * NT empty if NTLMv2 was sent by the client. NTLM response
-         * will always be 24 bytes; NTLMv2 response will always be
-         * longer. - Kevin Tapperson
+        /*
+         * NTLMv2 issues w/cross-domain authentication; leave NT empty if NTLMv2
+         * was sent by the client. NTLM response will always be 24 bytes; NTLMv2
+         * response will always be longer. - Kevin Tapperson
          */
-        if (ntResponse.length == 24) setNTResponse(ntResponse);
+        if (ntResponse.length == 24)
+            setNTResponse(ntResponse);
         setDomain(new String(domain, charset));
         setUser(new String(user, charset));
         setWorkstation(new String(workstation, charset));

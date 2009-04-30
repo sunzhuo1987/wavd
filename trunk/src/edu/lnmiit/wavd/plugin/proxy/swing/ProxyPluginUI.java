@@ -16,9 +16,9 @@
 
 package edu.lnmiit.wavd.plugin.proxy.swing;
 
-import edu.lnmiit.wavd.plugin.PluginUI;
-
 import javax.swing.JPanel;
+
+import edu.lnmiit.wavd.plugin.PluginUI;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -32,5 +32,5 @@ public interface ProxyPluginUI extends PluginUI {
      * @return the panel
      */
     JPanel getPanel();
-    
+
 }

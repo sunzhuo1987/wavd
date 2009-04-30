@@ -16,8 +16,6 @@
 
 package edu.lnmiit.wavd.ui.swing;
 
-import javax.swing.SwingUtilities;
-
 import edu.lnmiit.wavd.plugin.BasicCredential;
 import edu.lnmiit.wavd.plugin.CredentialManager;
 import edu.lnmiit.wavd.plugin.CredentialManagerUI;
@@ -28,16 +26,24 @@ import edu.lnmiit.wavd.plugin.DomainCredential;
  * The Class CredentialRequestDialog.
  */
 public class CredentialRequestDialog extends javax.swing.JDialog implements CredentialManagerUI {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3445551942626312411L;
+
     /** The _manager. */
     private CredentialManager _manager;
-    
+
     /**
      * Instantiates a new credential request dialog.
      * 
-     * @param parent the parent
-     * @param modal the modal
-     * @param manager the manager
+     * @param parent
+     *            the parent
+     * @param modal
+     *            the modal
+     * @param manager
+     *            the manager
      */
     public CredentialRequestDialog(java.awt.Frame parent, boolean modal, CredentialManager manager) {
         super(parent, modal);
@@ -45,9 +51,13 @@ public class CredentialRequestDialog extends javax.swing.JDialog implements Cred
         getRootPane().setDefaultButton(okButton);
         _manager = manager;
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.CredentialManagerUI#requestCredentials(java.lang.String, java.lang.String[])
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.plugin.CredentialManagerUI#requestCredentials(java.lang
+     * .String, java.lang.String[])
      */
     public void requestCredentials(final String host, final String[] challenges) {
         setup(host, challenges);
@@ -55,12 +65,14 @@ public class CredentialRequestDialog extends javax.swing.JDialog implements Cred
         setVisible(true);
         toFront();
     }
-    
+
     /**
      * Setup.
      * 
-     * @param host the host
-     * @param challenges the challenges
+     * @param host
+     *            the host
+     * @param challenges
+     *            the challenges
      */
     private void setup(String host, String[] challenges) {
         basicRadioButton.setEnabled(false);
@@ -70,18 +82,18 @@ public class CredentialRequestDialog extends javax.swing.JDialog implements Cred
         realmTextArea.setText("");
         usernameTextField.setText("");
         passwordTextField.setText("");
-        
-        if (host != null) 
+
+        if (host != null)
             hostTextField.setText(host);
         if (challenges == null) {
             basicRadioButton.setEnabled(true);
             realmTextArea.setEditable(true);
             domainRadioButton.setEnabled(true);
         } else {
-            for (int i=0; i<challenges.length; i++) {
+            for (int i = 0; i < challenges.length; i++) {
                 if (challenges[i].startsWith("Basic ")) {
                     basicRadioButton.setEnabled(true);
-                    String realm = challenges[i].substring("Basic realm=\"".length(), challenges[i].length()-1);
+                    String realm = challenges[i].substring("Basic realm=\"".length(), challenges[i].length() - 1);
                     realmTextArea.setText(realm);
                     realmTextArea.setEditable(false);
                 } else if (challenges[i].startsWith("NTLM") || challenges[i].startsWith("Negotiate")) {
@@ -95,11 +107,12 @@ public class CredentialRequestDialog extends javax.swing.JDialog implements Cred
             domainRadioButton.doClick();
         }
     }
-    
+
     /**
      * Inits the components.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed"
+    // desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -271,60 +284,81 @@ public class CredentialRequestDialog extends javax.swing.JDialog implements Cred
         getContentPane().add(jPanel2, gridBagConstraints);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-419)/2, (screenSize.height-206)/2, 419, 206);
+        setBounds((screenSize.width - 419) / 2, (screenSize.height - 206) / 2, 419, 206);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
      * Domain radio button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void domainRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_domainRadioButtonActionPerformed
+    private void domainRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_domainRadioButtonActionPerformed
         domainLabel.setVisible(true);
         domainTextField.setVisible(true);
         realmLabel.setVisible(false);
         realmTextArea.setVisible(false);
-    }//GEN-LAST:event_domainRadioButtonActionPerformed
+    }// GEN-LAST:event_domainRadioButtonActionPerformed
 
     /**
      * Basic radio button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void basicRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_basicRadioButtonActionPerformed
+    private void basicRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_basicRadioButtonActionPerformed
         domainLabel.setVisible(false);
         domainTextField.setVisible(false);
         realmLabel.setVisible(true);
         realmTextArea.setVisible(true);
-    }//GEN-LAST:event_basicRadioButtonActionPerformed
+    }// GEN-LAST:event_basicRadioButtonActionPerformed
 
     /**
      * Ok button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
+        // FIRST
+        // :
+        // event_okButtonActionPerformed
         ok();
-    }//GEN-LAST:event_okButtonActionPerformed
+    }// GEN-LAST:event_okButtonActionPerformed
 
     /**
      * Cancel button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_cancelButtonActionPerformed
         cancel();
-    }//GEN-LAST:event_cancelButtonActionPerformed
+    }// GEN-LAST:event_cancelButtonActionPerformed
 
     /**
      * Form window closed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {// GEN-FIRST:
+        // event_formWindowClosed
         cancel();
-    }//GEN-LAST:event_formWindowClosed
-    
+    }// GEN-LAST:event_formWindowClosed
+
     /**
      * Ok.
      */
@@ -345,65 +379,65 @@ public class CredentialRequestDialog extends javax.swing.JDialog implements Cred
         }
         setVisible(false);
     }
-    
+
     /**
      * Cancel.
      */
     private void cancel() {
         setVisible(false);
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The basic radio button. */
     private javax.swing.JRadioButton basicRadioButton;
-    
+
     /** The cancel button. */
     private javax.swing.JButton cancelButton;
-    
+
     /** The domain label. */
     private javax.swing.JLabel domainLabel;
-    
+
     /** The domain radio button. */
     private javax.swing.JRadioButton domainRadioButton;
-    
+
     /** The domain text field. */
     private javax.swing.JTextField domainTextField;
-    
+
     /** The host label. */
     private javax.swing.JLabel hostLabel;
-    
+
     /** The host text field. */
     private javax.swing.JTextField hostTextField;
-    
+
     /** The j panel1. */
     private javax.swing.JPanel jPanel1;
-    
+
     /** The j panel2. */
     private javax.swing.JPanel jPanel2;
-    
+
     /** The method button group. */
     private javax.swing.ButtonGroup methodButtonGroup;
-    
+
     /** The ok button. */
     private javax.swing.JButton okButton;
-    
+
     /** The password label. */
     private javax.swing.JLabel passwordLabel;
-    
+
     /** The password text field. */
     private javax.swing.JPasswordField passwordTextField;
-    
+
     /** The realm label. */
     private javax.swing.JLabel realmLabel;
-    
+
     /** The realm text area. */
     private javax.swing.JTextArea realmTextArea;
-    
+
     /** The username label. */
     private javax.swing.JLabel usernameLabel;
-    
+
     /** The username text field. */
     private javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
-    
+
 }

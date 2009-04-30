@@ -26,20 +26,23 @@ import edu.lnmiit.wavd.model.Response;
  * The Interface ConversationHandler.
  */
 public interface ConversationHandler {
-    
+
     /**
      * Response received.
      * 
-     * @param response the response
+     * @param response
+     *            the response
      */
     void responseReceived(Response response);
-    
+
     /**
      * Request error.
      * 
-     * @param request the request
-     * @param ioe the ioe
+     * @param request
+     *            the request
+     * @param ioe
+     *            the ioe
      */
     void requestError(Request request, IOException ioe);
-    
+
 }

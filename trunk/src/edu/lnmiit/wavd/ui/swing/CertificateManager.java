@@ -20,11 +20,8 @@ import java.io.File;
 import java.security.KeyStoreException;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -42,19 +39,21 @@ import edu.lnmiit.wavd.httpclient.SSLContextManager;
  * The Class CertificateManager.
  */
 public class CertificateManager extends javax.swing.JFrame {
-    
-    /** The _password. */
-    private String _password = null;
-    
+
+    /**
+	 * 
+	 */
+    private static final long serialVersionUID = 5239475002021657917L;
+
     /** The _sslcm. */
     private SSLContextManager _sslcm = HTTPClientFactory.getInstance().getSSLContextManager();
-    
+
     /** The _keystore list model. */
     private DefaultListModel _keystoreListModel;
-    
+
     /** The _alias table model. */
     private AliasTableModel _aliasTableModel;
-    
+
     /**
      * Instantiates a new certificate manager.
      */
@@ -62,7 +61,7 @@ public class CertificateManager extends javax.swing.JFrame {
         initComponents();
         if (!_sslcm.isProviderAvailable("PKCS11"))
             keystoreTabbedPane.setEnabledAt(1, false);
-        
+
         _keystoreListModel = new DefaultListModel();
         updateKeystoreList();
         keyStoreList.setModel(_keystoreListModel);
@@ -73,7 +72,8 @@ public class CertificateManager extends javax.swing.JFrame {
                 try {
                     _aliasTableModel.setKeystore(keystore);
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, new String[] {"Error accessing key store: ", e.toString()}, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, new String[] { "Error accessing key store: ", e.toString() },
+                            "Error", JOptionPane.ERROR_MESSAGE);
                     e.printStackTrace();
                 }
             }
@@ -90,7 +90,9 @@ public class CertificateManager extends javax.swing.JFrame {
                         Certificate cert = _sslcm.getCertificate(keystore, alias);
                         certTextArea.setText(cert.toString());
                     } catch (Exception e) {
-                        JOptionPane.showMessageDialog(null, new String[] {"Error accessing key store: ", e.toString()}, "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null,
+                                new String[] { "Error accessing key store: ", e.toString() }, "Error",
+                                JOptionPane.ERROR_MESSAGE);
                         e.printStackTrace();
                     }
                 } else {
@@ -100,31 +102,34 @@ public class CertificateManager extends javax.swing.JFrame {
         });
         // stupid netbeans does not pack or resize child dialogs
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        addKeystoreDialog.setBounds((screenSize.width-450)/2, (screenSize.height-190)/2, 450, 190);
+        addKeystoreDialog.setBounds((screenSize.width - 450) / 2, (screenSize.height - 190) / 2, 450, 190);
         // and the designer keeps resizing!
-        setBounds((screenSize.width-600)/2, (screenSize.height-400)/2, 600, 400);
-        
+        setBounds((screenSize.width - 600) / 2, (screenSize.height - 400) / 2, 600, 400);
+
         // set default buttons
         getRootPane().setDefaultButton(closeButton);
         addKeystoreDialog.getRootPane().setDefaultButton(keystoreOkButton);
     }
-    
+
     /**
      * Gets the password.
      * 
      * @return the password
      */
     public String getPassword() {
-        int result = JOptionPane.showConfirmDialog(this, askPasswordField, "Enter password", JOptionPane.OK_CANCEL_OPTION);
+        int result = JOptionPane.showConfirmDialog(this, askPasswordField, "Enter password",
+                JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             return new String(askPasswordField.getPassword());
-        } else return null;
+        } else
+            return null;
     }
-    
+
     /**
      * Inits the components.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed"
+    // desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -312,17 +317,9 @@ public class CertificateManager extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(jLabel2, gridBagConstraints);
 
-        aliasTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+        aliasTable.setModel(new javax.swing.table.DefaultTableModel(new Object[][] { { null, null, null, null },
+                { null, null, null, null }, { null, null, null, null }, { null, null, null, null } }, new String[] {
+                "Title 1", "Title 2", "Title 3", "Title 4" }));
         jScrollPane2.setViewportView(aliasTable);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -401,78 +398,99 @@ public class CertificateManager extends javax.swing.JFrame {
         getContentPane().add(currentCertTextField, gridBagConstraints);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-600)/2, (screenSize.height-400)/2, 600, 400);
+        setBounds((screenSize.width - 600) / 2, (screenSize.height - 400) / 2, 600, 400);
     }
+
     // </editor-fold>//GEN-END:initComponents
 
     /**
      * Sets the button action performed.
      * 
-     * @param evt the new button action performed
+     * @param evt
+     *            the new button action performed
      */
-    private void setButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setButtonActionPerformed
+    private void setButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
+        // FIRST
+        // :
+        // event_setButtonActionPerformed
         int ks = keyStoreList.getSelectedIndex();
         int alias = aliasTable.getSelectedRow();
         String fingerprint = "";
-        if (ks > -1 && alias>-1) {
+        if (ks > -1 && alias > -1) {
             if (!_sslcm.isKeyUnlocked(ks, alias)) {
                 String password = getPassword();
                 try {
                     _sslcm.unlockKey(ks, alias, password);
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, new String[] {"Error accessing key store: ", e.toString()}, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, new String[] { "Error accessing key store: ", e.toString() },
+                            "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
             Certificate cert = _sslcm.getCertificate(ks, alias);
             try {
                 fingerprint = _sslcm.getFingerPrint(cert);
             } catch (KeyStoreException kse) {
-                JOptionPane.showMessageDialog(null, new String[] {"Error calculating key fingerprint: ", kse.toString()}, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, new String[] { "Error calculating key fingerprint: ",
+                        kse.toString() }, "Error", JOptionPane.ERROR_MESSAGE);
                 fingerprint = "";
             }
         }
         currentCertTextField.setText(fingerprint);
         _sslcm.setDefaultKey(fingerprint);
-    }//GEN-LAST:event_setButtonActionPerformed
-            
+    }// GEN-LAST:event_setButtonActionPerformed
+
     /**
      * Pkcs11 browse button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void pkcs11BrowseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pkcs11BrowseButtonActionPerformed
+    private void pkcs11BrowseButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+                                                                                    // -
+                                                                                    // FIRST
+                                                                                    // :
+        // event_pkcs11BrowseButtonActionPerformed
         File library = chooseFile("Select the native PKCS#11 library", null);
         if (library != null)
             pkcs11LibraryTextField.setText(library.getAbsolutePath());
-    }//GEN-LAST:event_pkcs11BrowseButtonActionPerformed
-    
+    }// GEN-LAST:event_pkcs11BrowseButtonActionPerformed
+
     /**
      * Pkcs12 browse button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void pkcs12BrowseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pkcs12BrowseButtonActionPerformed
+    private void pkcs12BrowseButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+                                                                                    // -
+                                                                                    // FIRST
+                                                                                    // :
+        // event_pkcs12BrowseButtonActionPerformed
         FileFilter filter = new FileFilter() {
             public String getDescription() {
                 return "*.p12, *.pfx";
             }
+
             public boolean accept(File file) {
                 String name = file.getName();
-                if (file.isDirectory()) return true;
+                if (file.isDirectory())
+                    return true;
                 return name.endsWith(".p12") || name.endsWith(".pfx");
             }
         };
-        
+
         File file = chooseFile("Select a PKCS#12 certificate", filter);
         if (file != null)
             pkcs12FileTextField.setText(file.getAbsolutePath());
-    }//GEN-LAST:event_pkcs12BrowseButtonActionPerformed
-    
+    }// GEN-LAST:event_pkcs12BrowseButtonActionPerformed
+
     /**
      * Choose file.
      * 
-     * @param message the message
-     * @param filter the filter
+     * @param message
+     *            the message
+     * @param filter
+     *            the filter
      * 
      * @return the file
      */
@@ -486,81 +504,107 @@ public class CertificateManager extends javax.swing.JFrame {
         }
         return null;
     }
-    
+
     /**
      * Keystore ok button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void keystoreOkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keystoreOkButtonActionPerformed
+    private void keystoreOkButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_keystoreOkButtonActionPerformed
         try {
             int tab = keystoreTabbedPane.getSelectedIndex();
             if (tab == 0) { // PKCS#12
                 String file = pkcs12FileTextField.getText();
-                if (file.equals("")) return;
+                if (file.equals(""))
+                    return;
                 String kspass = new String(pkcs12PasswordField.getPassword());
                 if (kspass.equals(""))
                     kspass = null;
                 int ksIndex = _sslcm.loadPKCS12Certificate(file, kspass);
                 _keystoreListModel.insertElementAt(_sslcm.getKeyStoreDescription(ksIndex), ksIndex);
-            } else if (tab == 1) { //PKCS#11
+            } else if (tab == 1) { // PKCS#11
                 String name = pkcs11NameTextField.getText();
-                if (name.equals("")) return;
+                if (name.equals(""))
+                    return;
                 String library = pkcs11LibraryTextField.getText();
-                if (library.equals("")) return;
+                if (library.equals(""))
+                    return;
                 String kspass = new String(pkcs11PasswordField.getPassword());
-                if (kspass.equals("")) kspass = null;
+                if (kspass.equals(""))
+                    kspass = null;
                 int ksIndex = _sslcm.initPKCS11(name, library, kspass);
                 _keystoreListModel.insertElementAt(_sslcm.getKeyStoreDescription(ksIndex), ksIndex);
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, new String[] {"Error loading Key Store: ", e.toString()}, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, new String[] { "Error loading Key Store: ", e.toString() }, "Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
         addKeystoreDialog.setVisible(false);
-    }//GEN-LAST:event_keystoreOkButtonActionPerformed
-    
+    }// GEN-LAST:event_keystoreOkButtonActionPerformed
+
     /**
      * Update keystore list.
      */
     private void updateKeystoreList() {
         _keystoreListModel.removeAllElements();
-        for (int i=0; i<_sslcm.getKeyStoreCount(); i++) {
+        for (int i = 0; i < _sslcm.getKeyStoreCount(); i++) {
             _keystoreListModel.addElement(_sslcm.getKeyStoreDescription(i));
         }
     }
-    
+
     /**
      * Keystore cancel button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void keystoreCancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keystoreCancelButtonActionPerformed
+    private void keystoreCancelButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+                                                                                      // -
+                                                                                      // FIRST
+                                                                                      // :
+        // event_keystoreCancelButtonActionPerformed
         addKeystoreDialog.setVisible(false);
-    }//GEN-LAST:event_keystoreCancelButtonActionPerformed
-    
+    }// GEN-LAST:event_keystoreCancelButtonActionPerformed
+
     /**
      * Close button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_closeButtonActionPerformed
         setVisible(false);
-    }//GEN-LAST:event_closeButtonActionPerformed
-    
+    }// GEN-LAST:event_closeButtonActionPerformed
+
     /**
      * Adds the keystore button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void addKeystoreButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addKeystoreButtonActionPerformed
+    private void addKeystoreButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_addKeystoreButtonActionPerformed
         addKeystoreDialog.setVisible(true);
-    }//GEN-LAST:event_addKeystoreButtonActionPerformed
-    
+    }// GEN-LAST:event_addKeystoreButtonActionPerformed
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -569,172 +613,186 @@ public class CertificateManager extends javax.swing.JFrame {
             }
         });
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The add keystore button. */
     private javax.swing.JButton addKeystoreButton;
-    
+
     /** The add keystore dialog. */
     private javax.swing.JDialog addKeystoreDialog;
-    
+
     /** The alias table. */
     private javax.swing.JTable aliasTable;
-    
+
     /** The ask password field. */
     private javax.swing.JPasswordField askPasswordField;
-    
+
     /** The button panel. */
     private javax.swing.JPanel buttonPanel;
-    
+
     /** The cert text area. */
     private javax.swing.JTextArea certTextArea;
-    
+
     /** The close button. */
     private javax.swing.JButton closeButton;
-    
+
     /** The current cert text field. */
     private javax.swing.JTextField currentCertTextField;
-    
+
     /** The j label1. */
     private javax.swing.JLabel jLabel1;
-    
+
     /** The j label2. */
     private javax.swing.JLabel jLabel2;
-    
+
     /** The j label3. */
     private javax.swing.JLabel jLabel3;
-    
+
     /** The j label4. */
     private javax.swing.JLabel jLabel4;
-    
+
     /** The j label5. */
     private javax.swing.JLabel jLabel5;
-    
+
     /** The j label6. */
     private javax.swing.JLabel jLabel6;
-    
+
     /** The j label7. */
     private javax.swing.JLabel jLabel7;
-    
+
     /** The j label8. */
     private javax.swing.JLabel jLabel8;
-    
+
     /** The j label9. */
     private javax.swing.JLabel jLabel9;
-    
+
     /** The j panel1. */
     private javax.swing.JPanel jPanel1;
-    
+
     /** The j scroll pane1. */
     private javax.swing.JScrollPane jScrollPane1;
-    
+
     /** The j scroll pane2. */
     private javax.swing.JScrollPane jScrollPane2;
-    
+
     /** The j scroll pane3. */
     private javax.swing.JScrollPane jScrollPane3;
-    
+
     /** The key store list. */
     private javax.swing.JList keyStoreList;
-    
+
     /** The keystore cancel button. */
     private javax.swing.JButton keystoreCancelButton;
-    
+
     /** The keystore ok button. */
     private javax.swing.JButton keystoreOkButton;
-    
+
     /** The keystore tabbed pane. */
     private javax.swing.JTabbedPane keystoreTabbedPane;
-    
+
     /** The pkcs11 browse button. */
     private javax.swing.JButton pkcs11BrowseButton;
-    
+
     /** The pkcs11 library text field. */
     private javax.swing.JTextField pkcs11LibraryTextField;
-    
+
     /** The pkcs11 name text field. */
     private javax.swing.JTextField pkcs11NameTextField;
-    
+
     /** The pkcs11 panel. */
     private javax.swing.JPanel pkcs11Panel;
-    
+
     /** The pkcs11 password field. */
     private javax.swing.JPasswordField pkcs11PasswordField;
-    
+
     /** The pkcs12 browse button. */
     private javax.swing.JButton pkcs12BrowseButton;
-    
+
     /** The pkcs12 file text field. */
     private javax.swing.JTextField pkcs12FileTextField;
-    
+
     /** The pkcs12 panel. */
     private javax.swing.JPanel pkcs12Panel;
-    
+
     /** The pkcs12 password field. */
     private javax.swing.JPasswordField pkcs12PasswordField;
-    
+
     /** The set button. */
     private javax.swing.JButton setButton;
+
     // End of variables declaration//GEN-END:variables
-    
+
     /**
      * The Class AliasTableModel.
      */
     private class AliasTableModel extends AbstractTableModel {
-        
+
+        /**
+		 * 
+		 */
+        private static final long serialVersionUID = -393890827363260717L;
+
         /** The _ks. */
         private int _ks = -1;
-        
+
         /** The _aliases. */
         private List _aliases = new ArrayList();
-        
+
         /**
          * Sets the keystore.
          * 
-         * @param ks the new keystore
+         * @param ks
+         *            the new keystore
          */
         public void setKeystore(int ks) {
             _ks = ks;
             _aliases.clear();
             if (_ks > -1) {
-                for (int i=0; i<_sslcm.getAliasCount(ks); i++)
+                for (int i = 0; i < _sslcm.getAliasCount(ks); i++)
                     _aliases.add(_sslcm.getAliasAt(ks, i));
             }
             fireTableDataChanged();
         }
-        
+
         /**
          * Gets the alias.
          * 
-         * @param row the row
+         * @param row
+         *            the row
          * 
          * @return the alias
          */
         public String getAlias(int row) {
             return (String) _aliases.get(row);
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getColumnCount()
          */
         public int getColumnCount() {
             return 1;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getRowCount()
          */
         public int getRowCount() {
             return _aliases.size();
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getValueAt(int, int)
          */
         public Object getValueAt(int row, int col) {
             return _aliases.get(row);
         }
-        
+
     }
-    
+
 }

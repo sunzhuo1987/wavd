@@ -23,71 +23,73 @@ import java.util.List;
 import edu.lnmiit.wavd.model.Request;
 import edu.lnmiit.wavd.model.Response;
 
-
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class FetcherQueue.
  */
 public class FetcherQueue {
-    
+
     /** The _handler. */
     private ConversationHandler _handler;
-    
+
     /** The _fetchers. */
     private Fetcher[] _fetchers;
-    
+
     /** The _request delay. */
     private int _requestDelay;
-    
+
     /** The _last request. */
     private long _lastRequest = 0;
-    
+
     /** The _request queue. */
     private List _requestQueue = new ArrayList();
-    
+
     /** The _running. */
     private boolean _running = true;
-    
+
     /** The _pending. */
     private int _pending = 0;
-    
+
     /**
      * Instantiates a new fetcher queue.
      * 
-     * @param name the name
-     * @param handler the handler
-     * @param threads the threads
-     * @param requestDelay the request delay
+     * @param name
+     *            the name
+     * @param handler
+     *            the handler
+     * @param threads
+     *            the threads
+     * @param requestDelay
+     *            the request delay
      */
     public FetcherQueue(String name, ConversationHandler handler, int threads, int requestDelay) {
         _handler = handler;
         _fetchers = new Fetcher[threads];
         _requestDelay = requestDelay;
-        for (int i=0; i<threads; i++) {
-            _fetchers[i] = new Fetcher(name+"-"+i);
+        for (int i = 0; i < threads; i++) {
+            _fetchers[i] = new Fetcher(name + "-" + i);
         }
         start();
     }
-    
+
     /**
      * Stop.
      */
     public void stop() {
         _running = false;
     }
-    
+
     /**
      * Start.
      */
     public void start() {
         _running = true;
-        for (int i=0; i<_fetchers.length; i++) {
+        for (int i = 0; i < _fetchers.length; i++) {
             _fetchers[i].start();
         }
-        
+
     }
-    
+
     /**
      * Checks if is busy.
      * 
@@ -96,11 +98,12 @@ public class FetcherQueue {
     public boolean isBusy() {
         return _pending > 0 || getRequestsQueued() > 0;
     }
-    
+
     /**
      * Submit.
      * 
-     * @param request the request
+     * @param request
+     *            the request
      */
     public void submit(Request request) {
         synchronized (_requestQueue) {
@@ -108,7 +111,7 @@ public class FetcherQueue {
             _requestQueue.notify();
         }
     }
-    
+
     /**
      * Gets the requests queued.
      * 
@@ -119,7 +122,7 @@ public class FetcherQueue {
             return _requestQueue.size();
         }
     }
-    
+
     /**
      * Clear request queue.
      */
@@ -128,28 +131,31 @@ public class FetcherQueue {
             _requestQueue.clear();
         }
     }
-    
+
     /**
      * Response received.
      * 
-     * @param response the response
+     * @param response
+     *            the response
      */
     private void responseReceived(Response response) {
         _handler.responseReceived(response);
         _pending--;
     }
-    
+
     /**
      * Request error.
      * 
-     * @param request the request
-     * @param ioe the ioe
+     * @param request
+     *            the request
+     * @param ioe
+     *            the ioe
      */
     private void requestError(Request request, IOException ioe) {
         _handler.requestError(request, ioe);
         _pending--;
     }
-    
+
     /**
      * Gets the next request.
      * 
@@ -169,7 +175,8 @@ public class FetcherQueue {
                 while (currentTimeMillis < _lastRequest + _requestDelay) {
                     try {
                         Thread.sleep(_lastRequest + _requestDelay - currentTimeMillis);
-                    } catch (InterruptedException ie) {}
+                    } catch (InterruptedException ie) {
+                    }
                     currentTimeMillis = System.currentTimeMillis();
                 }
                 _lastRequest = currentTimeMillis;
@@ -178,24 +185,27 @@ public class FetcherQueue {
             return (Request) _requestQueue.remove(0);
         }
     }
-    
+
     /**
      * The Class Fetcher.
      */
     private class Fetcher extends Thread {
-        
+
         /**
          * Instantiates a new fetcher.
          * 
-         * @param name the name
+         * @param name
+         *            the name
          */
         public Fetcher(String name) {
             super(name);
             setDaemon(true);
             setPriority(Thread.MIN_PRIORITY);
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see java.lang.Thread#run()
          */
         public void run() {

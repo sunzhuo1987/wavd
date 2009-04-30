@@ -16,22 +16,18 @@
 
 package edu.lnmiit.wavd.plugin.proxy;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.IOException;
-
 import java.net.Socket;
 import java.net.SocketException;
-
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-
 import java.security.KeyStore;
 import java.util.logging.Logger;
 
-
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 import edu.lnmiit.wavd.httpclient.HTTPClient;
 import edu.lnmiit.wavd.httpclient.HTTPClientFactory;
@@ -52,25 +48,25 @@ public class ConnectionHandler implements Runnable {
 
     /** The _keystore. */
     private static String _keystore = "server.p12";
-    
+
     /** The _keystorepass. */
     private static char[] _keystorepass = "password".toCharArray();
-    
+
     /** The _keypassword. */
     private static char[] _keypassword = "password".toCharArray();
 
     /** The _plugins. */
     private ProxyPlugin[] _plugins = null;
-    
+
     /** The _proxy. */
     private Proxy _proxy;
-    
+
     /** The _sock. */
     private Socket _sock = null;
-    
+
     /** The _base. */
     private HttpUrl _base;
-    
+
     /** The _simulator. */
     private NetworkSimulator _simulator;
 
@@ -82,23 +78,25 @@ public class ConnectionHandler implements Runnable {
 
     /** The _client in. */
     private InputStream _clientIn = null;
-    
+
     /** The _client out. */
     private OutputStream _clientOut = null;
-    
-    /** The _server in. */
-    private InputStream _serverIn = null;
-    
-    /** The _server out. */
-    private OutputStream _serverOut = null;
 
+    /** The _server in. */
+    // private InputStream _serverIn = null;
+    /** The _server out. */
+    // private OutputStream _serverOut = null;
     /**
      * Instantiates a new connection handler.
      * 
-     * @param proxy the proxy
-     * @param sock the sock
-     * @param base the base
-     * @param simulator the simulator
+     * @param proxy
+     *            the proxy
+     * @param sock
+     *            the sock
+     * @param base
+     *            the base
+     * @param simulator
+     *            the simulator
      */
     public ConnectionHandler(Proxy proxy, Socket sock, HttpUrl base, NetworkSimulator simulator) {
         _proxy = proxy;
@@ -114,13 +112,16 @@ public class ConnectionHandler implements Runnable {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Runnable#run()
      */
     public void run() {
         ScriptableConnection connection = new ScriptableConnection(_sock);
         _proxy.allowClientConnection(connection);
-        if (_sock.isClosed()) return;
+        if (_sock.isClosed())
+            return;
 
         try {
             _clientIn = _sock.getInputStream();
@@ -151,7 +152,8 @@ public class ConnectionHandler implements Runnable {
             // and the request is a CONNECT, get the base URL from the request
             // and send the OK back. We set request to null so we read a new
             // one from the SSL socket later
-            // If it exists, we pull the ProxyAuthorization header from the CONNECT
+            // If it exists, we pull the ProxyAuthorization header from the
+            // CONNECT
             // so that we can use it upstream.
             String proxyAuth = null;
             if (request != null) {
@@ -188,7 +190,8 @@ public class ConnectionHandler implements Runnable {
                 }
             }
 
-            if (_httpClient == null) _httpClient = HTTPClientFactory.getInstance().getHTTPClient();
+            if (_httpClient == null)
+                _httpClient = HTTPClientFactory.getInstance().getHTTPClient();
 
             HTTPClient hc = _httpClient;
 
@@ -201,14 +204,15 @@ public class ConnectionHandler implements Runnable {
             // the first plugin in the array gets the first chance to modify
             // the request, and the last chance to modify the response
             if (_plugins != null) {
-                for (int i=_plugins.length-1; i>=0; i--) {
+                for (int i = _plugins.length - 1; i >= 0; i--) {
                     hc = _plugins[i].getProxyPlugin(hc);
                 }
             }
 
             // do we add an X-Forwarded-For header?
             String from = _sock.getInetAddress().getHostAddress();
-            if (from.equals("127.0.0.1")) from = null;
+            if (from.equals("127.0.0.1"))
+                from = null;
 
             // do we keep-alive?
             String keepAlive = null;
@@ -227,7 +231,7 @@ public class ConnectionHandler implements Runnable {
                         return;
                     }
                     if (proxyAuth != null) {
-                        request.addHeader("Proxy-Authorization",proxyAuth);
+                        request.addHeader("Proxy-Authorization", proxyAuth);
                     }
                 }
                 if (from != null) {
@@ -245,21 +249,25 @@ public class ConnectionHandler implements Runnable {
                 request = connection.getRequest();
                 Response response = connection.getResponse();
 
-                if (request == null) throw new IOException("Request was cancelled");
+                if (request == null)
+                    throw new IOException("Request was cancelled");
                 if (response != null) {
                     _proxy.failedResponse(id, "Response provided by script");
                     _proxy = null;
                 } else {
 
-                    // pass the request through the plugins, and return the response
+                    // pass the request through the plugins, and return the
+                    // response
                     try {
                         response = hc.fetchResponse(request);
-                        if (response.getRequest() != null) request = response.getRequest();
+                        if (response.getRequest() != null)
+                            request = response.getRequest();
                     } catch (IOException ioe) {
                         _logger.severe("IOException retrieving the response for " + request.getURL() + " : " + ioe);
                         ioe.printStackTrace();
                         response = errorResponse(request, ioe);
-                        // prevent the conversation from being submitted/recorded
+                        // prevent the conversation from being
+                        // submitted/recorded
                         _proxy.failedResponse(id, ioe.toString());
                         _proxy = null;
                     }
@@ -271,13 +279,15 @@ public class ConnectionHandler implements Runnable {
                 }
 
                 if (_proxy != null) {
-                    // pass the response for analysis or modification by the scripts
+                    // pass the response for analysis or modification by the
+                    // scripts
                     connection.setResponse(response);
                     _proxy.interceptResponse(connection);
                     response = connection.getResponse();
                 }
 
-                if (response == null) throw new IOException("Response was cancelled");
+                if (response == null)
+                    throw new IOException("Response was cancelled");
 
                 try {
                     if (_clientOut != null) {
@@ -288,9 +298,11 @@ public class ConnectionHandler implements Runnable {
                 } catch (IOException ioe) {
                     _logger.severe("Error writing back to the browser : " + ioe);
                 } finally {
-                    response.flushContentStream(); // this simply flushes the content from the server
+                    response.flushContentStream(); // this simply flushes the
+                    // content from the server
                 }
-                // this should not happen, but might if a proxy plugin is careless
+                // this should not happen, but might if a proxy plugin is
+                // careless
                 if (response.getRequest() == null) {
                     _logger.warning("Response had no associated request!");
                     response.setRequest(request);
@@ -305,17 +317,20 @@ public class ConnectionHandler implements Runnable {
                 request = null;
 
                 _logger.fine("Version: " + version + " Connection: " + connection);
-            } while ((version.equals("HTTP/1.0") && "keep-alive".equalsIgnoreCase(keepAlive)) ||
-            (version.equals("HTTP/1.1") && !"close".equalsIgnoreCase(keepAlive)));
+            } while ((version.equals("HTTP/1.0") && "keep-alive".equalsIgnoreCase(keepAlive))
+                    || (version.equals("HTTP/1.1") && !"close".equalsIgnoreCase(keepAlive)));
             _logger.fine("Finished handling connection");
         } catch (Exception e) {
-            if (id != null) _proxy.failedResponse(id, e.getMessage());
+            if (id != null)
+                _proxy.failedResponse(id, e.getMessage());
             _logger.severe("ConnectionHandler got an error : " + e);
             e.printStackTrace();
         } finally {
             try {
-                if (_clientIn != null) _clientIn.close();
-                if (_clientOut != null) _clientOut.close();
+                if (_clientIn != null)
+                    _clientIn.close();
+                if (_clientOut != null)
+                    _clientOut.close();
                 if (_sock != null && !_sock.isClosed()) {
                     _sock.close();
                 }
@@ -335,7 +350,8 @@ public class ConnectionHandler implements Runnable {
         try {
             ks = KeyStore.getInstance("PKCS12");
             InputStream is = getClass().getClassLoader().getResourceAsStream(_keystore);
-            if (is == null) throw new NullPointerException("No keystore found!!");
+            if (is == null)
+                throw new NullPointerException("No keystore found!!");
             ks.load(is, _keystorepass);
             kmf = KeyManagerFactory.getInstance("SunX509");
             kmf.init(ks, _keypassword);
@@ -352,17 +368,21 @@ public class ConnectionHandler implements Runnable {
     /**
      * Negotiate ssl.
      * 
-     * @param sock the sock
+     * @param sock
+     *            the sock
      * 
      * @return the socket
      * 
-     * @throws Exception the exception
+     * @throws Exception
+     *             the exception
      */
     private Socket negotiateSSL(Socket sock) throws Exception {
-        if (_factory == null) initSSL();
+        if (_factory == null)
+            initSSL();
         SSLSocket sslsock;
         try {
-            sslsock=(SSLSocket)_factory.createSocket(sock,sock.getInetAddress().getHostName(),sock.getPort(),true);
+            sslsock = (SSLSocket) _factory
+                    .createSocket(sock, sock.getInetAddress().getHostName(), sock.getPort(), true);
             sslsock.setUseClientMode(false);
             _logger.fine("Finished negotiating SSL - algorithm is " + sslsock.getSession().getCipherSuite());
             return sslsock;
@@ -375,8 +395,10 @@ public class ConnectionHandler implements Runnable {
     /**
      * Error response.
      * 
-     * @param request the request
-     * @param e the e
+     * @param request
+     *            the request
+     * @param e
+     *            the e
      * 
      * @return the response
      */
@@ -386,14 +408,15 @@ public class ConnectionHandler implements Runnable {
         response.setVersion("HTTP/1.0");
         response.setStatus("500");
         response.setMessage("WebScarab error");
-        response.setHeader("Content-Type","text/html");
-        response.setHeader("Connection","Close");
+        response.setHeader("Content-Type", "text/html");
+        response.setHeader("Connection", "Close");
         String template = "<HTML><HEAD><TITLE>WebScarab Error</TITLE></HEAD>";
-        template = template + "<BODY>WebScarab encountered an error trying to retrieve <P><pre>" + HtmlEncoder.encode(request.toString()) + "</pre><P>";
+        template = template + "<BODY>WebScarab encountered an error trying to retrieve <P><pre>"
+                + HtmlEncoder.encode(request.toString()) + "</pre><P>";
         template = template + "The error was : <P><pre>" + HtmlEncoder.encode(e.getLocalizedMessage()) + "\n";
         StackTraceElement[] trace = e.getStackTrace();
         if (trace != null) {
-            for (int i=0; i<trace.length; i++) {
+            for (int i = 0; i < trace.length; i++) {
                 template = template + "\tat " + trace[i].getClassName() + "." + trace[i].getMethodName() + "(";
                 if (trace[i].getLineNumber() == -2) {
                     template = template + "Native Method";

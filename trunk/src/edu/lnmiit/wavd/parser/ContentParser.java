@@ -30,16 +30,17 @@ import edu.lnmiit.wavd.model.Message;
  * The Interface ContentParser.
  */
 public interface ContentParser {
-    
-    
+
     /**
      * Parses the message.
      * 
-     * @param url the url
-     * @param message the message
+     * @param url
+     *            the url
+     * @param message
+     *            the message
      * 
      * @return the object
-     */    
+     */
     Object parseMessage(HttpUrl url, Message message);
-    
+
 }

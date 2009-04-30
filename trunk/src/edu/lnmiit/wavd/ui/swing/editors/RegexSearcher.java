@@ -19,6 +19,7 @@ package edu.lnmiit.wavd.ui.swing.editors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.Highlighter;
@@ -29,36 +30,42 @@ import javax.swing.text.JTextComponent;
  * The Class RegexSearcher.
  */
 public class RegexSearcher {
-    
+
     /**
      * Instantiates a new regex searcher.
      * 
-     * @param comp the comp
-     * @param painter the painter
+     * @param comp
+     *            the comp
+     * @param painter
+     *            the painter
      */
     public RegexSearcher(JTextComponent comp, Highlighter.HighlightPainter painter) {
         this.comp = comp;
         this.painter = painter;
     }
-    
+
     // Search for a word and return the offset of the
     // first occurrence. Highlights are added for all
     // occurrences found.
     /**
      * Search.
      * 
-     * @param pattern the pattern
-     * @param start the start
-     * @param caseSensitive the case sensitive
+     * @param pattern
+     *            the pattern
+     * @param start
+     *            the start
+     * @param caseSensitive
+     *            the case sensitive
      * 
      * @return the int
      * 
-     * @throws PatternSyntaxException the pattern syntax exception
+     * @throws PatternSyntaxException
+     *             the pattern syntax exception
      */
     public int search(String pattern, int start, boolean caseSensitive) throws PatternSyntaxException {
         int firstOffset = -1;
         Highlighter highlighter = comp.getHighlighter();
-        
+
         // Remove any existing highlights for last word
         Highlighter.Highlight[] highlights = highlighter.getHighlights();
         for (int i = 0; i < highlights.length; i++) {
@@ -67,11 +74,11 @@ public class RegexSearcher {
                 highlighter.removeHighlight(h);
             }
         }
-        
+
         if (pattern == null || pattern.equals("")) {
             return -1;
         }
-        
+
         // Look for the word we are given - insensitive search
         String content = null;
         try {
@@ -81,29 +88,31 @@ public class RegexSearcher {
             // Cannot happen
             return -1;
         }
-        
+
         int flags = Pattern.DOTALL | Pattern.MULTILINE;
-        if (!caseSensitive) flags |= Pattern.CASE_INSENSITIVE;
+        if (!caseSensitive)
+            flags |= Pattern.CASE_INSENSITIVE;
         Pattern p = Pattern.compile(pattern, flags);
-        int offset = 0;
         Matcher m = p.matcher(content);
         while (m.find()) {
-            for (int i=(m.groupCount()>0?1:0); i<=m.groupCount(); i++) {
-                String match = m.group(i);
-                if (firstOffset == -1 && m.start(i)>start) firstOffset = m.start(i);
+            for (int i = (m.groupCount() > 0 ? 1 : 0); i <= m.groupCount(); i++) {
+                m.group(i);
+                if (firstOffset == -1 && m.start(i) > start)
+                    firstOffset = m.start(i);
                 try {
                     highlighter.addHighlight(m.start(i), m.end(i), painter);
-                } catch (BadLocationException e) {}
+                } catch (BadLocationException e) {
+                }
             }
         }
-        
+
         return firstOffset;
     }
-    
+
     /** The comp. */
     protected JTextComponent comp;
-    
+
     /** The painter. */
     protected Highlighter.HighlightPainter painter;
-    
+
 }

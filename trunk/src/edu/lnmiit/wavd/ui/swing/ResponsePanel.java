@@ -22,61 +22,66 @@
 
 package edu.lnmiit.wavd.ui.swing;
 
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.SwingUtilities;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import edu.lnmiit.wavd.model.Response;
 import edu.lnmiit.wavd.ui.swing.editors.TextPanel;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import javax.swing.JFrame;
-import javax.swing.JButton;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ResponsePanel.
  */
 public class ResponsePanel extends javax.swing.JPanel {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4034761880928070497L;
+
     /** The _up to date. */
     private boolean[] _upToDate;
-    
+
     /** The _editable. */
     private boolean _editable = false;
-    
+
     /** The _modified. */
     private boolean _modified = false;
-    
+
     /** The _selected. */
     private int _selected = 0;
-    
+
     /** The _response. */
     private Response _response = null;
-    
+
     /** The _message panel. */
     private MessagePanel _messagePanel;
-    
+
     /** The _text panel. */
     private TextPanel _textPanel;
-    
+
     /** The _preferred. */
     private static int _preferred = -1;
-    
+
     /**
      * Instantiates a new response panel.
      */
     public ResponsePanel() {
         initComponents();
-        
+
         _messagePanel = new MessagePanel();
-        
+
         parsedPanel.remove(messagePanelPlaceHolder);
-        // copy  and paste the constraints for the placeholder from initcomponents
+        // copy and paste the constraints for the placeholder from
+        // initcomponents
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -85,16 +90,16 @@ public class ResponsePanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         parsedPanel.add(_messagePanel, gridBagConstraints);
-        
+
         _textPanel = new TextPanel();
         displayTabbedPane.add("Raw", _textPanel);
-        
+
         setEditable(false);
         _upToDate = new boolean[displayTabbedPane.getTabCount()];
         invalidatePanels();
-        
+
         updateComponents(_editable);
-        
+
         displayTabbedPane.getModel().addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 updateResponse(_selected);
@@ -105,29 +110,32 @@ public class ResponsePanel extends javax.swing.JPanel {
                 }
             }
         });
-        
-        if (_preferred > -1 && _preferred < displayTabbedPane.getTabCount()) displayTabbedPane.setSelectedIndex(_preferred);
+
+        if (_preferred > -1 && _preferred < displayTabbedPane.getTabCount())
+            displayTabbedPane.setSelectedIndex(_preferred);
     }
-    
+
     /**
      * Invalidate panels.
      */
     private void invalidatePanels() {
-        for (int i=0; i<_upToDate.length; i++) {
+        for (int i = 0; i < _upToDate.length; i++) {
             _upToDate[i] = false;
         }
     }
-    
+
     /**
      * Update response.
      * 
-     * @param panel the panel
+     * @param panel
+     *            the panel
      */
     private void updateResponse(int panel) {
-        if (! _editable || panel < 0) {
+        if (!_editable || panel < 0) {
             return;
         }
-        if (displayTabbedPane.getTitleAt(panel).equals("Parsed")) {// parsed text
+        if (displayTabbedPane.getTitleAt(panel).equals("Parsed")) {// parsed
+            // text
             if (_messagePanel.isModified()) {
                 _response = (Response) _messagePanel.getMessage();
                 _modified = true;
@@ -140,7 +148,8 @@ public class ResponsePanel extends javax.swing.JPanel {
             _response.setStatus(statusTextField.getText());
             _response.setMessage(messageTextField.getText());
             _response.setVersion(versionTextField.getText());
-        } else if (displayTabbedPane.getTitleAt(panel).equals("Raw")) { // raw text
+        } else if (displayTabbedPane.getTitleAt(panel).equals("Raw")) { // raw
+            // text
             if (_textPanel.isModified()) {
                 try {
                     Response r = new Response();
@@ -155,7 +164,7 @@ public class ResponsePanel extends javax.swing.JPanel {
         }
         _upToDate[panel] = true;
     }
-    
+
     /**
      * Checks if is modified.
      * 
@@ -164,15 +173,17 @@ public class ResponsePanel extends javax.swing.JPanel {
     public boolean isModified() {
         return _modified;
     }
-    
+
     /**
      * Update panel.
      * 
-     * @param panel the panel
+     * @param panel
+     *            the panel
      */
     private void updatePanel(int panel) {
         if (!_upToDate[panel]) {
-            if (displayTabbedPane.getTitleAt(panel).equals("Parsed")) {// parsed text
+            if (displayTabbedPane.getTitleAt(panel).equals("Parsed")) {// parsed
+                // text
                 _messagePanel.setMessage(_response);
                 if (_response != null) {
                     statusTextField.setText(_response.getStatus());
@@ -183,7 +194,8 @@ public class ResponsePanel extends javax.swing.JPanel {
                     messageTextField.setText("");
                     versionTextField.setText("");
                 }
-            } else if (displayTabbedPane.getTitleAt(panel).equals("Raw")) { // raw text
+            } else if (displayTabbedPane.getTitleAt(panel).equals("Raw")) { // raw
+                // text
                 if (_response != null) {
                     _textPanel.setText(null, _response.toString("\n"));
                 } else {
@@ -193,11 +205,12 @@ public class ResponsePanel extends javax.swing.JPanel {
             _upToDate[panel] = true;
         }
     }
-    
+
     /**
      * Update components.
      * 
-     * @param editable the editable
+     * @param editable
+     *            the editable
      */
     public void updateComponents(boolean editable) {
         java.awt.Color color;
@@ -213,26 +226,28 @@ public class ResponsePanel extends javax.swing.JPanel {
         messageTextField.setBackground(color);
         versionTextField.setBackground(color);
     }
-    
+
     /**
      * Sets the editable.
      * 
-     * @param editable the new editable
+     * @param editable
+     *            the new editable
      */
     public void setEditable(boolean editable) {
         _editable = editable;
         _textPanel.setEditable(editable);
         _messagePanel.setEditable(editable);
     }
-    
+
     /**
      * Sets the response.
      * 
-     * @param response the new response
+     * @param response
+     *            the new response
      */
     public void setResponse(Response response) {
         _modified = false;
-        if (response!= null) {
+        if (response != null) {
             _response = new Response(response);
         } else {
             _response = null;
@@ -248,7 +263,7 @@ public class ResponsePanel extends javax.swing.JPanel {
             });
         }
     }
-    
+
     /**
      * Gets the response.
      * 
@@ -261,14 +276,15 @@ public class ResponsePanel extends javax.swing.JPanel {
         }
         return _response;
     }
-    
+
     /**
      * Select panel.
      * 
-     * @param title the title
+     * @param title
+     *            the title
      */
     public void selectPanel(String title) {
-        for (int i=0; i<displayTabbedPane.getTabCount(); i++) {
+        for (int i = 0; i < displayTabbedPane.getTabCount(); i++) {
             String tab = displayTabbedPane.getTitleAt(i);
             int selected = displayTabbedPane.getSelectedIndex();
             if (tab != null && tab.equalsIgnoreCase(title) && i != selected) {
@@ -277,11 +293,11 @@ public class ResponsePanel extends javax.swing.JPanel {
             }
         }
     }
-    
+
     /**
      * Inits the components.
      */
-    private void initComponents() {//GEN-BEGIN:initComponents
+    private void initComponents() {// GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
         displayTabbedPane = new javax.swing.JTabbedPane();
@@ -371,12 +387,13 @@ public class ResponsePanel extends javax.swing.JPanel {
 
         add(displayTabbedPane, java.awt.BorderLayout.CENTER);
 
-    }//GEN-END:initComponents
-    
+    }// GEN-END:initComponents
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String[] args) {
         final JFrame top = new JFrame("Response Panel");
@@ -389,7 +406,7 @@ public class ResponsePanel extends javax.swing.JPanel {
         final ResponsePanel rp = new ResponsePanel();
         rp.setEditable(false);
         top.getContentPane().add(rp);
-        top.setBounds(100,100,800,600);
+        top.setBounds(100, 100, 800, 600);
         top.setVisible(true);
         if (args.length == 0) {
             JButton button = new JButton("NEXT");
@@ -405,13 +422,16 @@ public class ResponsePanel extends javax.swing.JPanel {
             loadResponse(top, rp, args[0]);
         }
     }
-    
+
     /**
      * Load response.
      * 
-     * @param top the top
-     * @param rp the rp
-     * @param file the file
+     * @param top
+     *            the top
+     * @param rp
+     *            the rp
+     * @param file
+     *            the file
      */
     private static void loadResponse(JFrame top, ResponsePanel rp, String file) {
         Response response = new Response();
@@ -426,13 +446,16 @@ public class ResponsePanel extends javax.swing.JPanel {
         rp.setResponse(response);
         top.setTitle(file);
     }
-    
+
     /**
      * Load response.
      * 
-     * @param top the top
-     * @param rp the rp
-     * @param br the br
+     * @param top
+     *            the top
+     * @param rp
+     *            the rp
+     * @param br
+     *            the br
      */
     private static void loadResponse(JFrame top, ResponsePanel rp, BufferedReader br) {
         try {
@@ -445,34 +468,34 @@ public class ResponsePanel extends javax.swing.JPanel {
             System.err.println("IOException: " + ioe.getMessage());
         }
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The display tabbed pane. */
     private javax.swing.JTabbedPane displayTabbedPane;
-    
+
     /** The j label3. */
     private javax.swing.JLabel jLabel3;
-    
+
     /** The j label4. */
     private javax.swing.JLabel jLabel4;
-    
+
     /** The j label5. */
     private javax.swing.JLabel jLabel5;
-    
+
     /** The message panel place holder. */
     private javax.swing.JPanel messagePanelPlaceHolder;
-    
+
     /** The message text field. */
     private javax.swing.JTextField messageTextField;
-    
+
     /** The parsed panel. */
     private javax.swing.JPanel parsedPanel;
-    
+
     /** The status text field. */
     private javax.swing.JTextField statusTextField;
-    
+
     /** The version text field. */
     private javax.swing.JTextField versionTextField;
     // End of variables declaration//GEN-END:variables
-    
+
 }

@@ -18,10 +18,6 @@ package jcifs.ntlmssp;
 
 import java.io.IOException;
 
-import java.net.UnknownHostException;
-
-// import jcifs.netbios.NbtAddress;
-
 import jcifs.Config;
 
 // TODO: Auto-generated Javadoc
@@ -32,7 +28,7 @@ public class Type1Message extends NtlmMessage {
 
     /** The Constant LM_COMPATIBILITY. */
     private static final int LM_COMPATIBILITY;
-    
+
     /** The Constant DEFAULT_FLAGS. */
     private static final int DEFAULT_FLAGS;
 
@@ -50,16 +46,15 @@ public class Type1Message extends NtlmMessage {
 
     static {
         LM_COMPATIBILITY = Config.getInt("jcifs.smb.lmCompatibility", 0);
-        DEFAULT_FLAGS = NTLMSSP_NEGOTIATE_NTLM |
-                (Config.getBoolean("jcifs.smb.client.useUnicode", true) ?
-                        NTLMSSP_NEGOTIATE_UNICODE : NTLMSSP_NEGOTIATE_OEM) |
-                (LM_COMPATIBILITY > 2 ? NTLMSSP_REQUEST_TARGET : 0);
-        
+        DEFAULT_FLAGS = NTLMSSP_NEGOTIATE_NTLM
+                | (Config.getBoolean("jcifs.smb.client.useUnicode", true) ? NTLMSSP_NEGOTIATE_UNICODE
+                        : NTLMSSP_NEGOTIATE_OEM) | (LM_COMPATIBILITY > 2 ? NTLMSSP_REQUEST_TARGET : 0);
+
         DEFAULT_DOMAIN = Config.getProperty("jcifs.smb.client.domain", null);
         String defaultWorkstation = null;
         // try {
-            // defaultWorkstation = NbtAddress.getLocalHost().getHostName();
-            defaultWorkstation = "localhost";
+        // defaultWorkstation = NbtAddress.getLocalHost().getHostName();
+        defaultWorkstation = "localhost";
         // } catch (UnknownHostException ex) { }
         DEFAULT_WORKSTATION = defaultWorkstation;
     }
@@ -74,12 +69,14 @@ public class Type1Message extends NtlmMessage {
     /**
      * Instantiates a new type1 message.
      * 
-     * @param flags the flags
-     * @param suppliedDomain the supplied domain
-     * @param suppliedWorkstation the supplied workstation
+     * @param flags
+     *            the flags
+     * @param suppliedDomain
+     *            the supplied domain
+     * @param suppliedWorkstation
+     *            the supplied workstation
      */
-    public Type1Message(int flags, String suppliedDomain,
-            String suppliedWorkstation) {
+    public Type1Message(int flags, String suppliedDomain, String suppliedWorkstation) {
         setFlags(flags);
         setSuppliedDomain(suppliedDomain);
         setSuppliedWorkstation(suppliedWorkstation);
@@ -88,9 +85,11 @@ public class Type1Message extends NtlmMessage {
     /**
      * Instantiates a new type1 message.
      * 
-     * @param material the material
+     * @param material
+     *            the material
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public Type1Message(byte[] material) throws IOException {
         parse(material);
@@ -108,7 +107,8 @@ public class Type1Message extends NtlmMessage {
     /**
      * Sets the supplied domain.
      * 
-     * @param suppliedDomain the new supplied domain
+     * @param suppliedDomain
+     *            the new supplied domain
      */
     public void setSuppliedDomain(String suppliedDomain) {
         this.suppliedDomain = suppliedDomain;
@@ -126,13 +126,16 @@ public class Type1Message extends NtlmMessage {
     /**
      * Sets the supplied workstation.
      * 
-     * @param suppliedWorkstation the new supplied workstation
+     * @param suppliedWorkstation
+     *            the new supplied workstation
      */
     public void setSuppliedWorkstation(String suppliedWorkstation) {
         this.suppliedWorkstation = suppliedWorkstation;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see jcifs.ntlmssp.NtlmMessage#toByteArray()
      */
     public byte[] toByteArray() {
@@ -145,25 +148,19 @@ public class Type1Message extends NtlmMessage {
             if (suppliedDomain != null && suppliedDomain.length() != 0) {
                 hostInfo = true;
                 flags |= NTLMSSP_NEGOTIATE_OEM_DOMAIN_SUPPLIED;
-                domain = suppliedDomain.toUpperCase().getBytes(
-                        getOEMEncoding());
+                domain = suppliedDomain.toUpperCase().getBytes(getOEMEncoding());
             } else {
                 flags &= (NTLMSSP_NEGOTIATE_OEM_DOMAIN_SUPPLIED ^ 0xffffffff);
             }
             byte[] workstation = new byte[0];
-            if (suppliedWorkstation != null &&
-                    suppliedWorkstation.length() != 0) {
+            if (suppliedWorkstation != null && suppliedWorkstation.length() != 0) {
                 hostInfo = true;
                 flags |= NTLMSSP_NEGOTIATE_OEM_WORKSTATION_SUPPLIED;
-                workstation =
-                        suppliedWorkstation.toUpperCase().getBytes(
-                                getOEMEncoding());
+                workstation = suppliedWorkstation.toUpperCase().getBytes(getOEMEncoding());
             } else {
-                flags &= (NTLMSSP_NEGOTIATE_OEM_WORKSTATION_SUPPLIED ^
-                        0xffffffff);
+                flags &= (NTLMSSP_NEGOTIATE_OEM_WORKSTATION_SUPPLIED ^ 0xffffffff);
             }
-            byte[] type1 = new byte[hostInfo ?
-                    (32 + domain.length + workstation.length) : 16];
+            byte[] type1 = new byte[hostInfo ? (32 + domain.length + workstation.length) : 16];
             System.arraycopy(NTLMSSP_SIGNATURE, 0, type1, 0, 8);
             writeULong(type1, 8, 1);
             writeULong(type1, 12, flags);
@@ -177,7 +174,9 @@ public class Type1Message extends NtlmMessage {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -189,11 +188,13 @@ public class Type1Message extends NtlmMessage {
             buffer.append("suppliedDomain: ").append(suppliedDomain);
         }
         if (suppliedWorkstation != null) {
-            if (buffer.length() > 0) buffer.append("; ");
+            if (buffer.length() > 0)
+                buffer.append("; ");
             buffer.append("suppliedWorkstation: ").append(suppliedWorkstation);
         }
         if (flags != 0) {
-            if (buffer.length() > 0) buffer.append("; ");
+            if (buffer.length() > 0)
+                buffer.append("; ");
             buffer.append("flags: ");
             buffer.append("0x");
             buffer.append(Integer.toHexString((flags >> 28) & 0x0f));
@@ -238,9 +239,11 @@ public class Type1Message extends NtlmMessage {
     /**
      * Parses the.
      * 
-     * @param material the material
+     * @param material
+     *            the material
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     private void parse(byte[] material) throws IOException {
         for (int i = 0; i < 8; i++) {

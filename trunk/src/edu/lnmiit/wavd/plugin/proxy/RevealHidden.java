@@ -24,58 +24,59 @@ package edu.lnmiit.wavd.plugin.proxy;
 
 // import org.owasp.util.StringUtil;
 
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import edu.lnmiit.wavd.httpclient.HTTPClient;
 import edu.lnmiit.wavd.model.Preferences;
 import edu.lnmiit.wavd.model.Request;
 import edu.lnmiit.wavd.model.Response;
-import edu.lnmiit.wavd.plugin.proxy.ProxyPlugin;
-
-import java.io.IOException;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class RevealHidden.
  */
 public class RevealHidden extends ProxyPlugin {
-    
+
     /** The _enabled. */
     private boolean _enabled = false;
-    
+
     /**
      * Instantiates a new reveal hidden.
      */
     public RevealHidden() {
         parseProperties();
     }
-    
+
     /**
      * Parses the properties.
      */
     public void parseProperties() {
         String prop = "RevealHidden.enabled";
         String value = Preferences.getPreference(prop, "false");
-        _enabled = ("true".equalsIgnoreCase( value ) || "yes".equalsIgnoreCase( value ));
+        _enabled = ("true".equalsIgnoreCase(value) || "yes".equalsIgnoreCase(value));
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.proxy.ProxyPlugin#getPluginName()
      */
     public String getPluginName() {
         return new String("Reveal Hidden");
     }
-    
+
     /**
      * Sets the enabled.
      * 
-     * @param bool the new enabled
+     * @param bool
+     *            the new enabled
      */
     public void setEnabled(boolean bool) {
         _enabled = bool;
         String prop = "RevealHidden.enabled";
-        Preferences.setPreference(prop,Boolean.toString(bool));
+        Preferences.setPreference(prop, Boolean.toString(bool));
     }
 
     /**
@@ -86,33 +87,42 @@ public class RevealHidden extends ProxyPlugin {
     public boolean getEnabled() {
         return _enabled;
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.proxy.ProxyPlugin#getProxyPlugin(edu.lnmiit.wavd.httpclient.HTTPClient)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.plugin.proxy.ProxyPlugin#getProxyPlugin(edu.lnmiit.wavd
+     * .httpclient.HTTPClient)
      */
     public HTTPClient getProxyPlugin(HTTPClient in) {
         return new Plugin(in);
-    }    
-    
+    }
+
     /**
      * The Class Plugin.
      */
     private class Plugin implements HTTPClient {
-    
+
         /** The _in. */
         private HTTPClient _in;
-        
+
         /**
          * Instantiates a new plugin.
          * 
-         * @param in the in
+         * @param in
+         *            the in
          */
         public Plugin(HTTPClient in) {
             _in = in;
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.httpclient.HTTPClient#fetchResponse(edu.lnmiit.wavd.model.Request)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.httpclient.HTTPClient#fetchResponse(edu.lnmiit.wavd
+         * .model.Request)
          */
         public Response fetchResponse(Request request) throws IOException {
             Response response = _in.fetchResponse(request);
@@ -128,41 +138,47 @@ public class RevealHidden extends ProxyPlugin {
             }
             return response;
         }
-        
+
         /**
          * Reveal hidden.
          * 
-         * @param content the content
+         * @param content
+         *            the content
          * 
          * @return the byte[]
          */
         private byte[] revealHidden(byte[] content) {
-            /* We split this pattern into two parts, one before "hidden" and one after
-             * Then it is simple to concatenate part 1 + "text" + part 2 to get an
-             * "unhidden" input tag 
+            /*
+             * We split this pattern into two parts, one before "hidden" and one
+             * after Then it is simple to concatenate part 1 + "text" + part 2
+             * to get an "unhidden" input tag
              */
-            Pattern inputPattern = Pattern.compile("(<input.+?type\\s*=\\s*[\"']{0,1})hidden([\"']{0,1}.+?>)", Pattern.CASE_INSENSITIVE);
+            Pattern inputPattern = Pattern.compile("(<input.+?type\\s*=\\s*[\"']{0,1})hidden([\"']{0,1}.+?>)",
+                    Pattern.CASE_INSENSITIVE);
             Matcher inputMatcher = inputPattern.matcher(new String(content));
             StringBuffer outbuf = new StringBuffer();
-            
+
             /* matched hidden input parameter */
-            while(inputMatcher.find()) {
+            while (inputMatcher.find()) {
                 String input = inputMatcher.group();
                 String name = "noname";
-                
+
                 // extract hidden field name
                 Pattern namePattern = Pattern.compile("name=[\"']{0,1}(\\w+)[\"']{0,1}", Pattern.CASE_INSENSITIVE);
                 Matcher nameMatcher = namePattern.matcher(input);
-                if (nameMatcher.find() && nameMatcher.groupCount() == 1){
+                if (nameMatcher.find() && nameMatcher.groupCount() == 1) {
                     name = nameMatcher.group(1);
                 }
-                
+
                 // make hidden field a text field - there MUST be 2 groups
-                // Note: this way we don't have to care about which quotes are being used
+                // Note: this way we don't have to care about which quotes are
+                // being used
                 input = inputMatcher.group(1) + "text" + inputMatcher.group(2);
 
                 /* insert [hidden] <fieldname> before the field itself */
-                inputMatcher.appendReplacement(outbuf, "<STRONG style=\"background-color: white;\"> [hidden field name =\"" + name + "\"]:</STRONG> "+ input + "<BR/>");
+                inputMatcher.appendReplacement(outbuf,
+                        "<STRONG style=\"background-color: white;\"> [hidden field name =\"" + name + "\"]:</STRONG> "
+                                + input + "<BR/>");
             }
             inputMatcher.appendTail(outbuf);
             return outbuf.toString().getBytes();

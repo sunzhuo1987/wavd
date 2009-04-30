@@ -21,7 +21,7 @@ import java.security.MessageDigest;
 // TODO: Auto-generated Javadoc
 /**
  * The Class HMACT64.
- */ 
+ */
 public class HMACT64 extends MessageDigest implements Cloneable {
 
     /** The Constant BLOCK_LENGTH. */
@@ -45,7 +45,8 @@ public class HMACT64 extends MessageDigest implements Cloneable {
     /**
      * Instantiates a new hMAC t64.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      */
     public HMACT64(byte[] key) {
         super("HMACT64");
@@ -69,9 +70,11 @@ public class HMACT64 extends MessageDigest implements Cloneable {
     /**
      * Instantiates a new hMAC t64.
      * 
-     * @param hmac the hmac
+     * @param hmac
+     *            the hmac
      * 
-     * @throws CloneNotSupportedException the clone not supported exception
+     * @throws CloneNotSupportedException
+     *             the clone not supported exception
      */
     private HMACT64(HMACT64 hmac) throws CloneNotSupportedException {
         super("HMACT64");
@@ -80,7 +83,9 @@ public class HMACT64 extends MessageDigest implements Cloneable {
         this.md5 = (MessageDigest) hmac.md5.clone();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.security.MessageDigest#clone()
      */
     public Object clone() {
@@ -91,7 +96,9 @@ public class HMACT64 extends MessageDigest implements Cloneable {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.security.MessageDigestSpi#engineDigest()
      */
     protected byte[] engineDigest() {
@@ -100,7 +107,9 @@ public class HMACT64 extends MessageDigest implements Cloneable {
         return md5.digest(digest);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.security.MessageDigestSpi#engineDigest(byte[], int, int)
      */
     protected int engineDigest(byte[] buf, int offset, int len) {
@@ -114,14 +123,18 @@ public class HMACT64 extends MessageDigest implements Cloneable {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.security.MessageDigestSpi#engineGetDigestLength()
      */
     protected int engineGetDigestLength() {
         return md5.getDigestLength();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.security.MessageDigestSpi#engineReset()
      */
     protected void engineReset() {
@@ -129,14 +142,18 @@ public class HMACT64 extends MessageDigest implements Cloneable {
         md5.update(ipad);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.security.MessageDigestSpi#engineUpdate(byte)
      */
     protected void engineUpdate(byte b) {
         md5.update(b);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.security.MessageDigestSpi#engineUpdate(byte[], int, int)
      */
     protected void engineUpdate(byte[] input, int offset, int len) {

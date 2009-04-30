@@ -29,16 +29,16 @@ import javax.swing.event.EventListenerList;
  * The Class ColumnDataModel.
  */
 public abstract class ColumnDataModel {
-    
+
     /** The _listener list. */
     protected EventListenerList _listenerList = new EventListenerList();
-    
+
     /**
      * Instantiates a new column data model.
      */
     protected ColumnDataModel() {
     }
-    
+
     /**
      * Gets the column class.
      * 
@@ -47,50 +47,54 @@ public abstract class ColumnDataModel {
     public Class getColumnClass() {
         return Object.class;
     }
-    
+
     /**
      * Gets the column name.
      * 
      * @return the column name
      */
     public abstract String getColumnName();
-    
+
     /**
      * Gets the value.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      * 
      * @return the value
      */
     public abstract Object getValue(Object key);
-    
+
     /**
      * Adds the column data listener.
      * 
-     * @param l the l
+     * @param l
+     *            the l
      */
     public void addColumnDataListener(ColumnDataListener l) {
         _listenerList.add(ColumnDataListener.class, l);
     }
-    
+
     /**
      * Removes the column data listener.
      * 
-     * @param l the l
+     * @param l
+     *            the l
      */
     public void removeColumnDataListener(ColumnDataListener l) {
         _listenerList.remove(ColumnDataListener.class, l);
     }
-    
+
     // Notify all listeners that have registered interest for
-    // notification on this event type.  The event instance
+    // notification on this event type. The event instance
     // is lazily created using the parameters passed into
     // the fire method.
-    
+
     /**
      * Fire value changed.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      */
     public void fireValueChanged(Object key) {
         // Guaranteed to return a non-null array
@@ -98,16 +102,16 @@ public abstract class ColumnDataModel {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         ColumnDataEvent columnEvent = null;
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==ColumnDataListener.class) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == ColumnDataListener.class) {
                 // Lazily create the event:
                 if (columnEvent == null)
                     columnEvent = new ColumnDataEvent(this, key);
-                ((ColumnDataListener)listeners[i+1]).dataChanged(columnEvent);
+                ((ColumnDataListener) listeners[i + 1]).dataChanged(columnEvent);
             }
         }
     }
-    
+
     /**
      * Fire values changed.
      */
@@ -117,14 +121,14 @@ public abstract class ColumnDataModel {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         ColumnDataEvent columnEvent = null;
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==ColumnDataListener.class) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == ColumnDataListener.class) {
                 // Lazily create the event:
                 if (columnEvent == null)
                     columnEvent = new ColumnDataEvent(this, null);
-                ((ColumnDataListener)listeners[i+1]).dataChanged(columnEvent);
+                ((ColumnDataListener) listeners[i + 1]).dataChanged(columnEvent);
             }
         }
     }
-    
+
 }

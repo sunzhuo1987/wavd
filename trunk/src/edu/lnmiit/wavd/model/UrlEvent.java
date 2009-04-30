@@ -23,26 +23,34 @@ import java.util.EventObject;
  * The Class UrlEvent.
  */
 public class UrlEvent extends EventObject {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1284217874798924649L;
+
     /** The _url. */
     private HttpUrl _url;
-    
+
     /** The _position. */
     private int _position;
-    
+
     /**
      * Instantiates a new url event.
      * 
-     * @param source the source
-     * @param url the url
-     * @param position the position
+     * @param source
+     *            the source
+     * @param url
+     *            the url
+     * @param position
+     *            the position
      */
     public UrlEvent(Object source, HttpUrl url, int position) {
         super(source);
         _url = url;
         _position = position;
     }
-    
+
     /**
      * Gets the url.
      * 
@@ -51,7 +59,7 @@ public class UrlEvent extends EventObject {
     public HttpUrl getUrl() {
         return _url;
     }
-    
+
     /**
      * Gets the position.
      * 

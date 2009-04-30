@@ -18,8 +18,6 @@ package jcifs.ntlmssp;
 
 import java.io.IOException;
 
-import java.net.UnknownHostException;
-
 import jcifs.Config;
 
 // TODO: Auto-generated Javadoc
@@ -52,30 +50,32 @@ public class Type2Message extends NtlmMessage {
     private byte[] targetInformation;
 
     static {
-        DEFAULT_FLAGS = NTLMSSP_NEGOTIATE_NTLM |
-                (Config.getBoolean("jcifs.smb.client.useUnicode", true) ?
-                        NTLMSSP_NEGOTIATE_UNICODE : NTLMSSP_NEGOTIATE_OEM);
+        DEFAULT_FLAGS = NTLMSSP_NEGOTIATE_NTLM
+                | (Config.getBoolean("jcifs.smb.client.useUnicode", true) ? NTLMSSP_NEGOTIATE_UNICODE
+                        : NTLMSSP_NEGOTIATE_OEM);
         DEFAULT_DOMAIN = Config.getProperty("jcifs.smb.client.domain", null);
         byte[] domain = new byte[0];
         if (DEFAULT_DOMAIN != null) {
             try {
                 domain = DEFAULT_DOMAIN.getBytes("UnicodeLittleUnmarked");
-            } catch (IOException ex) { }
+            } catch (IOException ex) {
+            }
         }
         int domainLength = domain.length;
         byte[] server = new byte[0];
-//        try {
-            // String host = NbtAddress.getLocalHost().getHostName();
-            String host = "localhost";
-            if (host != null) {
-                try {
-                    server = host.getBytes("UnicodeLittleUnmarked");
-                } catch (IOException ex) { }
+        // try {
+        // String host = NbtAddress.getLocalHost().getHostName();
+        String host = "localhost";
+        if (host != null) {
+            try {
+                server = host.getBytes("UnicodeLittleUnmarked");
+            } catch (IOException ex) {
             }
-//        } catch (UnknownHostException ex) { }
+        }
+        // } catch (UnknownHostException ex) { }
         int serverLength = server.length;
-        byte[] targetInfo = new byte[(domainLength > 0 ? domainLength + 4 : 0) +
-                (serverLength > 0 ? serverLength + 4 : 0) + 4];
+        byte[] targetInfo = new byte[(domainLength > 0 ? domainLength + 4 : 0)
+                + (serverLength > 0 ? serverLength + 4 : 0) + 4];
         int offset = 0;
         if (domainLength > 0) {
             writeUShort(targetInfo, offset, 2);
@@ -105,7 +105,8 @@ public class Type2Message extends NtlmMessage {
     /**
      * Instantiates a new type2 message.
      * 
-     * @param type1 the type1
+     * @param type1
+     *            the type1
      */
     public Type2Message(Type1Message type1) {
         this(type1, null, null);
@@ -114,36 +115,44 @@ public class Type2Message extends NtlmMessage {
     /**
      * Instantiates a new type2 message.
      * 
-     * @param type1 the type1
-     * @param challenge the challenge
-     * @param target the target
+     * @param type1
+     *            the type1
+     * @param challenge
+     *            the challenge
+     * @param target
+     *            the target
      */
     public Type2Message(Type1Message type1, byte[] challenge, String target) {
-        this(getDefaultFlags(type1), challenge, (type1 != null &&
-                target == null && type1.getFlag(NTLMSSP_REQUEST_TARGET)) ?
-                        getDefaultDomain() : target);
+        this(getDefaultFlags(type1), challenge, (type1 != null && target == null && type1
+                .getFlag(NTLMSSP_REQUEST_TARGET)) ? getDefaultDomain() : target);
     }
 
     /**
      * Instantiates a new type2 message.
      * 
-     * @param flags the flags
-     * @param challenge the challenge
-     * @param target the target
+     * @param flags
+     *            the flags
+     * @param challenge
+     *            the challenge
+     * @param target
+     *            the target
      */
     public Type2Message(int flags, byte[] challenge, String target) {
         setFlags(flags);
         setChallenge(challenge);
         setTarget(target);
-        if (target != null) setTargetInformation(getDefaultTargetInformation());
+        if (target != null)
+            setTargetInformation(getDefaultTargetInformation());
     }
 
     /**
      * Instantiates a new type2 message.
      * 
-     * @param material the material
+     * @param material
+     *            the material
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public Type2Message(byte[] material) throws IOException {
         parse(material);
@@ -161,7 +170,8 @@ public class Type2Message extends NtlmMessage {
     /**
      * Sets the challenge.
      * 
-     * @param challenge the new challenge
+     * @param challenge
+     *            the new challenge
      */
     public void setChallenge(byte[] challenge) {
         this.challenge = challenge;
@@ -179,7 +189,8 @@ public class Type2Message extends NtlmMessage {
     /**
      * Sets the target.
      * 
-     * @param target the new target
+     * @param target
+     *            the new target
      */
     public void setTarget(String target) {
         this.target = target;
@@ -189,7 +200,7 @@ public class Type2Message extends NtlmMessage {
      * Gets the target information.
      * 
      * @return the target information
-     */ 
+     */
     public byte[] getTargetInformation() {
         return targetInformation;
     }
@@ -197,7 +208,8 @@ public class Type2Message extends NtlmMessage {
     /**
      * Sets the target information.
      * 
-     * @param targetInformation the new target information
+     * @param targetInformation
+     *            the new target information
      */
     public void setTargetInformation(byte[] targetInformation) {
         this.targetInformation = targetInformation;
@@ -215,13 +227,16 @@ public class Type2Message extends NtlmMessage {
     /**
      * Sets the context.
      * 
-     * @param context the new context
+     * @param context
+     *            the new context
      */
     public void setContext(byte[] context) {
         this.context = context;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see jcifs.ntlmssp.NtlmMessage#toByteArray()
      */
     public byte[] toByteArray() {
@@ -232,39 +247,35 @@ public class Type2Message extends NtlmMessage {
             byte[] targetInformation = getTargetInformation();
             int flags = getFlags();
             byte[] target = new byte[0];
-            if ((flags & (NTLMSSP_TARGET_TYPE_DOMAIN |
-                    NTLMSSP_TARGET_TYPE_SERVER |
-                            NTLMSSP_TARGET_TYPE_SHARE)) != 0) {
+            if ((flags & (NTLMSSP_TARGET_TYPE_DOMAIN | NTLMSSP_TARGET_TYPE_SERVER | NTLMSSP_TARGET_TYPE_SHARE)) != 0) {
                 if (targetName != null && targetName.length() != 0) {
-                    target = (flags & NTLMSSP_NEGOTIATE_UNICODE) != 0 ?
-                            targetName.getBytes("UnicodeLittleUnmarked") :
-                            targetName.toUpperCase().getBytes(getOEMEncoding());
+                    target = (flags & NTLMSSP_NEGOTIATE_UNICODE) != 0 ? targetName.getBytes("UnicodeLittleUnmarked")
+                            : targetName.toUpperCase().getBytes(getOEMEncoding());
                 } else {
-                    flags &= (0xffffffff ^ (NTLMSSP_TARGET_TYPE_DOMAIN |
-                            NTLMSSP_TARGET_TYPE_SERVER |
-                                    NTLMSSP_TARGET_TYPE_SHARE));
+                    flags &= (0xffffffff ^ (NTLMSSP_TARGET_TYPE_DOMAIN | NTLMSSP_TARGET_TYPE_SERVER | NTLMSSP_TARGET_TYPE_SHARE));
                 }
             }
             if (targetInformation != null) {
                 flags ^= NTLMSSP_NEGOTIATE_TARGET_INFO;
                 // empty context is needed for padding when t.i. is supplied.
-                if (context == null) context = new byte[8];
+                if (context == null)
+                    context = new byte[8];
             }
             int data = 32;
-            if (context != null) data += 8;
-            if (targetInformation != null) data += 8;
-            byte[] type2 = new byte[data + target.length +
-                    (targetInformation != null ? targetInformation.length : 0)];
+            if (context != null)
+                data += 8;
+            if (targetInformation != null)
+                data += 8;
+            byte[] type2 = new byte[data + target.length + (targetInformation != null ? targetInformation.length : 0)];
             System.arraycopy(NTLMSSP_SIGNATURE, 0, type2, 0, 8);
             writeULong(type2, 8, 2);
             writeSecurityBuffer(type2, 12, data, target);
             writeULong(type2, 20, flags);
-            System.arraycopy(challenge != null ? challenge : new byte[8], 0,
-                    type2, 24, 8);
-            if (context != null) System.arraycopy(context, 0, type2, 32, 8);
+            System.arraycopy(challenge != null ? challenge : new byte[8], 0, type2, 24, 8);
+            if (context != null)
+                System.arraycopy(context, 0, type2, 32, 8);
             if (targetInformation != null) {
-                writeSecurityBuffer(type2, 40, data + target.length,
-                        targetInformation);
+                writeSecurityBuffer(type2, 40, data + target.length, targetInformation);
             }
             return type2;
         } catch (IOException ex) {
@@ -272,7 +283,9 @@ public class Type2Message extends NtlmMessage {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -286,7 +299,8 @@ public class Type2Message extends NtlmMessage {
             buffer.append("target: ").append(target);
         }
         if (challenge != null) {
-            if (buffer.length() > 0) buffer.append("; ");
+            if (buffer.length() > 0)
+                buffer.append("; ");
             buffer.append("challenge: ");
             buffer.append("0x");
             for (int i = 0; i < challenge.length; i++) {
@@ -295,7 +309,8 @@ public class Type2Message extends NtlmMessage {
             }
         }
         if (context != null) {
-            if (buffer.length() > 0) buffer.append("; ");
+            if (buffer.length() > 0)
+                buffer.append("; ");
             buffer.append("context: ");
             buffer.append("0x");
             for (int i = 0; i < context.length; i++) {
@@ -304,17 +319,18 @@ public class Type2Message extends NtlmMessage {
             }
         }
         if (targetInformation != null) {
-            if (buffer.length() > 0) buffer.append("; ");
+            if (buffer.length() > 0)
+                buffer.append("; ");
             buffer.append("targetInformation: ");
             buffer.append("0x");
             for (int i = 0; i < targetInformation.length; i++) {
-                buffer.append(Integer.toHexString((targetInformation[i] >> 4) &
-                        0x0f));
+                buffer.append(Integer.toHexString((targetInformation[i] >> 4) & 0x0f));
                 buffer.append(Integer.toHexString(targetInformation[i] & 0x0f));
             }
         }
         if (flags != 0) {
-            if (buffer.length() > 0) buffer.append("; ");
+            if (buffer.length() > 0)
+                buffer.append("; ");
             buffer.append("flags: ");
             buffer.append("0x");
             buffer.append(Integer.toHexString((flags >> 28) & 0x0f));
@@ -341,16 +357,17 @@ public class Type2Message extends NtlmMessage {
     /**
      * Gets the default flags.
      * 
-     * @param type1 the type1
+     * @param type1
+     *            the type1
      * 
      * @return the default flags
      */
     public static int getDefaultFlags(Type1Message type1) {
-        if (type1 == null) return DEFAULT_FLAGS;
+        if (type1 == null)
+            return DEFAULT_FLAGS;
         int flags = NTLMSSP_NEGOTIATE_NTLM;
         int type1Flags = type1.getFlags();
-        flags |= ((type1Flags & NTLMSSP_NEGOTIATE_UNICODE) != 0) ?
-                NTLMSSP_NEGOTIATE_UNICODE : NTLMSSP_NEGOTIATE_OEM;
+        flags |= ((type1Flags & NTLMSSP_NEGOTIATE_UNICODE) != 0) ? NTLMSSP_NEGOTIATE_UNICODE : NTLMSSP_NEGOTIATE_OEM;
         if ((type1Flags & NTLMSSP_REQUEST_TARGET) != 0) {
             String domain = getDefaultDomain();
             if (domain != null) {
@@ -381,9 +398,11 @@ public class Type2Message extends NtlmMessage {
     /**
      * Parses the.
      * 
-     * @param material the material
+     * @param material
+     *            the material
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     private void parse(byte[] material) throws IOException {
         for (int i = 0; i < 8; i++) {
@@ -399,9 +418,8 @@ public class Type2Message extends NtlmMessage {
         String target = null;
         byte[] bytes = readSecurityBuffer(material, 12);
         if (bytes.length != 0) {
-            target = new String(bytes,
-                    ((flags & NTLMSSP_NEGOTIATE_UNICODE) != 0) ?
-                            "UnicodeLittleUnmarked" : getOEMEncoding());
+            target = new String(bytes, ((flags & NTLMSSP_NEGOTIATE_UNICODE) != 0) ? "UnicodeLittleUnmarked"
+                    : getOEMEncoding());
         }
         setTarget(target);
         for (int i = 24; i < 32; i++) {
@@ -413,7 +431,8 @@ public class Type2Message extends NtlmMessage {
             }
         }
         int offset = readULong(material, 16); // offset of targetname start
-        if (offset == 32 || material.length == 32) return;
+        if (offset == 32 || material.length == 32)
+            return;
         for (int i = 32; i < 40; i++) {
             if (material[i] != 0) {
                 byte[] context = new byte[8];
@@ -422,9 +441,11 @@ public class Type2Message extends NtlmMessage {
                 break;
             }
         }
-        if (offset == 40 || material.length == 40) return;
+        if (offset == 40 || material.length == 40)
+            return;
         bytes = readSecurityBuffer(material, 40);
-        if (bytes.length != 0) setTargetInformation(bytes);
+        if (bytes.length != 0)
+            setTargetInformation(bytes);
     }
 
 }

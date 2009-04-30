@@ -22,36 +22,35 @@
 
 package edu.lnmiit.wavd.model;
 
-import java.util.Properties;
-import java.util.logging.Logger;
-
-import java.io.InputStream;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+//import java.util.logging.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Preferences.
  */
 public class Preferences {
-    
+
     /** The _props. */
     static Properties _props = new Properties();
-    
+
     /** The _logger. */
-    private static Logger _logger = Logger.getLogger("org.owasp.webscarab.model.Preferences");
-    
+    // private static Logger _logger =
+    // Logger.getLogger("org.owasp.webscarab.model.Preferences");
     /** The _location. */
     private static String _location = null;
-    
+
     /**
      * Instantiates a new preferences.
      */
     private Preferences() {
     }
-    
+
     /**
      * Gets the preferences.
      * 
@@ -60,19 +59,21 @@ public class Preferences {
     public static Properties getPreferences() {
         return _props;
     }
-    
+
     /**
      * Load preferences.
      * 
-     * @param file the file
+     * @param file
+     *            the file
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public static void loadPreferences(String file) throws IOException {
         // If we are given a filename to load, use it, otherwise
         // look for a props file in the user's home directory
         // if the file does not exist, use the standard defaults
-        
+
         if (file == null) {
             String sep = System.getProperty("file.separator");
             String home = System.getProperty("user.home");
@@ -80,7 +81,7 @@ public class Preferences {
         } else {
             _location = file;
         }
-        
+
         try {
             Properties props = new Properties(System.getProperties());
             InputStream is = new FileInputStream(_location);
@@ -90,60 +91,67 @@ public class Preferences {
             // we'll just use the defaults
         }
     }
-    
+
     /**
      * Save preferences.
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public static void savePreferences() throws IOException {
         FileOutputStream fos = new FileOutputStream(_location);
-        _props.store(fos,"WebScarab Properties");
+        _props.store(fos, "WebScarab Properties");
         fos.close();
     }
-    
+
     /**
      * Sets the preference.
      * 
-     * @param key the key
-     * @param value the value
+     * @param key
+     *            the key
+     * @param value
+     *            the value
      */
     public static void setPreference(String key, String value) {
         _props.setProperty(key, value);
     }
-    
+
     /**
      * Gets the preference.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      * 
      * @return the preference
      */
     public static String getPreference(String key) {
         return _props.getProperty(key);
     }
-    
+
     /**
      * Gets the preference.
      * 
-     * @param key the key
-     * @param defaultValue the default value
+     * @param key
+     *            the key
+     * @param defaultValue
+     *            the default value
      * 
      * @return the preference
      */
     public static String getPreference(String key, String defaultValue) {
         return _props.getProperty(key, defaultValue);
     }
-    
+
     /**
      * Removes the.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      * 
      * @return the string
      */
     public static String remove(String key) {
         return (String) _props.remove(key);
     }
-    
+
 }

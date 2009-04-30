@@ -22,12 +22,11 @@
 
 package edu.lnmiit.wavd.ui.swing;
 
+import javax.swing.Action;
+import javax.swing.JPanel;
 
 import edu.lnmiit.wavd.plugin.PluginUI;
 import edu.lnmiit.wavd.util.swing.ColumnDataModel;
-
-import javax.swing.JPanel;
-import javax.swing.Action;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -41,34 +40,33 @@ public interface SwingPluginUI extends PluginUI {
      * @return the panel
      */
     JPanel getPanel();
-    
+
     /**
      * Gets the url actions.
      * 
      * @return the url actions
      */
     Action[] getUrlActions();
-    
+
     /**
      * Gets the url columns.
      * 
      * @return the url columns
      */
     ColumnDataModel[] getUrlColumns();
-    
+
     /**
      * Gets the conversation actions.
      * 
      * @return the conversation actions
      */
     Action[] getConversationActions();
-    
+
     /**
      * Gets the conversation columns.
      * 
      * @return the conversation columns
      */
     ColumnDataModel[] getConversationColumns();
-    
-    
+
 }

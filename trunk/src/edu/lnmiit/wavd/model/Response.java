@@ -22,11 +22,10 @@
 
 package edu.lnmiit.wavd.model;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 
 // TODO: Auto-generated Javadoc
@@ -34,31 +33,32 @@ import java.text.ParseException;
  * The Class Response.
  */
 public class Response extends Message {
-    
+
     /** The version. */
     private String version = null;
-    
+
     /** The status. */
     private String status = null;
-    
+
     /** The message. */
     private String message = null;
-    
+
     /** The _request. */
     private Request _request = null;
-    
+
     /**
      * Instantiates a new response.
      */
     public Response() {
         setVersion("HTTP/1.0");
     }
-    
+
     /**
      * Instantiates a new response.
      * 
-     * @param resp the resp
-     */    
+     * @param resp
+     *            the resp
+     */
     public Response(Response resp) {
         this.version = resp.getVersion();
         this.status = resp.getStatus();
@@ -66,10 +66,12 @@ public class Response extends Message {
         setHeaders(resp.getHeaders());
         setContent(resp.getContent());
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.Message#read(java.io.InputStream)
-     */    
+     */
     public void read(InputStream is) throws IOException {
         String line = readLine(is);
         if (line == null) {
@@ -93,21 +95,25 @@ public class Response extends Message {
             setNoBody();
         }
     }
-    
+
     /**
      * Parses the.
      * 
-     * @param string the string
+     * @param string
+     *            the string
      * 
-     * @throws ParseException the parse exception
-     */    
-    public void parse (String string) throws ParseException {
+     * @throws ParseException
+     *             the parse exception
+     */
+    public void parse(String string) throws ParseException {
         parse(new StringBuffer(string));
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.Message#parse(java.lang.StringBuffer)
-     */    
+     */
     public void parse(StringBuffer buff) throws ParseException {
         String line = getLine(buff);
         String[] parts = line.split(" ", 3);
@@ -126,38 +132,44 @@ public class Response extends Message {
             setNoBody();
         }
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.Message#write(java.io.OutputStream)
-     */    
+     */
     public void write(OutputStream os) throws IOException {
         write(os, "\r\n");
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.model.Message#write(java.io.OutputStream, java.lang.String)
-     */    
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see edu.lnmiit.wavd.model.Message#write(java.io.OutputStream,
+     * java.lang.String)
+     */
     public void write(OutputStream os, String crlf) throws IOException {
         os = new BufferedOutputStream(os);
         os.write(new String(version + " " + getStatusLine() + crlf).getBytes());
-        super.write(os,crlf);
+        super.write(os, crlf);
         os.flush();
     }
-    
+
     /**
      * Sets the version.
      * 
-     * @param version the new version
-     */    
+     * @param version
+     *            the new version
+     */
     public void setVersion(String version) {
         this.version = version;
     }
-    
+
     /**
      * Gets the version.
      * 
      * @return the version
-     */    
+     */
     public String getVersion() {
         return version;
     }
@@ -165,74 +177,81 @@ public class Response extends Message {
     /**
      * Sets the status.
      * 
-     * @param status the new status
-     */    
+     * @param status
+     *            the new status
+     */
     public void setStatus(String status) {
         this.status = status;
     }
-    
+
     /**
      * Gets the status.
      * 
      * @return the status
-     */    
+     */
     public String getStatus() {
         return status;
     }
-    
+
     /**
      * Sets the message.
      * 
-     * @param message the new message
-     */    
+     * @param message
+     *            the new message
+     */
     public void setMessage(String message) {
         this.message = message;
     }
-    
+
     /**
      * Gets the message.
      * 
      * @return the message
-     */    
+     */
     public String getMessage() {
         return message;
     }
-    
+
     /**
      * Gets the status line.
      * 
      * @return the status line
-     */    
+     */
     public String getStatusLine() {
         return status + " " + message;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.Message#toString()
-     */    
+     */
     public String toString() {
         return toString("\r\n");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.Message#toString(java.lang.String)
-     */    
+     */
     public String toString(String crlf) {
         StringBuffer buff = new StringBuffer();
         buff.append(version + " " + getStatusLine() + crlf);
         buff.append(super.toString(crlf));
         return buff.toString();
     }
-    
+
     /**
      * Sets the request.
      * 
-     * @param request the new request
+     * @param request
+     *            the new request
      */
     public void setRequest(Request request) {
         _request = request;
     }
-    
+
     /**
      * Gets the request.
      * 
@@ -241,16 +260,21 @@ public class Response extends Message {
     public Request getRequest() {
         return _request;
     }
-        
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.Message#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        if (! (obj instanceof Response)) return false;
+        if (!(obj instanceof Response))
+            return false;
         Response resp = (Response) obj;
-        if (!getVersion().equals(resp.getVersion())) return false;
-        if (!getStatusLine().equals(resp.getStatusLine())) return false;
+        if (!getVersion().equals(resp.getVersion()))
+            return false;
+        if (!getStatusLine().equals(resp.getStatusLine()))
+            return false;
         return super.equals(obj);
     }
-    
+
 }

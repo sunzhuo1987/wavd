@@ -20,11 +20,10 @@ import java.util.EventListener;
 
 // TODO: Auto-generated Javadoc
 /**
- * The listener interface for receiving url events.
- * The class that is interested in processing a url
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addUrlListener<code> method. When
+ * The listener interface for receiving url events. The class that is interested
+ * in processing a url event implements this interface, and the object created
+ * with that class is registered with a component using the component's
+ * <code>addUrlListener<code> method. When
  * the url event occurs, that object's appropriate
  * method is invoked.
  * 
@@ -35,27 +34,30 @@ public interface UrlListener extends EventListener {
     /**
      * Url added.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void urlAdded(UrlEvent evt);
-    
+
     /**
      * Url changed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void urlChanged(UrlEvent evt);
-    
+
     /**
      * Url removed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void urlRemoved(UrlEvent evt);
-    
+
     /**
      * Urls changed.
      */
     void urlsChanged();
-    
+
 }

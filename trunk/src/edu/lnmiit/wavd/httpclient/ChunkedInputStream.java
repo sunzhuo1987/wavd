@@ -22,45 +22,47 @@
 
 package edu.lnmiit.wavd.httpclient;
 
-import java.util.ArrayList;
-import java.util.logging.Logger;
-import java.io.InputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.logging.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ChunkedInputStream.
  */
 public class ChunkedInputStream extends FilterInputStream {
-    
+
     /** The chunk. */
     byte[] chunk = null;
-    
+
     /** The start. */
     int start = 0;
-    
+
     /** The size. */
     int size = 0;
-    
+
     /** The _trailer. */
     String[][] _trailer = null;
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger(this.getClass().getName());
-    
+
     /**
      * Instantiates a new chunked input stream.
      * 
-     * @param in the in
+     * @param in
+     *            the in
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public ChunkedInputStream(InputStream in) throws IOException {
         super(in);
         readChunk();
     }
-    
+
     /**
      * Gets the trailer.
      * 
@@ -69,23 +71,24 @@ public class ChunkedInputStream extends FilterInputStream {
     public String[][] getTrailer() {
         return _trailer;
     }
-    
+
     /**
      * Read chunk.
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     private void readChunk() throws IOException {
         String line = readLine().trim();
         try {
-            size = Integer.parseInt(line.trim(),16);
+            size = Integer.parseInt(line.trim(), 16);
             _logger.finest("Expecting a chunk of " + size + " bytes");
             chunk = new byte[size];
             int read = 0;
             while (read < size) {
-                int got = in.read(chunk,read, Math.min(1024,size-read));
+                int got = in.read(chunk, read, Math.min(1024, size - read));
                 _logger.finest("read " + got + " bytes");
-                if (got>0) {
+                if (got > 0) {
                     read = read + got;
                 } else if (read == 0) {
                     _logger.info("read 0 bytes from the input stream! Huh!?");
@@ -98,15 +101,18 @@ public class ChunkedInputStream extends FilterInputStream {
             if (size == 0) { // read the trailer and the CRLF
                 readTrailer();
             } else {
-                readLine(); // read the trailing line feed after the chunk body, but before the next chunk size
+                readLine(); // read the trailing line feed after the chunk body,
+                // but before the next chunk size
             }
             start = 0;
         } catch (NumberFormatException nfe) {
             _logger.severe("Error parsing chunk size from '" + line + "' : " + nfe);
         }
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterInputStream#read()
      */
     public int read() throws IOException {
@@ -121,15 +127,19 @@ public class ChunkedInputStream extends FilterInputStream {
         }
         return chunk[start++];
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterInputStream#read(byte[])
      */
     public int read(byte[] b) throws IOException {
-        return read(b,0,b.length);
+        return read(b, 0, b.length);
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterInputStream#read(byte[], int, int)
      */
     public int read(byte[] b, int off, int len) throws IOException {
@@ -150,66 +160,73 @@ public class ChunkedInputStream extends FilterInputStream {
         start += len;
         return len;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterInputStream#available()
      */
     public int available() throws IOException {
         return size - start;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterInputStream#markSupported()
      */
     public boolean markSupported() {
         return false;
     }
-    
+
     /**
      * Read line.
      * 
      * @return the string
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     private String readLine() throws IOException {
         String line = new String();
         int i;
-        byte[] b={(byte)0x00};
+        byte[] b = { (byte) 0x00 };
         i = in.read();
         while (i > -1 && i != 10 && i != 13) {
             // Convert the int to a byte
             // we use an array because we can't concat a single byte :-(
-            b[0] = (byte)(i & 0xFF);
-            String input = new String(b,0,1);
+            b[0] = (byte) (i & 0xFF);
+            String input = new String(b, 0, 1);
             line = line.concat(input);
             i = in.read();
         }
-        if (i == 13) { // 10 is unix LF, but DOS does 13+10, so read the 10 if we got 13
+        if (i == 13) { // 10 is unix LF, but DOS does 13+10, so read the 10 if
+            // we got 13
             i = in.read();
         }
         _logger.finest("Read '" + line + "'");
         return line;
     }
-    
+
     /**
      * Read trailer.
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     private void readTrailer() throws IOException {
         String line = readLine();
         ArrayList trailer = new ArrayList();
         while (!line.equals("")) {
-            String[] pair = line.split(": *",2);
+            String[] pair = line.split(": *", 2);
             if (pair.length == 2) {
                 trailer.add(pair);
             }
             line = readLine();
         }
-        if (trailer.size()>0) {
+        if (trailer.size() > 0) {
             _trailer = new String[trailer.size()][2];
-            for (int i=0; i<trailer.size(); i++) {
+            for (int i = 0; i < trailer.size(); i++) {
                 String[] pair = (String[]) trailer.get(i);
                 _trailer[i][0] = pair[0];
                 _trailer[i][1] = pair[1];

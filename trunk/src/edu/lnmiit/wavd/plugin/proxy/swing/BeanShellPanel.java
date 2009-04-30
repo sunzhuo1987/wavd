@@ -23,71 +23,75 @@
 
 package edu.lnmiit.wavd.plugin.proxy.swing;
 
-import bsh.EvalError;
-
-
-
-import edu.lnmiit.wavd.plugin.proxy.BeanShell;
-import edu.lnmiit.wavd.plugin.proxy.BeanShellUI;
-import edu.lnmiit.wavd.util.swing.DocumentOutputStream;
-
 import java.io.PrintStream;
-
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
+
+import bsh.EvalError;
+import edu.lnmiit.wavd.plugin.proxy.BeanShell;
+import edu.lnmiit.wavd.plugin.proxy.BeanShellUI;
+import edu.lnmiit.wavd.util.swing.DocumentOutputStream;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class BeanShellPanel.
  */
-public class BeanShellPanel extends javax.swing.JPanel implements ProxyPluginUI,  BeanShellUI {
-    
+public class BeanShellPanel extends javax.swing.JPanel implements ProxyPluginUI, BeanShellUI {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -7439958087569766266L;
+
     /** The _bean shell. */
     private BeanShell _beanShell;
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger(this.getClass().getName());
-    
+
     /** The _dos. */
     private DocumentOutputStream _dos;
-    
+
     /** The _doc stream. */
     private PrintStream _docStream;
-    
+
     /**
      * Instantiates a new bean shell panel.
      * 
-     * @param beanShell the bean shell
+     * @param beanShell
+     *            the bean shell
      */
     public BeanShellPanel(BeanShell beanShell) {
         _beanShell = beanShell;
-        
+
         initComponents();
         configure();
-        
+
         _beanShell.setUI(this);
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.PluginUI#getPluginName()
      */
     public String getPluginName() {
         return new String("Bean Shell");
     }
-    
+
     /**
      * Configure.
      */
     public void configure() {
         boolean enabled = _beanShell.getEnabled();
         enableCheckBox.setSelected(enabled);
-        
+
         scriptTextArea.setEnabled(enabled);
         scriptTextArea.setText(_beanShell.getScript());
-        
+
         commitButton.setEnabled(enabled);
-        
+
         _dos = new DocumentOutputStream(10240);
         _docStream = new PrintStream(_dos);
         logTextArea.setDocument(_dos.getDocument());
@@ -96,7 +100,7 @@ public class BeanShellPanel extends javax.swing.JPanel implements ProxyPluginUI,
     /**
      * Inits the components.
      */
-    private void initComponents() {//GEN-BEGIN:initComponents
+    private void initComponents() {// GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
         jSplitPane1 = new javax.swing.JSplitPane();
@@ -167,55 +171,73 @@ public class BeanShellPanel extends javax.swing.JPanel implements ProxyPluginUI,
 
         add(jSplitPane1, java.awt.BorderLayout.CENTER);
 
-    }//GEN-END:initComponents
+    }// GEN-END:initComponents
 
     /**
      * Commit button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void commitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitButtonActionPerformed
-        try { 
+    private void commitButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_commitButtonActionPerformed
+        try {
             _beanShell.setScript(scriptTextArea.getText());
         } catch (EvalError ee) {
             _logger.severe("Script error: " + ee);
         }
-    }//GEN-LAST:event_commitButtonActionPerformed
-    
+    }// GEN-LAST:event_commitButtonActionPerformed
+
     /**
      * Enable check box action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void enableCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableCheckBoxActionPerformed
+    private void enableCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_enableCheckBoxActionPerformed
         boolean enabled = enableCheckBox.isSelected();
         _beanShell.setEnabled(enabled);
         scriptTextArea.setEnabled(enabled);
         commitButton.setEnabled(enabled);
-    }//GEN-LAST:event_enableCheckBoxActionPerformed
-        
-    /* (non-Javadoc)
+    }// GEN-LAST:event_enableCheckBoxActionPerformed
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.proxy.swing.ProxyPluginUI#getPanel()
      */
     public JPanel getPanel() {
         return this;
-    }    
-    
-    /* (non-Javadoc)
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.proxy.BeanShellUI#getErr()
      */
     public PrintStream getErr() {
         return _docStream;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.proxy.BeanShellUI#getOut()
      */
     public PrintStream getOut() {
         return _docStream;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.JComponent#setEnabled(boolean)
      */
     public void setEnabled(boolean enabled) {
@@ -224,34 +246,34 @@ public class BeanShellPanel extends javax.swing.JPanel implements ProxyPluginUI,
         enableCheckBox.setEnabled(enabled);
         scriptTextArea.setEnabled(enabled && enableCheckBox.isSelected());
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The commit button. */
     private javax.swing.JButton commitButton;
-    
+
     /** The enable check box. */
     private javax.swing.JCheckBox enableCheckBox;
-    
+
     /** The j panel1. */
     private javax.swing.JPanel jPanel1;
-    
+
     /** The j scroll pane1. */
     private javax.swing.JScrollPane jScrollPane1;
-    
+
     /** The j scroll pane2. */
     private javax.swing.JScrollPane jScrollPane2;
-    
+
     /** The j split pane1. */
     private javax.swing.JSplitPane jSplitPane1;
-    
+
     /** The log text area. */
     private javax.swing.JTextArea logTextArea;
-    
+
     /** The script panel. */
     private javax.swing.JPanel scriptPanel;
-    
+
     /** The script text area. */
     private javax.swing.JTextArea scriptTextArea;
     // End of variables declaration//GEN-END:variables
-    
+
 }

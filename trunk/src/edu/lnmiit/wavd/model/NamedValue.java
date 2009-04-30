@@ -16,39 +16,41 @@
 
 package edu.lnmiit.wavd.model;
 
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class NamedValue.
  */
 public class NamedValue {
-    
+
     /** The _name. */
     private String _name;
-    
+
     /** The _value. */
     private String _value;
-    
+
     /** The _logger. */
     private static Logger _logger = Logger.getLogger("org.owasp.webscarab.model.NamedValue");
-    
+
     {
         _logger.setLevel(Level.INFO);
     }
-    
+
     /**
      * Instantiates a new named value.
      * 
-     * @param name the name
-     * @param value the value
+     * @param name
+     *            the name
+     * @param value
+     *            the value
      */
     public NamedValue(String name, String value) {
         _name = name;
         _value = value;
     }
-    
+
     /**
      * Gets the name.
      * 
@@ -57,7 +59,7 @@ public class NamedValue {
     public String getName() {
         return _name;
     }
-    
+
     /**
      * Gets the value.
      * 
@@ -66,32 +68,38 @@ public class NamedValue {
     public String getValue() {
         return _value;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {
         return _name + "='" + _value + "'";
     }
-    
+
     /**
      * Split named values.
      * 
-     * @param source the source
-     * @param pairSeparator the pair separator
-     * @param nvSeparator the nv separator
+     * @param source
+     *            the source
+     * @param pairSeparator
+     *            the pair separator
+     * @param nvSeparator
+     *            the nv separator
      * 
      * @return the named value[]
      */
     public static NamedValue[] splitNamedValues(String source, String pairSeparator, String nvSeparator) {
         try {
-            if (source == null) return new NamedValue[0];
+            if (source == null)
+                return new NamedValue[0];
             String[] pairs = source.split(pairSeparator);
-            _logger.fine("Split \""+ source + "\" into " + pairs.length);
+            _logger.fine("Split \"" + source + "\" into " + pairs.length);
             NamedValue[] values = new NamedValue[pairs.length];
-            for (int i=0; i<pairs.length; i++) {
-                String[] nv = pairs[i].split(nvSeparator,2);
-                if (nv.length == 2) { 
+            for (int i = 0; i < pairs.length; i++) {
+                String[] nv = pairs[i].split(nvSeparator, 2);
+                if (nv.length == 2) {
                     values[i] = new NamedValue(nv[0], nv[1]);
                 } else if (nv.length == 1) {
                     values[i] = new NamedValue(nv[0], "");
@@ -101,9 +109,10 @@ public class NamedValue {
             }
             return values;
         } catch (ArrayIndexOutOfBoundsException aioob) {
-            _logger.warning("Error splitting \"" + source + "\" using '" + pairSeparator + "' and '" + nvSeparator + "'");
+            _logger.warning("Error splitting \"" + source + "\" using '" + pairSeparator + "' and '" + nvSeparator
+                    + "'");
         }
         return new NamedValue[0];
     }
-    
+
 }

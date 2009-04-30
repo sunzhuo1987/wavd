@@ -27,31 +27,38 @@ package edu.lnmiit.wavd.model;
  * The Class StoreException.
  */
 public class StoreException extends java.lang.Exception {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7623840855115622979L;
+
     /**
      * Instantiates a new store exception.
      */
     public StoreException() {
     }
-    
-    
+
     /**
      * Instantiates a new store exception.
      * 
-     * @param msg the msg
+     * @param msg
+     *            the msg
      */
     public StoreException(String msg) {
         super(msg);
     }
-    
+
     /**
      * Instantiates a new store exception.
      * 
-     * @param msg the msg
-     * @param cause the cause
+     * @param msg
+     *            the msg
+     * @param cause
+     *            the cause
      */
     public StoreException(String msg, Throwable cause) {
         super(msg, cause);
     }
-    
+
 }

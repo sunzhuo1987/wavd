@@ -22,12 +22,12 @@
 
 package edu.lnmiit.wavd.ui.swing;
 
-import java.util.Map;
-import java.util.HashMap;
-import javax.swing.JFrame;
-
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JFrame;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -37,7 +37,7 @@ public class FrameCache {
 
     /** The _cache. */
     private static Map _cache = new HashMap();
-    
+
     /** The _listener. */
     private static WindowAdapter _listener = new WindowAdapter() {
         public void windowClosing(WindowEvent evt) {
@@ -45,54 +45,58 @@ public class FrameCache {
             removeFrame(frame.getTitle());
         }
     };
-    
+
     /**
      * Instantiates a new frame cache.
      */
     private FrameCache() {
     }
-    
+
     /**
      * Gets the frame.
      * 
-     * @param title the title
+     * @param title
+     *            the title
      * 
      * @return the frame
      */
     public static JFrame getFrame(String title) {
-        synchronized(_cache) {
+        synchronized (_cache) {
             return (JFrame) _cache.get(title);
         }
     }
-    
+
     /**
      * Adds the frame.
      * 
-     * @param title the title
-     * @param frame the frame
+     * @param title
+     *            the title
+     * @param frame
+     *            the frame
      * 
      * @return the j frame
      */
     public static JFrame addFrame(String title, JFrame frame) {
-        synchronized(_cache) {
+        synchronized (_cache) {
             frame.addWindowListener(_listener);
             return (JFrame) _cache.put(title, frame);
         }
     }
-    
+
     /**
      * Removes the frame.
      * 
-     * @param title the title
+     * @param title
+     *            the title
      * 
      * @return the j frame
      */
     public static JFrame removeFrame(String title) {
-        synchronized(_cache) {
+        synchronized (_cache) {
             JFrame frame = (JFrame) _cache.remove(title);
             frame.removeWindowListener(_listener);
             return frame;
         }
     }
-    
+
 }

@@ -16,88 +16,93 @@
 
 package edu.lnmiit.wavd.plugin;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.bsf.BSFManager;
 import org.apache.bsf.BSFException;
+import org.apache.bsf.BSFManager;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Hook.
  */
 public class Hook {
-    
+
     /** The _name. */
     private String _name;
-    
+
     /** The _description. */
     private String _description;
-    
+
     /** The _scripts. */
     private List _scripts = new ArrayList();
-    
+
     /** The _bsf manager. */
     protected BSFManager _bsfManager = null;
-    
-    /** The _script manager. */
-    private ScriptManager _scriptManager = null;
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger(getClass().getName());
-    
+
     /**
      * Instantiates a new hook.
      * 
-     * @param name the name
-     * @param description the description
+     * @param name
+     *            the name
+     * @param description
+     *            the description
      */
     public Hook(String name, String description) {
         _name = name;
         _description = description;
     }
-    
+
     /**
      * Sets the bSF manager.
      * 
-     * @param bsfManager the new bSF manager
+     * @param bsfManager
+     *            the new bSF manager
      */
     public void setBSFManager(BSFManager bsfManager) {
         _bsfManager = bsfManager;
     }
-    
+
     /**
      * Sets the script manager.
      * 
-     * @param scriptManager the new script manager
+     * @param scriptManager
+     *            the new script manager
      */
     public void setScriptManager(ScriptManager scriptManager) {
-        _scriptManager = scriptManager;
+        // _scriptManager = scriptManager;
     }
-    
+
     /**
      * Run scripts.
      */
     protected void runScripts() {
-        if (_bsfManager == null) return;
-        synchronized(_bsfManager) {
-            for (int i=0; i<_scripts.size(); i++) {
+        if (_bsfManager == null)
+            return;
+        synchronized (_bsfManager) {
+            for (int i = 0; i < _scripts.size(); i++) {
                 Script script = (Script) _scripts.get(i);
                 if (script.isEnabled()) {
-//                    if (_scriptManager != null) _scriptManager.scriptStarted(this, script);
+                    // if (_scriptManager != null)
+                    // _scriptManager.scriptStarted(this, script);
                     try {
                         _bsfManager.exec(script.getLanguage(), _name, 0, 0, script.getScript());
                     } catch (BSFException bsfe) {
                         _logger.warning("Script exception: " + bsfe);
-//                        if (_scriptManager != null) _scriptManager.scriptError(this, script, bsfe);
+                        // if (_scriptManager != null)
+                        // _scriptManager.scriptError(this, script, bsfe);
                     }
-//                    if (_scriptManager != null) _scriptManager.scriptEnded(this, script);
+                    // if (_scriptManager != null)
+                    // _scriptManager.scriptEnded(this, script);
                 }
             }
         }
     }
-    
+
     /**
      * Gets the name.
      * 
@@ -106,7 +111,7 @@ public class Hook {
     public String getName() {
         return _name;
     }
-    
+
     /**
      * Gets the description.
      * 
@@ -115,7 +120,7 @@ public class Hook {
     public String getDescription() {
         return _description;
     }
-    
+
     /**
      * Gets the script count.
      * 
@@ -124,46 +129,51 @@ public class Hook {
     public int getScriptCount() {
         return _scripts.size();
     }
-    
+
     /**
      * Gets the script.
      * 
-     * @param i the i
+     * @param i
+     *            the i
      * 
      * @return the script
      */
     public Script getScript(int i) {
         return (Script) _scripts.get(i);
     }
-    
+
     /**
      * Adds the script.
      * 
-     * @param script the script
+     * @param script
+     *            the script
      */
     public void addScript(Script script) {
         _scripts.add(script);
     }
-    
+
     /**
      * Adds the script.
      * 
-     * @param script the script
-     * @param position the position
+     * @param script
+     *            the script
+     * @param position
+     *            the position
      */
     public void addScript(Script script, int position) {
         _scripts.add(position, script);
     }
-    
+
     /**
      * Removes the script.
      * 
-     * @param position the position
+     * @param position
+     *            the position
      * 
      * @return the script
      */
     public Script removeScript(int position) {
-        return (Script)_scripts.remove(position);
+        return (Script) _scripts.remove(position);
     }
-    
+
 }

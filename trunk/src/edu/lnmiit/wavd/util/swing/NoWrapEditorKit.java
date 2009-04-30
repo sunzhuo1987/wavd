@@ -20,7 +20,18 @@ package edu.lnmiit.wavd.util.swing;
  * 
  */
 
-import javax.swing.text.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BoxView;
+import javax.swing.text.ComponentView;
+import javax.swing.text.Element;
+import javax.swing.text.IconView;
+import javax.swing.text.LabelView;
+import javax.swing.text.ParagraphView;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledEditorKit;
+import javax.swing.text.TabExpander;
+import javax.swing.text.View;
+import javax.swing.text.ViewFactory;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -28,110 +39,123 @@ import javax.swing.text.*;
  */
 public class NoWrapEditorKit extends StyledEditorKit {
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 2867130121374027370L;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 2867130121374027370L;
 
-	/* (non-Javadoc)
-	 * @see javax.swing.text.StyledEditorKit#getViewFactory()
-	 */
-	public ViewFactory getViewFactory() {
-		return new StyledViewFactory();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.swing.text.StyledEditorKit#getViewFactory()
+     */
+    public ViewFactory getViewFactory() {
+        return new StyledViewFactory();
+    }
 
-	/**
-	 * A factory for creating StyledView objects.
-	 */
-	static class StyledViewFactory implements ViewFactory {
-		
-		/* (non-Javadoc)
-		 * @see javax.swing.text.ViewFactory#create(javax.swing.text.Element)
-		 */
-		public View create(Element elem) {
-			String kind = elem.getName();
+    /**
+     * A factory for creating StyledView objects.
+     */
+    static class StyledViewFactory implements ViewFactory {
 
-			if (kind != null) {
-				if (kind.equals(AbstractDocument.ContentElementName)) {
-					return new MyLabelView(elem);
-				} else if (kind.equals(AbstractDocument.ParagraphElementName)) {
-					return new ParagraphView(elem);
-				} else if (kind.equals(AbstractDocument.SectionElementName)) {
-					return new NoWrapBoxView(elem, View.Y_AXIS);
-				} else if (kind.equals(StyleConstants.ComponentElementName)) {
-					return new ComponentView(elem);
-				} else if (kind.equals(StyleConstants.IconElementName)) {
-					return new IconView(elem);
-				}
-			}
+        /*
+         * (non-Javadoc)
+         * 
+         * @see javax.swing.text.ViewFactory#create(javax.swing.text.Element)
+         */
+        public View create(Element elem) {
+            String kind = elem.getName();
 
-			return new LabelView(elem);
-		}
-	}
+            if (kind != null) {
+                if (kind.equals(AbstractDocument.ContentElementName)) {
+                    return new MyLabelView(elem);
+                } else if (kind.equals(AbstractDocument.ParagraphElementName)) {
+                    return new ParagraphView(elem);
+                } else if (kind.equals(AbstractDocument.SectionElementName)) {
+                    return new NoWrapBoxView(elem, View.Y_AXIS);
+                } else if (kind.equals(StyleConstants.ComponentElementName)) {
+                    return new ComponentView(elem);
+                } else if (kind.equals(StyleConstants.IconElementName)) {
+                    return new IconView(elem);
+                }
+            }
 
-	/**
-	 * The Class NoWrapBoxView.
-	 */
-	static class NoWrapBoxView extends BoxView {
-		
-		/**
-		 * Instantiates a new no wrap box view.
-		 * 
-		 * @param elem the elem
-		 * @param axis the axis
-		 */
-		public NoWrapBoxView(Element elem, int axis) {
-			super(elem, axis);
-		}
+            return new LabelView(elem);
+        }
+    }
 
-		/* (non-Javadoc)
-		 * @see javax.swing.text.BoxView#layout(int, int)
-		 */
-		public void layout(int width, int height) {
-			super.layout(32768, height);
-		}
+    /**
+     * The Class NoWrapBoxView.
+     */
+    static class NoWrapBoxView extends BoxView {
 
-		/* (non-Javadoc)
-		 * @see javax.swing.text.BoxView#getMinimumSpan(int)
-		 */
-		public float getMinimumSpan(int axis) {
-			return super.getPreferredSpan(axis);
-		}
-	}
+        /**
+         * Instantiates a new no wrap box view.
+         * 
+         * @param elem
+         *            the elem
+         * @param axis
+         *            the axis
+         */
+        public NoWrapBoxView(Element elem, int axis) {
+            super(elem, axis);
+        }
 
-	/**
-	 * The Class MyLabelView.
-	 */
-	static class MyLabelView extends LabelView {
-		
-		/**
-		 * Instantiates a new my label view.
-		 * 
-		 * @param elem the elem
-		 */
-		public MyLabelView(Element elem) {
-			super(elem);
-		}
+        /*
+         * (non-Javadoc)
+         * 
+         * @see javax.swing.text.BoxView#layout(int, int)
+         */
+        public void layout(int width, int height) {
+            super.layout(32768, height);
+        }
 
-		/* (non-Javadoc)
-		 * @see javax.swing.text.GlyphView#getPreferredSpan(int)
-		 */
-		public float getPreferredSpan(int axis) {
-			float span = 0;
-			if (axis == View.X_AXIS) {
-				int p0 = getStartOffset();
-				int p1 = getEndOffset();
-				checkPainter();
-				TabExpander ex = getTabExpander();
-				if (ex == null) {
-					// paragraph implements TabExpander
-					ex = (TabExpander) this.getParent().getParent();
-				}
-				span = getGlyphPainter().getSpan(this, p0, p1, ex, 0);
-				return Math.max(span, 1);
-			} else {
-				span = super.getPreferredSpan(axis);
-			}
-			return span;
-		}
-	}
+        /*
+         * (non-Javadoc)
+         * 
+         * @see javax.swing.text.BoxView#getMinimumSpan(int)
+         */
+        public float getMinimumSpan(int axis) {
+            return super.getPreferredSpan(axis);
+        }
+    }
+
+    /**
+     * The Class MyLabelView.
+     */
+    static class MyLabelView extends LabelView {
+
+        /**
+         * Instantiates a new my label view.
+         * 
+         * @param elem
+         *            the elem
+         */
+        public MyLabelView(Element elem) {
+            super(elem);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see javax.swing.text.GlyphView#getPreferredSpan(int)
+         */
+        public float getPreferredSpan(int axis) {
+            float span = 0;
+            if (axis == View.X_AXIS) {
+                int p0 = getStartOffset();
+                int p1 = getEndOffset();
+                checkPainter();
+                TabExpander ex = getTabExpander();
+                if (ex == null) {
+                    // paragraph implements TabExpander
+                    ex = (TabExpander) this.getParent().getParent();
+                }
+                span = getGlyphPainter().getSpan(this, p0, p1, ex, 0);
+                return Math.max(span, 1);
+            } else {
+                span = super.getPreferredSpan(axis);
+            }
+            return span;
+        }
+    }
 
 }

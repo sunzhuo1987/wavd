@@ -21,26 +21,30 @@ package edu.lnmiit.wavd.plugin;
  * The Class DomainCredential.
  */
 public class DomainCredential {
-    
+
     /** The _host. */
     private String _host;
-    
+
     /** The _domain. */
     private String _domain;
-    
+
     /** The _username. */
     private String _username;
-    
+
     /** The _password. */
     private String _password;
-    
+
     /**
      * Instantiates a new domain credential.
      * 
-     * @param host the host
-     * @param domain the domain
-     * @param username the username
-     * @param password the password
+     * @param host
+     *            the host
+     * @param domain
+     *            the domain
+     * @param username
+     *            the username
+     * @param password
+     *            the password
      */
     public DomainCredential(String host, String domain, String username, String password) {
         _host = host;
@@ -48,7 +52,7 @@ public class DomainCredential {
         _username = username;
         _password = password;
     }
-    
+
     /**
      * Gets the host.
      * 
@@ -57,7 +61,7 @@ public class DomainCredential {
     public String getHost() {
         return _host;
     }
-    
+
     /**
      * Gets the domain.
      * 
@@ -66,7 +70,7 @@ public class DomainCredential {
     public String getDomain() {
         return _domain;
     }
-    
+
     /**
      * Gets the username.
      * 
@@ -75,7 +79,7 @@ public class DomainCredential {
     public String getUsername() {
         return _username;
     }
-    
+
     /**
      * Gets the password.
      * 
@@ -84,5 +88,5 @@ public class DomainCredential {
     public String getPassword() {
         return _password;
     }
-    
+
 }

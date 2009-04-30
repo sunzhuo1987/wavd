@@ -16,63 +16,64 @@
 
 package edu.lnmiit.wavd.plugin;
 
-import edu.lnmiit.wavd.util.ReentrantReaderPreferenceReadWriteLock;
-
-import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+import edu.lnmiit.wavd.util.ReentrantReaderPreferenceReadWriteLock;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class AbstractPluginModel.
  */
 public class AbstractPluginModel {
-    
+
     /** The Constant PROPERTY_STATUS. */
     public final static String PROPERTY_STATUS = "Status";
-    
+
     /** The Constant PROPERTY_RUNNING. */
     public final static String PROPERTY_RUNNING = "Running";
-    
+
     /** The Constant PROPERTY_STOPPING. */
     public final static String PROPERTY_STOPPING = "Stopping";
-    
+
     /** The Constant PROPERTY_MODIFIED. */
     public final static String PROPERTY_MODIFIED = "Modified";
-    
+
     /** The Constant PROPERTY_BUSY. */
     public final static String PROPERTY_BUSY = "Busy";
-    
+
     /** The _change support. */
     protected PropertyChangeSupport _changeSupport = new PropertyChangeSupport(this);
-    
+
     /** The _rwl. */
     protected ReentrantReaderPreferenceReadWriteLock _rwl = new ReentrantReaderPreferenceReadWriteLock();
-    
+
     /** The _status. */
     private String _status = "Stopped";
-    
+
     /** The _running. */
     private boolean _running = false;
-    
+
     /** The _stopping. */
     private boolean _stopping = false;
-    
+
     /** The _modified. */
     private boolean _modified = false;
-    
+
     /** The _busy. */
     private boolean _busy = false;
-    
+
     /**
      * Instantiates a new abstract plugin model.
      */
     public AbstractPluginModel() {
     }
-    
+
     /**
      * Sets the status.
      * 
-     * @param status the new status
+     * @param status
+     *            the new status
      */
     public void setStatus(String status) {
         if (!_status.equals(status)) {
@@ -81,7 +82,7 @@ public class AbstractPluginModel {
             _changeSupport.firePropertyChange(PROPERTY_STATUS, old, _status);
         }
     }
-    
+
     /**
      * Gets the status.
      * 
@@ -90,11 +91,12 @@ public class AbstractPluginModel {
     public String getStatus() {
         return _status;
     }
-    
+
     /**
      * Sets the running.
      * 
-     * @param running the new running
+     * @param running
+     *            the new running
      */
     public void setRunning(boolean running) {
         if (_running != running) {
@@ -102,7 +104,7 @@ public class AbstractPluginModel {
             _changeSupport.firePropertyChange(PROPERTY_RUNNING, !_running, _running);
         }
     }
-    
+
     /**
      * Checks if is running.
      * 
@@ -111,11 +113,12 @@ public class AbstractPluginModel {
     public boolean isRunning() {
         return _running;
     }
-    
+
     /**
      * Sets the stopping.
      * 
-     * @param stopping the new stopping
+     * @param stopping
+     *            the new stopping
      */
     public void setStopping(boolean stopping) {
         if (_stopping != stopping) {
@@ -123,7 +126,7 @@ public class AbstractPluginModel {
             _changeSupport.firePropertyChange(PROPERTY_STOPPING, !_stopping, _stopping);
         }
     }
-    
+
     /**
      * Checks if is stopping.
      * 
@@ -132,11 +135,12 @@ public class AbstractPluginModel {
     public boolean isStopping() {
         return _stopping;
     }
-    
+
     /**
      * Sets the modified.
      * 
-     * @param modified the new modified
+     * @param modified
+     *            the new modified
      */
     public void setModified(boolean modified) {
         if (_modified != modified) {
@@ -144,7 +148,7 @@ public class AbstractPluginModel {
             _changeSupport.firePropertyChange(PROPERTY_MODIFIED, !_modified, _modified);
         }
     }
-    
+
     /**
      * Checks if is modified.
      * 
@@ -153,11 +157,12 @@ public class AbstractPluginModel {
     public boolean isModified() {
         return _modified;
     }
-    
+
     /**
      * Sets the busy.
      * 
-     * @param busy the new busy
+     * @param busy
+     *            the new busy
      */
     public void setBusy(boolean busy) {
         if (_busy != busy) {
@@ -165,7 +170,7 @@ public class AbstractPluginModel {
             _changeSupport.firePropertyChange(PROPERTY_BUSY, !_busy, _busy);
         }
     }
-    
+
     /**
      * Checks if is busy.
      * 
@@ -174,43 +179,49 @@ public class AbstractPluginModel {
     public boolean isBusy() {
         return _busy;
     }
-    
+
     /**
      * Adds the property change listener.
      * 
-     * @param listener the listener
+     * @param listener
+     *            the listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         _changeSupport.addPropertyChangeListener(listener);
     }
-    
+
     /**
      * Adds the property change listener.
      * 
-     * @param propertyName the property name
-     * @param listener the listener
+     * @param propertyName
+     *            the property name
+     * @param listener
+     *            the listener
      */
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         _changeSupport.addPropertyChangeListener(propertyName, listener);
     }
-    
+
     /**
      * Removes the property change listener.
      * 
-     * @param listener the listener
+     * @param listener
+     *            the listener
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         _changeSupport.removePropertyChangeListener(listener);
     }
-    
+
     /**
      * Removes the property change listener.
      * 
-     * @param propertyName the property name
-     * @param listener the listener
+     * @param propertyName
+     *            the property name
+     * @param listener
+     *            the listener
      */
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         _changeSupport.removePropertyChangeListener(propertyName, listener);
     }
-    
+
 }

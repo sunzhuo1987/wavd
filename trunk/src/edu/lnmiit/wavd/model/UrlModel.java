@@ -27,50 +27,56 @@ public interface UrlModel {
     /**
      * Gets the child count.
      * 
-     * @param parent the parent
+     * @param parent
+     *            the parent
      * 
      * @return the child count
      */
     int getChildCount(HttpUrl parent);
-    
+
     /**
      * Gets the child at.
      * 
-     * @param parent the parent
-     * @param index the index
+     * @param parent
+     *            the parent
+     * @param index
+     *            the index
      * 
      * @return the child at
      */
     HttpUrl getChildAt(HttpUrl parent, int index);
-    
+
     /**
      * Gets the index of.
      * 
-     * @param url the url
+     * @param url
+     *            the url
      * 
      * @return the index of
      */
     int getIndexOf(HttpUrl url);
-    
+
     /**
      * Read lock.
      * 
      * @return the sync
      */
     Sync readLock();
-    
+
     /**
      * Adds the url listener.
      * 
-     * @param listener the listener
+     * @param listener
+     *            the listener
      */
     void addUrlListener(UrlListener listener);
-    
+
     /**
      * Removes the url listener.
      * 
-     * @param listener the listener
+     * @param listener
+     *            the listener
      */
     void removeUrlListener(UrlListener listener);
-    
+
 }

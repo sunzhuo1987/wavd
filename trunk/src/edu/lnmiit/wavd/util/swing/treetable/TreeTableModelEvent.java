@@ -17,60 +17,68 @@
 package edu.lnmiit.wavd.util.swing.treetable;
 
 import javax.swing.event.TreeModelEvent;
-
 import javax.swing.tree.TreePath;
-
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class TreeTableModelEvent.
  */
-public class TreeTableModelEvent extends TreeModelEvent{
-    
+public class TreeTableModelEvent extends TreeModelEvent {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3096403323796492399L;
+
     /** The column. */
     protected int column;
-    
+
     /** The type. */
     protected int type = 0;
-    
+
     /** The Constant INSERT. */
-    public static final int INSERT =  1;
-    
+    public static final int INSERT = 1;
+
     /** The Constant UPDATE. */
-    public static final int UPDATE =  0;
-    
+    public static final int UPDATE = 0;
+
     /** The Constant DELETE. */
     public static final int DELETE = -1;
-    
+
     /**
      * Instantiates a new tree table model event.
      * 
-     * @param source the source
-     * @param path the path
-     * @param column the column
+     * @param source
+     *            the source
+     * @param path
+     *            the path
+     * @param column
+     *            the column
      */
-    public TreeTableModelEvent(Object source, TreePath path, int column)
-    {
-	super(source, path);
-	this.path = path;
-	this.childIndices = new int[0];
+    public TreeTableModelEvent(Object source, TreePath path, int column) {
+        super(source, path);
+        this.path = path;
+        this.childIndices = new int[0];
         this.column = column;
     }
-    
+
     /**
      * Instantiates a new tree table model event.
      * 
-     * @param source the source
-     * @param path the path
-     * @param column the column
-     * @param type the type
+     * @param source
+     *            the source
+     * @param path
+     *            the path
+     * @param column
+     *            the column
+     * @param type
+     *            the type
      */
-    public TreeTableModelEvent(Object source, TreePath path, int column, int type)
-    {
-	this(source, path, column);
+    public TreeTableModelEvent(Object source, TreePath path, int column, int type) {
+        this(source, path, column);
         this.type = type;
     }
-    
+
     /**
      * Gets the column.
      * 
@@ -79,7 +87,7 @@ public class TreeTableModelEvent extends TreeModelEvent{
     public int getColumn() {
         return column;
     }
-    
+
     /**
      * Gets the type.
      * 
@@ -88,5 +96,5 @@ public class TreeTableModelEvent extends TreeModelEvent{
     public int getType() {
         return type;
     }
-    
+
 }

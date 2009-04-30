@@ -16,22 +16,19 @@
 
 package edu.lnmiit.wavd.plugin.fuzz;
 
-import java.io.IOException;
-import java.io.File;
-import java.io.Reader;
-import java.io.FileReader;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import java.util.List;
+import java.io.Reader;
 import java.util.LinkedList;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyChangeListener;
 import java.util.regex.PatternSyntaxException;
 
 // TODO: Auto-generated Javadoc
@@ -39,22 +36,22 @@ import java.util.regex.PatternSyntaxException;
  * A factory for creating Fuzz objects.
  */
 public class FuzzFactory {
-    
+
     /** The Constant SOURCES. */
     public static final String SOURCES = "Sources";
-    
+
     /** The _sources. */
     private Map _sources = new TreeMap();
-    
+
     /** The _change support. */
     private PropertyChangeSupport _changeSupport = new PropertyChangeSupport(this);
-    
+
     /**
      * Instantiates a new fuzz factory.
      */
     public FuzzFactory() {
     }
-    
+
     /**
      * Gets the source descriptions.
      * 
@@ -63,45 +60,53 @@ public class FuzzFactory {
     public String[] getSourceDescriptions() {
         return (String[]) _sources.keySet().toArray(new String[_sources.size()]);
     }
-    
+
     /**
      * Adds the source.
      * 
-     * @param source the source
+     * @param source
+     *            the source
      */
     public void addSource(FuzzSource source) {
         _sources.put(source.getDescription(), source);
         _changeSupport.firePropertyChange(SOURCES, null, null);
     }
-    
+
     /**
      * Load fuzz strings.
      * 
-     * @param description the description
-     * @param inputStream the input stream
+     * @param description
+     *            the description
+     * @param inputStream
+     *            the input stream
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public void loadFuzzStrings(String description, InputStream inputStream) throws IOException {
         addSource(new FileSource(description, new InputStreamReader(inputStream)));
     }
-    
+
     /**
      * Load fuzz strings.
      * 
-     * @param description the description
-     * @param file the file
+     * @param description
+     *            the description
+     * @param file
+     *            the file
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public void loadFuzzStrings(String description, File file) throws IOException {
         addSource(new FileSource(description, new FileReader(file)));
     }
-    
+
     /**
      * Removes the source.
      * 
-     * @param name the name
+     * @param name
+     *            the name
      * 
      * @return true, if successful
      */
@@ -110,23 +115,27 @@ public class FuzzFactory {
         _changeSupport.firePropertyChange(SOURCES, null, null);
         return success;
     }
-    
+
     /**
      * Adds the regex source.
      * 
-     * @param description the description
-     * @param regex the regex
+     * @param description
+     *            the description
+     * @param regex
+     *            the regex
      * 
-     * @throws PatternSyntaxException the pattern syntax exception
+     * @throws PatternSyntaxException
+     *             the pattern syntax exception
      */
     public void addRegexSource(String description, String regex) throws PatternSyntaxException {
         addSource(new RegexSource(description, regex));
     }
-    
+
     /**
      * Gets the source.
      * 
-     * @param name the name
+     * @param name
+     *            the name
      * 
      * @return the source
      */
@@ -138,46 +147,51 @@ public class FuzzFactory {
             return source.newInstance();
         }
     }
-    
+
     /**
      * Adds the property change listener.
      * 
-     * @param listener the listener
+     * @param listener
+     *            the listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         _changeSupport.addPropertyChangeListener(listener);
     }
-    
+
     /**
      * Removes the property change listener.
      * 
-     * @param listener the listener
+     * @param listener
+     *            the listener
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         _changeSupport.removePropertyChangeListener(listener);
     }
-    
+
     /**
      * The Class FileSource.
      */
     private class FileSource implements FuzzSource {
-        
+
         /** The _description. */
         private String _description;
-        
+
         /** The _items. */
         private String[] _items;
-        
+
         /** The _index. */
         private int _index = 0;
-        
+
         /**
          * Instantiates a new file source.
          * 
-         * @param description the description
-         * @param reader the reader
+         * @param description
+         *            the description
+         * @param reader
+         *            the reader
          * 
-         * @throws IOException Signals that an I/O exception has occurred.
+         * @throws IOException
+         *             Signals that an I/O exception has occurred.
          */
         public FileSource(String description, Reader reader) throws IOException {
             _description = description;
@@ -190,42 +204,52 @@ public class FuzzFactory {
             br.close();
             _items = (String[]) items.toArray(new String[items.size()]);
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#getDescription()
          */
         public String getDescription() {
             return _description;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#increment()
          */
         public void increment() {
             _index++;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#hasNext()
          */
         public boolean hasNext() {
-            return _index < _items.length-1;
+            return _index < _items.length - 1;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#reset()
          */
         public void reset() {
             _index = 0;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#size()
          */
         public int size() {
             return _items.length;
         }
-        
+
         /**
          * Gets the items.
          * 
@@ -234,97 +258,117 @@ public class FuzzFactory {
         protected String[] getItems() {
             return _items;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#current()
          */
         public Object current() {
             return _items[_index];
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#newInstance()
          */
         public FuzzSource newInstance() {
             return new ArraySource(_description, _items);
         }
-        
+
     }
-    
+
     /**
      * The Class ArraySource.
      */
     private class ArraySource implements FuzzSource {
-        
+
         /** The _description. */
         private String _description;
-        
+
         /** The _items. */
         private String[] _items;
-        
+
         /** The _index. */
         private int _index = 0;
-        
+
         /**
          * Instantiates a new array source.
          * 
-         * @param description the description
-         * @param items the items
+         * @param description
+         *            the description
+         * @param items
+         *            the items
          */
         public ArraySource(String description, String[] items) {
             _description = description;
             _items = items;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#getDescription()
          */
         public String getDescription() {
             return _description;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#size()
          */
         public int size() {
             return _items.length;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#reset()
          */
         public void reset() {
             _index = 0;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#increment()
          */
         public void increment() {
             _index++;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#hasNext()
          */
         public boolean hasNext() {
-            return _index < _items.length-1;
+            return _index < _items.length - 1;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#current()
          */
         public Object current() {
             return _items[_index];
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#newInstance()
          */
         public FuzzSource newInstance() {
             return new ArraySource(_description, _items);
         }
-        
+
     }
-    
+
 }

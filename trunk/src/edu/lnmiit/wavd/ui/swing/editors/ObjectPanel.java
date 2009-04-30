@@ -22,41 +22,44 @@
 
 package edu.lnmiit.wavd.ui.swing.editors;
 
+import java.awt.Component;
+import java.text.DateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.CellEditor;
+import javax.swing.JOptionPane;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import edu.lnmiit.wavd.util.swing.JTreeTable;
 import edu.lnmiit.wavd.util.swing.treetable.DefaultTreeTableModel;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableCellEditor;
-import javax.swing.JOptionPane;
-
-import java.util.Map;
-import java.util.Collection;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Date;
-import java.text.DateFormat;
-
-import javax.swing.CellEditor;
-import java.awt.Component;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ObjectPanel.
  */
 public class ObjectPanel extends javax.swing.JPanel {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5340750131699308220L;
+
     /** The _tt. */
     private JTreeTable _tt;
-    
+
     /** The _ottm. */
     private ObjectTreeTableModel _ottm;
-    
+
     /** The _editable. */
     private boolean _editable = false;
-    
+
     /**
      * Instantiates a new object panel.
      */
@@ -65,18 +68,24 @@ public class ObjectPanel extends javax.swing.JPanel {
         setName("Object");
         _ottm = new ObjectTreeTableModel();
         _tt = new JTreeTable(_ottm) {
+            /**
+	     * 
+	     */
+            private static final long serialVersionUID = -8134123398869001161L;
+
             public TableCellRenderer getCellRenderer(int row, int column) {
                 if (column == 2) {
-                    Object o = ((ObjectTreeNode)getValueAt(row, 0)).getUserObject();
+                    Object o = ((ObjectTreeNode) getValueAt(row, 0)).getUserObject();
                     if (o != null) {
                         return getDefaultRenderer(o.getClass());
                     }
                 }
                 return super.getCellRenderer(row, column);
             }
+
             public TableCellEditor getCellEditor(int row, int column) {
                 if (column == 2) {
-                    Object o = ((ObjectTreeNode)getValueAt(row, 0)).getUserObject();
+                    Object o = ((ObjectTreeNode) getValueAt(row, 0)).getUserObject();
                     if (o != null) {
                         return getDefaultEditor(o.getClass());
                     }
@@ -87,22 +96,23 @@ public class ObjectPanel extends javax.swing.JPanel {
         _tt.setDefaultRenderer(Date.class, new DateRenderer());
         ArrayRenderer ar = new ArrayRenderer();
         _tt.setDefaultRenderer(byte[].class, ar);
-        
+
         _tt.setDefaultEditor(Date.class, new DateEditor());
         _tt.setCellSelectionEnabled(true);
         ttScrollPane.setViewportView(_tt);
         setEditable(false);
     }
-    
+
     /**
      * Sets the object.
      * 
-     * @param object the new object
-     */    
+     * @param object
+     *            the new object
+     */
     public void setObject(Object object) {
         _ottm.setObject(object);
     }
-    
+
     /**
      * Stop editing.
      */
@@ -112,22 +122,24 @@ public class ObjectPanel extends javax.swing.JPanel {
             ((CellEditor) comp).stopCellEditing();
         }
     }
-    
+
     /**
      * Gets the object.
      * 
      * @return the object
-     */    
+     */
     public Object getObject() {
-        if (_editable) stopEditing();
+        if (_editable)
+            stopEditing();
         return _ottm.getObject();
     }
-    
+
     /**
      * Sets the editable.
      * 
-     * @param editable the new editable
-     */    
+     * @param editable
+     *            the new editable
+     */
     public void setEditable(boolean editable) {
         _editable = editable;
         _ottm.setEditable(editable);
@@ -137,21 +149,22 @@ public class ObjectPanel extends javax.swing.JPanel {
         revalidate();
         repaint();
     }
-    
+
     /**
      * Checks if is modified.
      * 
      * @return true, if is modified
      */
     public boolean isModified() {
-        if (_editable) stopEditing();
+        if (_editable)
+            stopEditing();
         return _editable && _ottm.isModified();
     }
-    
+
     /**
      * Inits the components.
      */
-    private void initComponents() {//GEN-BEGIN:initComponents
+    private void initComponents() {// GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
         ttScrollPane = new javax.swing.JScrollPane();
@@ -211,27 +224,34 @@ public class ObjectPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         add(deleteButton, gridBagConstraints);
 
-    }//GEN-END:initComponents
+    }// GEN-END:initComponents
 
     /**
      * Child button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void childButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_childButtonActionPerformed
+    private void childButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_childButtonActionPerformed
         javax.swing.tree.TreePath path = _tt.getTree().getSelectionPath();
         if (path == null) {
             JOptionPane.showMessageDialog(null, "Please select a row", "No selection", JOptionPane.ERROR_MESSAGE);
             return;
         }
         ObjectTreeNode selected = (ObjectTreeNode) path.getLastPathComponent();
-        Object userObject = ((ObjectTreeNode)selected).getUserObject();
+        Object userObject = (selected).getUserObject();
         if (userObject instanceof Map) {
             Object key = JOptionPane.showInputDialog("Please input a key value");
-            if (key == null) return;
+            if (key == null)
+                return;
             Map map = (Map) userObject;
             if (map.containsKey(key)) {
-                JOptionPane.showMessageDialog(null, "The Map already contains " + key, "Key exists", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "The Map already contains " + key, "Key exists",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
             map.put(key, null);
@@ -243,7 +263,7 @@ public class ObjectPanel extends javax.swing.JPanel {
             ObjectTreeNode newNode = new ObjectTreeNode(null);
             newNode.setParentKey(key);
             selected.insert(newNode, position);
-            _ottm.nodesWereInserted(selected, new int[] {position});
+            _ottm.nodesWereInserted(selected, new int[] { position });
         } else if (userObject instanceof List) {
             List list = (List) userObject;
             int position = list.size();
@@ -251,26 +271,32 @@ public class ObjectPanel extends javax.swing.JPanel {
             ObjectTreeNode newNode = new ObjectTreeNode(null);
             newNode.setParentKey(new Integer(position));
             selected.insert(newNode, position);
-            _ottm.nodesWereInserted(selected, new int[] {position});
+            _ottm.nodesWereInserted(selected, new int[] { position });
         }
-    }//GEN-LAST:event_childButtonActionPerformed
+    }// GEN-LAST:event_childButtonActionPerformed
 
     /**
      * Insert button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void insertButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertButtonActionPerformed
+    private void insertButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_insertButtonActionPerformed
         javax.swing.tree.TreePath path = _tt.getTree().getSelectionPath();
         if (path == null) {
             JOptionPane.showMessageDialog(null, "Please select a row", "No selection", JOptionPane.ERROR_MESSAGE);
             return;
         }
         ObjectTreeNode selected = (ObjectTreeNode) path.getLastPathComponent();
-        Object userObject = ((ObjectTreeNode)selected).getUserObject();
+        (selected).getUserObject();
         ObjectTreeNode parent = (ObjectTreeNode) selected.getParent();
         if (parent == null) {
-            JOptionPane.showMessageDialog(null, "It is not possible to insert a node at the root", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "It is not possible to insert a node at the root", "Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
         Object parentObject = parent.getUserObject();
@@ -281,34 +307,41 @@ public class ObjectPanel extends javax.swing.JPanel {
             ObjectTreeNode newNode = new ObjectTreeNode(null);
             newNode.setParentKey(new Integer(position));
             parent.insert(newNode, position);
-            _ottm.nodesWereInserted(parent, new int[] {position});
-            int[] changes = new int[parent.getChildCount() - (position+1)];
-            for (int i=position+1; i<parent.getChildCount(); i++) {
+            _ottm.nodesWereInserted(parent, new int[] { position });
+            int[] changes = new int[parent.getChildCount() - (position + 1)];
+            for (int i = position + 1; i < parent.getChildCount(); i++) {
                 ObjectTreeNode sib = (ObjectTreeNode) parent.getChildAt(i);
                 sib.setParentKey(new Integer(i));
-                changes[i-(position+1)] = i;
+                changes[i - (position + 1)] = i;
             }
-            _ottm.nodesChanged(parent, changes); 
+            _ottm.nodesChanged(parent, changes);
         } else if (parentObject.getClass().isArray()) {
-            JOptionPane.showMessageDialog(null, "Don't know how to insert a node into an Array yet", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Don't know how to insert a node into an Array yet", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(null, "It is only possible to insert a node into a List", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "It is only possible to insert a node into a List", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_insertButtonActionPerformed
+    }// GEN-LAST:event_insertButtonActionPerformed
 
     /**
      * Delete button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_deleteButtonActionPerformed
         javax.swing.tree.TreePath path = _tt.getTree().getSelectionPath();
         if (path == null) {
             JOptionPane.showMessageDialog(null, "Please select a row", "No selection", JOptionPane.ERROR_MESSAGE);
             return;
         }
         ObjectTreeNode selected = (ObjectTreeNode) path.getLastPathComponent();
-        Object userObject = ((ObjectTreeNode)selected).getUserObject();
+        (selected).getUserObject();
         ObjectTreeNode parent = (ObjectTreeNode) selected.getParent();
         if (parent == null) {
             _ottm.setObject(null);
@@ -316,7 +349,8 @@ public class ObjectPanel extends javax.swing.JPanel {
         }
         Object parentObject = parent.getUserObject();
         if (!(parentObject instanceof List || parentObject instanceof Map)) {
-            JOptionPane.showMessageDialog(null, "We can only delete children of java.util.List and java.util.Map", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "We can only delete children of java.util.List and java.util.Map",
+                    "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (parentObject instanceof Map) {
@@ -326,29 +360,32 @@ public class ObjectPanel extends javax.swing.JPanel {
             try {
                 map.remove(key);
             } catch (UnsupportedOperationException uoe) {
-                JOptionPane.showMessageDialog(null, "Map returned an UnsupportedOperationException trying to remove " + key, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Map returned an UnsupportedOperationException trying to remove "
+                        + key, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             parent.remove(position);
-            _ottm.nodesWereRemoved(parent, new int[] {position}, new Object[] {selected});
+            _ottm.nodesWereRemoved(parent, new int[] { position }, new Object[] { selected });
         } else if (parentObject instanceof List) {
             List list = (List) parentObject;
             int position = parent.getIndex(selected);
             try {
                 list.remove(position);
             } catch (UnsupportedOperationException uoe) {
-                JOptionPane.showMessageDialog(null, "List returned an UnsupportedOperationException trying to remove " + position, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "List returned an UnsupportedOperationException trying to remove "
+                        + position, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             parent.remove(position);
-            _ottm.nodesWereRemoved(parent, new int[] {position}, new Object[] {selected});
+            _ottm.nodesWereRemoved(parent, new int[] { position }, new Object[] { selected });
         }
-    }//GEN-LAST:event_deleteButtonActionPerformed
-    
+    }// GEN-LAST:event_deleteButtonActionPerformed
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String[] args) {
         java.util.ArrayList a = new java.util.ArrayList();
@@ -358,7 +395,7 @@ public class ObjectPanel extends javax.swing.JPanel {
         Map m = new java.util.TreeMap();
         m.put("a string", new String("value 1"));
         m.put("a boolean", new Boolean(false));
-        m.put("a byte array", new byte[] {0x00, 0x01});
+        m.put("a byte array", new byte[] { 0x00, 0x01 });
         a.add(m);
         a.add(new int[] { 1001, 1002, 1003 });
         a.add(new java.util.ArrayList());
@@ -370,7 +407,7 @@ public class ObjectPanel extends javax.swing.JPanel {
         a.add(s);
         a.add(new Date());
         a.add(new byte[] { 0, 1, 2, 3 });
-        
+
         javax.swing.JFrame top = new javax.swing.JFrame("Object Panel");
         top.getContentPane().setLayout(new java.awt.BorderLayout());
         top.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -378,7 +415,7 @@ public class ObjectPanel extends javax.swing.JPanel {
                 System.exit(0);
             }
         });
-        
+
         javax.swing.JButton button = new javax.swing.JButton("GET");
         final ObjectPanel op = new ObjectPanel();
         top.getContentPane().add(op);
@@ -388,7 +425,7 @@ public class ObjectPanel extends javax.swing.JPanel {
                 System.out.println(op.getObject());
             }
         });
-        top.setBounds(100,100,600,400);
+        top.setBounds(100, 100, 600, 400);
         top.setVisible(true);
         try {
             op.setEditable(false);
@@ -399,74 +436,83 @@ public class ObjectPanel extends javax.swing.JPanel {
             e.printStackTrace();
         }
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The delete button. */
     private javax.swing.JButton deleteButton;
-    
+
     /** The tt scroll pane. */
     private javax.swing.JScrollPane ttScrollPane;
-    
+
     /** The child button. */
     private javax.swing.JButton childButton;
-    
+
     /** The insert button. */
     private javax.swing.JButton insertButton;
+
     // End of variables declaration//GEN-END:variables
-    
-    
+
     /**
      * The Class ObjectTreeTableModel.
      */
     private class ObjectTreeTableModel extends DefaultTreeTableModel {
-        
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = 7328132359558195083L;
+
         /** The _modified. */
         private boolean _modified = false;
-        
+
         /** The _editable. */
         private boolean _editable = false;
-        
+
         /** The _column names. */
         private String[] _columnNames = new String[] { "Key", "Class", "Value" };
-        
+
         /**
          * Instantiates a new object tree table model.
          */
         public ObjectTreeTableModel() {
             super(null, true);
         }
-        
+
         /**
          * Instantiates a new object tree table model.
          * 
-         * @param object the object
+         * @param object
+         *            the object
          */
         public ObjectTreeTableModel(Object object) {
             super(null, true); // we have to pass a parameter
             setObject(object); // but we override it immediately!
         }
-        
+
         /**
          * Sets the editable.
          * 
-         * @param editable the new editable
+         * @param editable
+         *            the new editable
          */
         public void setEditable(boolean editable) {
             _editable = editable;
         }
-        
+
         /**
          * Sets the object.
          * 
-         * @param object the new object
+         * @param object
+         *            the new object
          */
         public void setObject(Object object) {
             ObjectTreeNode root = createObjectTree(object);
             setRoot(root);
             nodeStructureChanged(root);
-            _modified = false; // after we fire, since we have not changed anything yet
+            _modified = false; // after we fire, since we have not changed
+            // anything yet
         }
-        
+
         /**
          * Checks if is modified.
          * 
@@ -475,7 +521,7 @@ public class ObjectPanel extends javax.swing.JPanel {
         public boolean isModified() {
             return _modified;
         }
-        
+
         /**
          * Gets the object.
          * 
@@ -483,13 +529,14 @@ public class ObjectPanel extends javax.swing.JPanel {
          */
         public Object getObject() {
             Object root = getRoot();
-            return root == null ? null : ((ObjectTreeNode)root).getUserObject();
+            return root == null ? null : ((ObjectTreeNode) root).getUserObject();
         }
-        
+
         /**
          * Creates the object tree.
          * 
-         * @param object the object
+         * @param object
+         *            the object
          * 
          * @return the object tree node
          */
@@ -517,7 +564,7 @@ public class ObjectPanel extends javax.swing.JPanel {
                 }
             } else if (object.getClass().isArray()) {
                 int length = java.lang.reflect.Array.getLength(object);
-                for (int i=0; i<length; i++) {
+                for (int i = 0; i < length; i++) {
                     ObjectTreeNode child = new ObjectTreeNode(java.lang.reflect.Array.get(object, i));
                     child.setParentKey(new Integer(i));
                     otn.add(child);
@@ -525,23 +572,35 @@ public class ObjectPanel extends javax.swing.JPanel {
             }
             return otn;
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.treetable.DefaultTreeTableModel#getColumnCount()
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.util.swing.treetable.DefaultTreeTableModel#getColumnCount
+         * ()
          */
         public int getColumnCount() {
             return 3;
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.treetable.DefaultTreeTableModel#getColumnName(int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.util.swing.treetable.DefaultTreeTableModel#getColumnName
+         * (int)
          */
         public String getColumnName(int column) {
             return _columnNames[column];
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.treetable.DefaultTreeTableModel#getValueAt(java.lang.Object, int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.util.swing.treetable.DefaultTreeTableModel#getValueAt
+         * (java.lang.Object, int)
          */
         public Object getValueAt(Object node, int column) {
             ObjectTreeNode otn = (ObjectTreeNode) node;
@@ -552,25 +611,29 @@ public class ObjectPanel extends javax.swing.JPanel {
                 parentObject = parent.getUserObject();
             }
             switch (column) {
-                case 0 : return node;
-                case 1 : if (object == null) {
-                            return "void";
-                         } else if (object.getClass().isArray()) {
-                             return object.getClass().getComponentType() + "[]";
-                         } else if (parentObject != null && parentObject.getClass().isArray()) {
-                             return parentObject.getClass().getComponentType().getName();
-                         } else {
-                            return object.getClass().getName();
-                         }
-                case 2 : return describe(object);
+            case 0:
+                return node;
+            case 1:
+                if (object == null) {
+                    return "void";
+                } else if (object.getClass().isArray()) {
+                    return object.getClass().getComponentType() + "[]";
+                } else if (parentObject != null && parentObject.getClass().isArray()) {
+                    return parentObject.getClass().getComponentType().getName();
+                } else {
+                    return object.getClass().getName();
+                }
+            case 2:
+                return describe(object);
             }
             return null;
         }
-        
+
         /**
          * Describe.
          * 
-         * @param object the object
+         * @param object
+         *            the object
          * 
          * @return the object
          */
@@ -578,10 +641,10 @@ public class ObjectPanel extends javax.swing.JPanel {
             if (object == null) {
                 return "";
             } else if (object instanceof Map) {
-                int size = ((Map)object).size();
+                int size = ((Map) object).size();
                 return size + " item" + (size != 1 ? "s" : "");
             } else if (object instanceof Collection) {
-                int size = ((Collection)object).size();
+                int size = ((Collection) object).size();
                 return size + " item" + (size != 1 ? "s" : "");
             } else if (object.getClass().isArray()) {
                 int size = java.lang.reflect.Array.getLength(object);
@@ -589,9 +652,13 @@ public class ObjectPanel extends javax.swing.JPanel {
             }
             return object;
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.treetable.DefaultTreeTableModel#isCellEditable(java.lang.Object, int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.util.swing.treetable.DefaultTreeTableModel#isCellEditable
+         * (java.lang.Object, int)
          */
         public boolean isCellEditable(Object node, int columnIndex) {
             // the tree must be editable so it gets mouse events
@@ -599,7 +666,7 @@ public class ObjectPanel extends javax.swing.JPanel {
             if (columnIndex == 0) {
                 return true;
             } else if (columnIndex == 1 && _editable) {
-                ObjectTreeNode parent = (ObjectTreeNode) ((ObjectTreeNode)node).getParent();
+                ObjectTreeNode parent = (ObjectTreeNode) ((ObjectTreeNode) node).getParent();
                 if (parent != null) {
                     Object parentObject = parent.getUserObject();
                     if (parentObject.getClass().isArray()) {
@@ -608,16 +675,17 @@ public class ObjectPanel extends javax.swing.JPanel {
                 }
                 return true;
             } else if (columnIndex == 2 && _editable) {
-                Object object = ((ObjectTreeNode)node).getUserObject();
+                Object object = ((ObjectTreeNode) node).getUserObject();
                 if (object == null) {
                     return false;
                 } else if (object instanceof Collection || object instanceof Map || object.getClass().isArray()) {
                     return false;
                 } else {
-                    ObjectTreeNode parent = (ObjectTreeNode) ((ObjectTreeNode)node).getParent();
+                    ObjectTreeNode parent = (ObjectTreeNode) ((ObjectTreeNode) node).getParent();
                     if (parent != null) {
                         Object parentObject = parent.getUserObject();
-                        if (parentObject instanceof List || parentObject instanceof Map || parentObject.getClass().isArray()) {
+                        if (parentObject instanceof List || parentObject instanceof Map
+                                || parentObject.getClass().isArray()) {
                             return true;
                         } else {
                             return false;
@@ -628,11 +696,12 @@ public class ObjectPanel extends javax.swing.JPanel {
             }
             return false;
         }
-        
+
         /**
          * New object of class.
          * 
-         * @param theClass the the class
+         * @param theClass
+         *            the the class
          * 
          * @return the object
          */
@@ -644,8 +713,10 @@ public class ObjectPanel extends javax.swing.JPanel {
                     System.err.println(theClass + " has no constructors");
                     return null;
                 }
-                for (int i=0; i<constructors.length; i++) { // first look for void constructors
-                    if (! java.lang.reflect.Modifier.isPublic(constructors[i].getModifiers())) {
+                for (int i = 0; i < constructors.length; i++) { // first look
+                    // for void
+                    // constructors
+                    if (!java.lang.reflect.Modifier.isPublic(constructors[i].getModifiers())) {
                         continue;
                     }
                     Class[] params = constructors[i].getParameterTypes();
@@ -653,49 +724,57 @@ public class ObjectPanel extends javax.swing.JPanel {
                         return constructors[i].newInstance(new Object[0]);
                     }
                 }
-                for (int i=0; i<constructors.length; i++) { // now look for single parameter constructors
-                    if (! java.lang.reflect.Modifier.isPublic(constructors[i].getModifiers())) {
+                for (int i = 0; i < constructors.length; i++) { // now look for
+                    // single
+                    // parameter
+                    // constructors
+                    if (!java.lang.reflect.Modifier.isPublic(constructors[i].getModifiers())) {
                         continue;
                     }
                     Class[] params = constructors[i].getParameterTypes();
                     if (params.length == 1) {
                         if (params[0] == boolean.class) {
-                            return constructors[i].newInstance(new Object[] {new Boolean(false)});
+                            return constructors[i].newInstance(new Object[] { new Boolean(false) });
                         } else if (params[0] == String.class && Number.class.isAssignableFrom(aClass)) {
-                            return constructors[i].newInstance(new Object[] {new String("0")});
+                            return constructors[i].newInstance(new Object[] { new String("0") });
                         } else if (params[0] == char.class) {
-                            return constructors[i].newInstance(new Object[] {new Character('a')});
+                            return constructors[i].newInstance(new Object[] { new Character('a') });
                         }
                     }
                 }
                 StringBuffer buff = new StringBuffer();
-                for (int i=0; i<constructors.length; i++) {
+                for (int i = 0; i < constructors.length; i++) {
                     Class[] params = constructors[i].getParameterTypes();
-                    buff.append(java.lang.reflect.Modifier.toString(constructors[i].getModifiers()) + " " + theClass + "(" + params[0].getName());
-                    for (int j=1; j<params.length; j++) {
+                    buff.append(java.lang.reflect.Modifier.toString(constructors[i].getModifiers()) + " " + theClass
+                            + "(" + params[0].getName());
+                    for (int j = 1; j < params.length; j++) {
                         buff.append(", " + params[j].getName());
                     }
                     buff.append(");\n");
                 }
                 System.err.println("Cannot instantiate a " + theClass);
-                System.err.println("Please special case this in newObjectOfClass() using one of the following constructors");
+                System.err
+                        .println("Please special case this in newObjectOfClass() using one of the following constructors");
                 System.err.print(buff);
             } catch (Exception e) {
                 System.err.println("Error instantiating the new object : " + e);
             }
             return null;
         }
-        
+
         /**
          * Convert value to class.
          * 
-         * @param value the value
-         * @param theClass the the class
+         * @param value
+         *            the value
+         * @param theClass
+         *            the the class
          * 
          * @return the object
          */
         private Object convertValueToClass(Object value, Class theClass) {
-            if (theClass == value.getClass()) { // The editor did any conversion for us
+            if (theClass == value.getClass()) { // The editor did any conversion
+                // for us
                 return value;
             } else if (value instanceof String) {
                 String string = (String) value;
@@ -726,7 +805,7 @@ public class ObjectPanel extends javax.swing.JPanel {
                 } else if (theClass == Boolean.class) {
                     return Boolean.valueOf(string);
                 } else if (theClass == Character.class) {
-                    if (string.length()>0) {
+                    if (string.length() > 0) {
                         return new Character(string.charAt(0));
                     } else {
                         return null;
@@ -740,13 +819,18 @@ public class ObjectPanel extends javax.swing.JPanel {
                     }
                 }
             }
-            System.err.println("Don't know how to convert a " + value.getClass().getName() + " to a " + theClass.getName());
+            System.err.println("Don't know how to convert a " + value.getClass().getName() + " to a "
+                    + theClass.getName());
             System.err.println("Please update convertValueToClass() to support this if it is required");
             return null;
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.treetable.DefaultTreeTableModel#setValueAt(java.lang.Object, java.lang.Object, int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.util.swing.treetable.DefaultTreeTableModel#setValueAt
+         * (java.lang.Object, java.lang.Object, int)
          */
         public void setValueAt(Object aValue, Object node, int column) {
             ObjectTreeNode child = (ObjectTreeNode) node;
@@ -759,16 +843,19 @@ public class ObjectPanel extends javax.swing.JPanel {
                 childPosition = parent.getIndex(child);
             }
             Object key = child.getParentKey();
-            if (parentObject != null && !(parentObject instanceof List || parentObject instanceof Map || parentObject.getClass().isArray())) {
-                System.err.println("I only know how to edit children of List or Map, not " + parentObject.getClass().getName());
+            if (parentObject != null
+                    && !(parentObject instanceof List || parentObject instanceof Map || parentObject.getClass()
+                            .isArray())) {
+                System.err.println("I only know how to edit children of List or Map, not "
+                        + parentObject.getClass().getName());
                 return;
             }
             if (column == 0) {
                 System.err.println("Trying to edit the tree?!");
             } else if (column == 1) {
                 String type = (String) aValue;
-                if ( (childObject == null && !type.equals("void")) || 
-                     (childObject != null && !type.equals(childObject.getClass().getName())) ) {
+                if ((childObject == null && !type.equals("void"))
+                        || (childObject != null && !type.equals(childObject.getClass().getName()))) {
                     if (type.equals("void")) {
                         childObject = null;
                     } else {
@@ -781,7 +868,8 @@ public class ObjectPanel extends javax.swing.JPanel {
                     return;
                 }
             } else if (column == 2) {
-                if (childObject == null) { // this should not happen if isEditable is working
+                if (childObject == null) { // this should not happen if
+                    // isEditable is working
                     System.err.println("Please change the object type to a non-void class first!");
                     return;
                 }
@@ -789,7 +877,7 @@ public class ObjectPanel extends javax.swing.JPanel {
                 if (childObject == null) {
                     return;
                 }
-            } else { 
+            } else {
                 throw new IndexOutOfBoundsException("Tried to edit column " + column);
             }
             child = createObjectTree(childObject);
@@ -810,68 +898,92 @@ public class ObjectPanel extends javax.swing.JPanel {
                 _modified = true;
                 parent.remove(childPosition);
                 parent.insert(child, childPosition);
-                nodesChanged(parent, new int[] {childPosition});
+                nodesChanged(parent, new int[] { childPosition });
             } else {
                 _modified = true;
                 setRoot(child);
             }
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.tree.DefaultTreeModel#nodesWereInserted(javax.swing.tree.TreeNode, int[])
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.tree.DefaultTreeModel#nodesWereInserted(javax.swing.tree
+         * .TreeNode, int[])
          */
         public void nodesWereInserted(TreeNode node, int[] childIndices) {
             super.nodesWereInserted(node, childIndices);
             _modified = true;
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.tree.DefaultTreeModel#nodesWereRemoved(javax.swing.tree.TreeNode, int[], java.lang.Object[])
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.tree.DefaultTreeModel#nodesWereRemoved(javax.swing.tree
+         * .TreeNode, int[], java.lang.Object[])
          */
-        public void nodesWereRemoved(TreeNode node, int[] childIndices,
-                                     Object[] removedChildren) {
+        public void nodesWereRemoved(TreeNode node, int[] childIndices, Object[] removedChildren) {
             super.nodesWereRemoved(node, childIndices, removedChildren);
             _modified = true;
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.tree.DefaultTreeModel#nodesChanged(javax.swing.tree.TreeNode, int[])
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.tree.DefaultTreeModel#nodesChanged(javax.swing.tree.TreeNode
+         * , int[])
          */
         public void nodesChanged(TreeNode node, int[] childIndices) {
             super.nodesChanged(node, childIndices);
             _modified = true;
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.tree.DefaultTreeModel#nodeChanged(javax.swing.tree.TreeNode)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.tree.DefaultTreeModel#nodeChanged(javax.swing.tree.TreeNode
+         * )
          */
         public void nodeChanged(TreeNode node) {
             super.nodeChanged(node);
             _modified = true;
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.tree.DefaultTreeModel#nodeStructureChanged(javax.swing.tree.TreeNode)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.tree.DefaultTreeModel#nodeStructureChanged(javax.swing
+         * .tree.TreeNode)
          */
         public void nodeStructureChanged(TreeNode node) {
             super.nodeStructureChanged(node);
             _modified = true;
         }
-        
+
     }
-    
+
     /**
      * The Class ObjectTreeNode.
      */
     private class ObjectTreeNode extends DefaultMutableTreeNode {
-        
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = 3610370384138109983L;
         /** The _key. */
         private Object _key = null;
-        
+
         /**
          * Instantiates a new object tree node.
          * 
-         * @param object the object
+         * @param object
+         *            the object
          */
         public ObjectTreeNode(Object object) {
             super(object);
@@ -883,16 +995,17 @@ public class ObjectPanel extends javax.swing.JPanel {
                 setAllowsChildren(false);
             }
         }
-        
+
         /**
          * Sets the parent key.
          * 
-         * @param key the new parent key
+         * @param key
+         *            the new parent key
          */
         public void setParentKey(Object key) {
             _key = key;
         }
-        
+
         /**
          * Gets the parent key.
          * 
@@ -901,58 +1014,74 @@ public class ObjectPanel extends javax.swing.JPanel {
         public Object getParentKey() {
             return _key;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.tree.DefaultMutableTreeNode#toString()
          */
         public String toString() {
             // if we are the root, return "root", otherwise we return the key
-            return getParent() == null ? "root" : ( _key == null ? "null" : _key.toString() );
+            return getParent() == null ? "root" : (_key == null ? "null" : _key.toString());
         }
     }
-    
+
     /**
      * The Class DateRenderer.
-     */    
+     */
     private class DateRenderer extends javax.swing.table.DefaultTableCellRenderer {
-	
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = 2537487788429821771L;
         /** The _df. */
         private DateFormat _df;
-	
+
         /**
          * Instantiates a new date renderer.
          */
-        public DateRenderer() { super(); }
+        public DateRenderer() {
+            super();
+        }
 
-	/* (non-Javadoc)
-	 * @see javax.swing.table.DefaultTableCellRenderer#setValue(java.lang.Object)
-	 */
-	public void setValue(Object value) {
-	    if (_df == null) {
-		_df = DateFormat.getDateTimeInstance();
-	    }
-	    setText((value == null) ? "" : _df.format(value));
-	}
-        
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.table.DefaultTableCellRenderer#setValue(java.lang.Object)
+         */
+        public void setValue(Object value) {
+            if (_df == null) {
+                _df = DateFormat.getDateTimeInstance();
+            }
+            setText((value == null) ? "" : _df.format(value));
+        }
+
     }
-    
+
     /**
      * The Class DateEditor.
      */
     private class DateEditor extends javax.swing.AbstractCellEditor implements javax.swing.table.TableCellEditor {
-        
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = 9170064965165372166L;
+
         /** The _value. */
         private Object _value = null;
-        
+
         /** The _text field. */
         private javax.swing.JTextField _textField;
-        
+
         /** The _df. */
         private DateFormat _df;
-        
+
         /** The click count to start. */
         private int clickCountToStart = 2;
-        
+
         /**
          * Instantiates a new date editor.
          */
@@ -960,18 +1089,23 @@ public class ObjectPanel extends javax.swing.JPanel {
             _textField = new javax.swing.JTextField();
             _df = DateFormat.getDateTimeInstance();
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.AbstractCellEditor#isCellEditable(java.util.EventObject)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.AbstractCellEditor#isCellEditable(java.util.EventObject)
          */
         public boolean isCellEditable(java.util.EventObject anEvent) {
-	    if (anEvent instanceof java.awt.event.MouseEvent) { 
-		return ((java.awt.event.MouseEvent)anEvent).getClickCount() >= clickCountToStart;
-	    }
-	    return true;
-	}
-        
-        /* (non-Javadoc)
+            if (anEvent instanceof java.awt.event.MouseEvent) {
+                return ((java.awt.event.MouseEvent) anEvent).getClickCount() >= clickCountToStart;
+            }
+            return true;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.CellEditor#getCellEditorValue()
          */
         public Object getCellEditorValue() {
@@ -982,11 +1116,16 @@ public class ObjectPanel extends javax.swing.JPanel {
                 return _value;
             }
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.table.TableCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.table.TableCellEditor#getTableCellEditorComponent(javax
+         * .swing.JTable, java.lang.Object, boolean, int, int)
          */
-        public java.awt.Component getTableCellEditorComponent(javax.swing.JTable table, Object value, boolean isSelected, int row, int column) {
+        public java.awt.Component getTableCellEditorComponent(javax.swing.JTable table, Object value,
+                boolean isSelected, int row, int column) {
             _value = value;
             _textField.setText(_df.format(value));
             return _textField;
@@ -996,18 +1135,28 @@ public class ObjectPanel extends javax.swing.JPanel {
 
     /**
      * The Class ArrayRenderer.
-     */    
+     */
     private class ArrayRenderer extends javax.swing.table.DefaultTableCellRenderer {
-		
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = -6202208830137850109L;
+
         /**
          * Instantiates a new array renderer.
          */
-        public ArrayRenderer() { super(); }
+        public ArrayRenderer() {
+            super();
+        }
 
-	/* (non-Javadoc)
-	 * @see javax.swing.table.DefaultTableCellRenderer#setValue(java.lang.Object)
-	 */
-	public void setValue(Object value) {
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.table.DefaultTableCellRenderer#setValue(java.lang.Object)
+         */
+        public void setValue(Object value) {
             if (value.getClass().isArray()) {
                 StringBuffer buff = new StringBuffer();
                 buff.append("{");
@@ -1015,7 +1164,7 @@ public class ObjectPanel extends javax.swing.JPanel {
                 if (length > 0) {
                     buff.append(java.lang.reflect.Array.get(value, 0));
                 }
-                for (int i=1; i<length; i++) {
+                for (int i = 1; i < length; i++) {
                     buff.append(", ").append(java.lang.reflect.Array.get(value, i));
                 }
                 buff.append("}");
@@ -1023,8 +1172,8 @@ public class ObjectPanel extends javax.swing.JPanel {
             } else {
                 setText((value == null) ? "" : value.toString());
             }
-	}
-        
+        }
+
     }
 
 }

@@ -22,9 +22,9 @@
 
 package edu.lnmiit.wavd.util;
 
-import java.io.InputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 
 // TODO: Auto-generated Javadoc
@@ -33,16 +33,18 @@ import java.io.PrintStream;
  */
 
 public class LogInputStream extends FilterInputStream {
-    
+
     /** The _ps. */
     private PrintStream _ps;
-    
+
     /**
      * Instantiates a new log input stream.
      * 
-     * @param is the is
-     * @param ps the ps
-     */    
+     * @param is
+     *            the is
+     * @param ps
+     *            the ps
+     */
     public LogInputStream(InputStream is, PrintStream ps) {
         super(is);
         if (is == null) {
@@ -50,8 +52,10 @@ public class LogInputStream extends FilterInputStream {
         }
         _ps = ps;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterInputStream#read()
      */
     public int read() throws IOException {
@@ -60,19 +64,22 @@ public class LogInputStream extends FilterInputStream {
             _ps.write(b);
             _ps.flush();
         } else {
-            // we close to signal downstream readers that the inputstream has closed
+            // we close to signal downstream readers that the inputstream has
+            // closed
             _ps.close();
         }
         return b;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterInputStream#read(byte[], int, int)
      */
     public int read(byte[] b, int off, int len) throws IOException {
         int num = super.read(b, off, len);
         if (num > 0) {
-            _ps.write(b,off,num);
+            _ps.write(b, off, num);
             _ps.flush();
         } else {
             _ps.close();
@@ -80,11 +87,12 @@ public class LogInputStream extends FilterInputStream {
         return num;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterInputStream#markSupported()
      */
     public boolean markSupported() {
         return false;
     }
 }
-

@@ -22,51 +22,51 @@
 
 package edu.lnmiit.wavd.parser;
 
-
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+//import java.util.logging.Logger;
 
 import edu.lnmiit.wavd.model.HttpUrl;
 import edu.lnmiit.wavd.model.Message;
 import edu.lnmiit.wavd.util.MRUCache;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.logging.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Parser.
  */
 public class Parser {
-    
+
     /** The _parsers. */
     private static List _parsers = new ArrayList();
-    
+
     /** The _logger. */
-    private static Logger _logger = Logger.getLogger("org.owasp.webscarab.parser.Parser");
-    
+    //private static Logger _logger = Logger.getLogger("org.owasp.webscarab.parser.Parser");
+
     // we cache the 8 most recent messages and their parsed versions
     /** The _cache. */
     private static MRUCache _cache = new MRUCache(8);
-    
+
     static {
         _parsers.add(new HTMLParser());
     }
-    
+
     /**
      * Instantiates a new parser.
      */
     private Parser() {
     }
-    
+
     /**
      * Parses the.
      * 
-     * @param url the url
-     * @param message the message
+     * @param url
+     *            the url
+     * @param message
+     *            the message
      * 
      * @return the object
-     */    
+     */
     public static Object parse(HttpUrl url, Message message) {
         if (_cache.containsKey(message)) {
             return _cache.get(message);
@@ -74,13 +74,14 @@ public class Parser {
         Iterator it = _parsers.iterator();
         Object parsed = null;
         ContentParser parser;
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             parser = (ContentParser) it.next();
             parsed = parser.parseMessage(url, message);
-            if (parsed != null) break;
+            if (parsed != null)
+                break;
         }
         _cache.put(message, parsed);
         return parsed;
     }
-    
+
 }

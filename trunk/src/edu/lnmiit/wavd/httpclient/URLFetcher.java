@@ -23,30 +23,21 @@
 package edu.lnmiit.wavd.httpclient;
 
 import java.io.IOException;
-
-import java.net.Socket;
-import java.net.InetSocketAddress;
-
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.logging.Logger;
 
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.SSLContext;
 
-import java.util.logging.Logger;
 import jcifs.ntlmssp.NtlmMessage;
 import jcifs.ntlmssp.Type1Message;
 import jcifs.ntlmssp.Type2Message;
 import jcifs.ntlmssp.Type3Message;
 import jcifs.util.Base64;
-
-
-
 import edu.lnmiit.wavd.model.HttpUrl;
 import edu.lnmiit.wavd.model.NamedValue;
 import edu.lnmiit.wavd.model.Request;
@@ -58,109 +49,115 @@ import edu.lnmiit.wavd.util.Glob;
  * The Class URLFetcher.
  */
 public class URLFetcher implements HTTPClient {
-    
+
     /** The watcher. */
-    private static SocketWatcher watcher = new SocketWatcher();
-    
+    // private static SocketWatcher watcher = new SocketWatcher();
     // These represent the SSL classes required to connect to the server.
     /** The _key fingerprint. */
     private String _keyFingerprint = null;
-    
+
     /** The _ssl context manager. */
     private SSLContextManager _sslContextManager = null;
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger(getClass().getName());
-    
+
     /** The _http proxy. */
     private String _httpProxy = "";
-    
+
     /** The _http proxy port. */
     private int _httpProxyPort = -1;
-    
+
     /** The _https proxy. */
     private String _httpsProxy = "";
-    
+
     /** The _https proxy port. */
     private int _httpsProxyPort = -1;
-    
+
     /** The _no proxy. */
     private String[] _noProxy = new String[0];
-    
+
     /** The _socket. */
     private Socket _socket = null;
-    
+
     /** The _direct. */
     private boolean _direct = false;
-    
+
     /** The _response. */
     private Response _response = null;
-    
+
     // these represent an already connected socket, and the end point thereof.
     /** The _in. */
     private InputStream _in = null;
-    
+
     /** The _out. */
     private OutputStream _out = null;
-    
+
     /** The _host. */
     private String _host = null;
-    
+
     /** The _port. */
     private int _port = 0;
-    
+
     /** The _last request time. */
     private long _lastRequestTime = 0;
-    
+
     /** The _timeout. */
     private int _timeout = 0;
-    
+
     /** The _connect timeout. */
     private int _connectTimeout = 10000;
-    
+
     /** The _authenticator. */
     private Authenticator _authenticator = null;
-    
+
     /** The _auth creds. */
     private String _authCreds = null;
-    
+
     /** The _proxy auth creds. */
     private String _proxyAuthCreds = null;
-    
+
     /**
      * Instantiates a new uRL fetcher.
      */
     public URLFetcher() {
     }
-    
+
     /**
      * Sets the http proxy.
      * 
-     * @param proxy the proxy
-     * @param proxyport the proxyport
+     * @param proxy
+     *            the proxy
+     * @param proxyport
+     *            the proxyport
      */
     public void setHttpProxy(String proxy, int proxyport) {
         _httpProxy = proxy;
-        if (_httpProxy == null) _httpProxy = "";
+        if (_httpProxy == null)
+            _httpProxy = "";
         _httpProxyPort = proxyport;
     }
-    
+
     /**
      * Sets the https proxy.
      * 
-     * @param proxy the proxy
-     * @param proxyport the proxyport
+     * @param proxy
+     *            the proxy
+     * @param proxyport
+     *            the proxyport
      */
     public void setHttpsProxy(String proxy, int proxyport) {
         _httpsProxy = proxy;
-        if (_httpsProxy == null) _httpsProxy = "";
+        if (_httpsProxy == null)
+            _httpsProxy = "";
         _httpsProxyPort = proxyport;
     }
-    
+
     /**
      * Sets the no proxy.
      * 
-     * @param noproxy the new no proxy
+     * @param noproxy
+     *            the new no proxy
      */
     public void setNoProxy(String[] noproxy) {
         if (noproxy == null) {
@@ -172,36 +169,40 @@ public class URLFetcher implements HTTPClient {
             System.arraycopy(noproxy, 0, _noProxy, 0, noproxy.length);
         }
     }
-    
+
     /**
      * Sets the sSL context manager.
      * 
-     * @param sslContextManager the new sSL context manager
+     * @param sslContextManager
+     *            the new sSL context manager
      */
     public void setSSLContextManager(SSLContextManager sslContextManager) {
         _sslContextManager = sslContextManager;
     }
-    
+
     /**
      * Sets the timeouts.
      * 
-     * @param connectTimeout the connect timeout
-     * @param readTimeout the read timeout
+     * @param connectTimeout
+     *            the connect timeout
+     * @param readTimeout
+     *            the read timeout
      */
     public void setTimeouts(int connectTimeout, int readTimeout) {
         _connectTimeout = connectTimeout;
         _timeout = readTimeout;
     }
-    
+
     /**
      * Sets the authenticator.
      * 
-     * @param authenticator the new authenticator
+     * @param authenticator
+     *            the new authenticator
      */
     public void setAuthenticator(Authenticator authenticator) {
         _authenticator = authenticator;
     }
-    
+
     /**
      * Gets the authenticator.
      * 
@@ -210,13 +211,18 @@ public class URLFetcher implements HTTPClient {
     public Authenticator getAuthenticator() {
         return _authenticator;
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.httpclient.HTTPClient#fetchResponse(edu.lnmiit.wavd.model.Request)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.httpclient.HTTPClient#fetchResponse(edu.lnmiit.wavd.model
+     * .Request)
      */
     public Response fetchResponse(Request request) throws IOException {
         if (_response != null) {
-            _response.flushContentStream(); // flush the content stream, just in case it wasn't read
+            _response.flushContentStream(); // flush the content stream, just in
+            // case it wasn't read
             _response = null;
         }
         if (request == null) {
@@ -228,16 +234,16 @@ public class URLFetcher implements HTTPClient {
             _logger.severe("Asked to fetch a request with a null URL");
             return null;
         }
-        
+
         // if the previous auth method was not "Basic", force a new connection
         if (_authCreds != null && !_authCreds.startsWith("Basic"))
             _lastRequestTime = 0;
-        if (_proxyAuthCreds != null && !_proxyAuthCreds.startsWith("Basic")) 
+        if (_proxyAuthCreds != null && !_proxyAuthCreds.startsWith("Basic"))
             _lastRequestTime = 0;
-        
+
         // Get any provided credentials from the request
         _authCreds = request.getHeader("Authorization");
-        
+
         String keyFingerprint = request.getHeader("X-SSLClientCertificate");
         request.deleteHeader("X-SSLClientCertificate");
         if (keyFingerprint == null && _keyFingerprint == null) {
@@ -249,43 +255,46 @@ public class URLFetcher implements HTTPClient {
             _keyFingerprint = keyFingerprint;
             _lastRequestTime = 0;
         }
-        
+
         String status;
-        
+
         String oldProxyAuthHeader = null;
-        if (_proxyAuthCreds == null && _authenticator!= null && useProxy(url))
-            _proxyAuthCreds = _authenticator.getProxyCredentials(url.toString().startsWith("https") ? _httpsProxy : _httpProxy, null);
+        if (_proxyAuthCreds == null && _authenticator != null && useProxy(url))
+            _proxyAuthCreds = _authenticator.getProxyCredentials(url.toString().startsWith("https") ? _httpsProxy
+                    : _httpProxy, null);
         String proxyAuthHeader = constructAuthenticationHeader(null, _proxyAuthCreds);
-        
+
         String oldAuthHeader = null;
-        if (_authCreds == null && _authenticator!= null)
+        if (_authCreds == null && _authenticator != null)
             _authCreds = _authenticator.getCredentials(url, null);
         String authHeader = constructAuthenticationHeader(null, _authCreds);
-        
+
         int tries = 0;
         do {
             // make sure that we have a "clean" request each time through
             request.deleteHeader("Authorization");
             request.deleteHeader("Proxy-Authorization");
-            
+
             _response = null;
             connect(url);
             if (_response != null) { // there was an error opening the socket
                 return _response;
             }
-            
+
             if (authHeader != null) {
                 request.setHeader("Authorization", authHeader);
                 if (authHeader.startsWith("NTLM") || authHeader.startsWith("Negotiate")) {
                     if (request.getVersion().equals("HTTP/1.0")) {
-                        // we have to explicitly tell the server to keep the connection alive for 1.0
+                        // we have to explicitly tell the server to keep the
+                        // connection alive for 1.0
                         request.setHeader("Connection", "Keep-Alive");
                     } else {
                         request.deleteHeader("Connection");
                     }
                 }
             }
-            // depending on whether we are connected directly to the server, or via a proxy
+            // depending on whether we are connected directly to the server, or
+            // via a proxy
             if (_direct) {
                 request.writeDirect(_out);
             } else {
@@ -293,7 +302,8 @@ public class URLFetcher implements HTTPClient {
                     request.setHeader("Proxy-Authorization", proxyAuthHeader);
                     if (proxyAuthHeader.startsWith("NTLM") || proxyAuthHeader.startsWith("Negotiate")) {
                         if (request.getVersion().equals("HTTP/1.0")) {
-                            // we have to explicitly tell the server to keep the connection alive for 1.0
+                            // we have to explicitly tell the server to keep the
+                            // connection alive for 1.0
                             request.setHeader("Connection", "Keep-Alive");
                         } else {
                             request.deleteHeader("Connection");
@@ -304,28 +314,30 @@ public class URLFetcher implements HTTPClient {
             }
             _out.flush();
             _logger.finest("Request : \n" + request.toString());
-            
+
             _response = new Response();
             _response.setRequest(request);
-            
+
             // test for spurious 100 header from IIS 4 and 5.
-            // See http://mail.python.org/pipermail/python-list/2000-December/023204.html
+            // See
+            //http://mail.python.org/pipermail/python-list/2000-December/023204.
+            // html
             _logger.fine("Reading the response");
             do {
                 _response.read(_in);
                 status = _response.getStatus();
             } while (status.equals("100"));
-            
+
             {
                 StringBuffer buff = new StringBuffer();
                 buff.append(_response.getStatusLine()).append("\n");
                 NamedValue[] headers = _response.getHeaders();
                 if (headers != null)
-                    for (int i=0; i< headers.length; i++)
+                    for (int i = 0; i < headers.length; i++)
                         buff.append(headers[i].getName()).append(": ").append(headers[i].getValue()).append("\n");
                 _logger.finest("Response:\n" + buff.toString());
             }
-            
+
             if (status.equals("407")) {
                 _response.flushContentStream();
                 oldProxyAuthHeader = proxyAuthHeader;
@@ -339,7 +351,7 @@ public class URLFetcher implements HTTPClient {
                     proxyAuthHeader = null;
                 }
             }
-            
+
             if (status.equals("401")) {
                 _response.flushContentStream();
                 oldAuthHeader = authHeader;
@@ -354,18 +366,21 @@ public class URLFetcher implements HTTPClient {
                     authHeader = null;
                 }
             }
-            
-            // if the request method is HEAD, we get no contents, EVEN though there
+
+            // if the request method is HEAD, we get no contents, EVEN though
+            // there
             // may be a Content-Length header.
-            if (request.getMethod().equals("HEAD")) _response.setNoBody();
-            
-            _logger.info(request.getURL() +" : " + _response.getStatusLine());
-            
+            if (request.getMethod().equals("HEAD"))
+                _response.setNoBody();
+
+            _logger.info(request.getURL() + " : " + _response.getStatusLine());
+
             String connection = _response.getHeader("Proxy-Connection");
             if (connection != null && "close".equalsIgnoreCase(connection)) {
                 _in = null;
                 _out = null;
-                // do NOT close the socket itself, since the message body has not yet been read!
+                // do NOT close the socket itself, since the message body has
+                // not yet been read!
             } else {
                 connection = _response.getHeader("Connection");
                 String version = request.getVersion();
@@ -377,41 +392,47 @@ public class URLFetcher implements HTTPClient {
                     _logger.info("Closing connection!");
                     _in = null;
                     _out = null;
-                    // do NOT close the socket itself, since the message body has not yet been read!
+                    // do NOT close the socket itself, since the message body
+                    // has not yet been read!
                 }
             }
-            tries ++;
-        } while (tries < 3 && ((status.equals("401") && authHeader != null) || (status.equals("407") && proxyAuthHeader != null)));
-        
+            tries++;
+        } while (tries < 3
+                && ((status.equals("401") && authHeader != null) || (status.equals("407") && proxyAuthHeader != null)));
+
         if (_authCreds != null)
             request.setHeader("Authorization", _authCreds);
         // There is not really a good reason to keep this header
         request.deleteHeader("Proxy-Authorization");
         if (_keyFingerprint != null)
             request.setHeader("X-SSLClientCertificate", _keyFingerprint);
-        
+
         return _response;
     }
-    
+
     /**
      * Connect.
      * 
-     * @param url the url
+     * @param url
+     *            the url
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     private void connect(HttpUrl url) throws IOException {
-        if (! invalidSocket(url)) return;
+        if (!invalidSocket(url))
+            return;
         _logger.fine("Opening a new connection");
         _socket = new Socket();
         _socket.setSoTimeout(_timeout);
         _direct = true;
-        
-        // We record where we are connected to, in case we might reuse this socket later
+
+        // We record where we are connected to, in case we might reuse this
+        // socket later
         _host = url.getHost();
         _port = url.getPort();
         boolean ssl = url.getScheme().equalsIgnoreCase("https");
-        
+
         if (useProxy(url)) {
             if (!ssl) {
                 _logger.fine("Connect to " + _httpProxy + ":" + _httpProxyPort);
@@ -458,13 +479,13 @@ public class URLFetcher implements HTTPClient {
                 _logger.fine("HTTPS CONNECT successful");
             }
         } else {
-            _logger.fine("Connect to " + _host + ":" + _port );
+            _logger.fine("Connect to " + _host + ":" + _port);
             _socket.connect(new InetSocketAddress(_host, _port), _connectTimeout);
         }
-        
+
         if (ssl) {
             // if no fingerprint is specified, get the default one
-            if (_keyFingerprint == null) 
+            if (_keyFingerprint == null)
                 _keyFingerprint = _sslContextManager.getDefaultKey();
             _logger.fine("Key fingerprint is " + _keyFingerprint);
             // get the associated context manager
@@ -475,7 +496,8 @@ public class URLFetcher implements HTTPClient {
             // HTTPS port of the specified web server.
             try {
                 SSLSocketFactory factory = (SSLSocketFactory) sslContext.getSocketFactory();
-                SSLSocket sslsocket=(SSLSocket)factory.createSocket(_socket,_socket.getInetAddress().getHostName(),_socket.getPort(),true);
+                SSLSocket sslsocket = (SSLSocket) factory.createSocket(_socket, _socket.getInetAddress().getHostName(),
+                        _socket.getPort(), true);
                 sslsocket.setUseClientMode(true);
                 _socket = sslsocket;
                 _socket.setSoTimeout(_timeout);
@@ -488,24 +510,25 @@ public class URLFetcher implements HTTPClient {
         _in = _socket.getInputStream();
         _out = _socket.getOutputStream();
     }
-    
+
     /**
      * Use proxy.
      * 
-     * @param url the url
+     * @param url
+     *            the url
      * 
      * @return true, if successful
      */
     private boolean useProxy(HttpUrl url) {
         String host = url.getHost();
         boolean ssl = url.getScheme().equalsIgnoreCase("https");
-        
+
         if (ssl && "".equals(_httpsProxy)) {
             return false;
         } else if (!ssl && "".equals(_httpProxy)) {
             return false;
         } else {
-            for (int i=0; i<_noProxy.length; i++) {
+            for (int i = 0; i < _noProxy.length; i++) {
                 if (_noProxy[i].startsWith(".") && host.endsWith(_noProxy[i])) {
                     return false;
                 } else if (_noProxy[i].equals("<local>") && host.indexOf('.') < 0) {
@@ -514,7 +537,8 @@ public class URLFetcher implements HTTPClient {
                     return false;
                 } else {
                     try {
-                        if (host.matches(Glob.globToRE(_noProxy[i]))) return false;
+                        if (host.matches(Glob.globToRE(_noProxy[i])))
+                            return false;
                     } catch (Exception e) {
                         // fail silently
                     }
@@ -523,16 +547,18 @@ public class URLFetcher implements HTTPClient {
         }
         return true;
     }
-    
+
     /**
      * Invalid socket.
      * 
-     * @param url the url
+     * @param url
+     *            the url
      * 
      * @return true, if successful
      */
     private boolean invalidSocket(HttpUrl url) {
-        if (_host == null || _in == null) return true; // _out may be null if we are testing
+        if (_host == null || _in == null)
+            return true; // _out may be null if we are testing
         // the right host
         if (url.getHost().equals(_host)) {
             int urlport = url.getPort();
@@ -558,19 +584,20 @@ public class URLFetcher implements HTTPClient {
         }
         return true;
     }
-    
+
     /**
      * Construct authentication header.
      * 
-     * @param challenges the challenges
-     * @param credentials the credentials
+     * @param challenges
+     *            the challenges
+     * @param credentials
+     *            the credentials
      * 
      * @return the string
      */
     private String constructAuthenticationHeader(String[] challenges, String credentials) {
-        /* credentials string looks like:
-         * Basic BASE64(username:password)
-         * or
+        /*
+         * credentials string looks like: Basic BASE64(username:password) or
          * NTLM BASE64(domain\ username:password)
          */
         // _logger.info("Constructing auth header from " + credentials);
@@ -580,7 +607,7 @@ public class URLFetcher implements HTTPClient {
             return credentials;
         }
         if (challenges != null) {
-            for (int i=0; i<challenges.length; i++) {
+            for (int i = 0; i < challenges.length; i++) {
                 _logger.fine("Challenge: " + challenges[i]);
                 if (challenges[i].startsWith("NTLM") && credentials.startsWith("NTLM")) {
                     return attemptNegotiation(challenges[i], credentials);
@@ -594,17 +621,19 @@ public class URLFetcher implements HTTPClient {
         }
         return null;
     }
-    
+
     /**
      * Attempt negotiation.
      * 
-     * @param challenge the challenge
-     * @param credentials the credentials
+     * @param challenge
+     *            the challenge
+     * @param credentials
+     *            the credentials
      * 
      * @return the string
      */
     private String attemptNegotiation(String challenge, String credentials) {
-        String authProperty = null;
+        // String authProperty = null;
         String authMethod = null;
         String authorization = null;
         if (challenge.startsWith("NTLM")) {
@@ -624,7 +653,8 @@ public class URLFetcher implements HTTPClient {
                 authorization = challenge.substring(10).trim();
             }
         }
-        if (authMethod == null) return null;
+        if (authMethod == null)
+            return null;
         NtlmMessage message = null;
         if (authorization != null) {
             try {
@@ -638,51 +668,22 @@ public class URLFetcher implements HTTPClient {
         if (message == null) {
             message = new Type1Message();
         } else {
-            credentials = credentials.substring(authMethod.length()+1); // strip off the "NTLM " or "Negotiate "
-            credentials = new String(Base64.decode(credentials)); // decode the base64
+            credentials = credentials.substring(authMethod.length() + 1); // strip
+            // off
+            // the
+            // "NTLM "
+            // or
+            // "Negotiate "
+            credentials = new String(Base64.decode(credentials)); // decode the
+            // base64
             String domain = credentials.substring(0, credentials.indexOf("\\"));
-            String user = credentials.substring(domain.length()+1, credentials.indexOf(":"));
-            String password = credentials.substring(domain.length()+user.length()+2);
+            String user = credentials.substring(domain.length() + 1, credentials.indexOf(":"));
+            String password = credentials.substring(domain.length() + user.length() + 2);
             _logger.fine("Domain : '" + domain + "' username : '" + user + "' password length : " + password.length());
             Type2Message type2 = (Type2Message) message;
             message = new Type3Message(type2, password, domain, user, Type3Message.getDefaultWorkstation());
         }
         return authMethod + " " + Base64.encode(message.toByteArray());
     }
-    
-    /**
-     * The Class SocketWatcher.
-     */
-    private static class SocketWatcher {
-        
-        /** The sockets. */
-        private Map sockets = new HashMap();
-        
-        /**
-         * Instantiates a new socket watcher.
-         */
-        public SocketWatcher() {}
-        
-        /**
-         * Adds the.
-         * 
-         * @param socket the socket
-         */
-        public synchronized void add(Socket socket) {
-            Iterator it = sockets.keySet().iterator();
-            while (it.hasNext()) {
-                Socket sock = (Socket) it.next();
-                Thread thread = (Thread) sockets.get(sock);
-                if (!thread.isAlive() && sock.isConnected()) {
-                    try {
-                        sock.close();
-                    } catch (Exception e) {}
-                    it.remove();
-                }
-            }
-            sockets.put(socket, Thread.currentThread());
-        }
-        
-    }
-    
+
 }

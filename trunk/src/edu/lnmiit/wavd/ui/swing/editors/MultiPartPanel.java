@@ -16,17 +16,11 @@
 
 package edu.lnmiit.wavd.ui.swing.editors;
 
-import java.util.List;
-import java.util.ArrayList;
-
-import javax.swing.JSplitPane;
-
-
 import javax.swing.AbstractListModel;
+import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 
 import edu.lnmiit.wavd.model.Message;
 import edu.lnmiit.wavd.model.MultiPartContent;
@@ -37,49 +31,51 @@ import edu.lnmiit.wavd.ui.swing.MessagePanel;
  * The Class MultiPartPanel.
  */
 public class MultiPartPanel extends javax.swing.JPanel implements ByteArrayEditor {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3593278580031912510L;
+
     /** The _data. */
     private byte[] _data = null;
-    
+
     /** The _modified. */
     private boolean _modified = false;
-    
+
     /** The _editable. */
     private boolean _editable = false;
-    
-    /** The _boundary. */
-    private byte[] _boundary = null;
-    
+
     /** The _parts. */
-    private List _parts = new ArrayList();
-    
+    // private List _parts = new ArrayList();
     /** The _content. */
     private MultiPartContent _content = null;
-    
+
     /** The _parts list. */
     private PartsListModel _partsList = new PartsListModel();
-    
+
     /** The _selected. */
     private int _selected = -1;
-    
+
     /** The _mp. */
     private MessagePanel _mp = null;
-    
+
     /**
      * Instantiates a new multi part panel.
      */
     public MultiPartPanel() {
         initComponents();
         setName("MultiPart");
-        
+
         _mp = new MessagePanel(JSplitPane.HORIZONTAL_SPLIT);
         contentPanel.add(_mp);
-        
+
         partList.setModel(_partsList);
         partList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         partList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-	    public void valueChanged(ListSelectionEvent evt) {
-                if (evt.getValueIsAdjusting()) return;
+            public void valueChanged(ListSelectionEvent evt) {
+                if (evt.getValueIsAdjusting())
+                    return;
                 if (_editable && _mp.isModified() && _selected > -1) {
                     _modified = true;
                     Message message = _mp.getMessage();
@@ -94,17 +90,24 @@ public class MultiPartPanel extends javax.swing.JPanel implements ByteArrayEdito
             }
         });
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setEditable(boolean)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setEditable(boolean)
      */
     public void setEditable(boolean editable) {
         _editable = editable;
         _mp.setEditable(editable);
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setBytes(java.lang.String, byte[])
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setBytes(java.lang.String
+     * , byte[])
      */
     public void setBytes(String contentType, byte[] bytes) {
         int size = 0;
@@ -114,22 +117,26 @@ public class MultiPartPanel extends javax.swing.JPanel implements ByteArrayEdito
         _modified = false;
         _data = bytes;
         _content = new MultiPartContent(contentType, bytes);
-        if (size>0) {
-            _partsList.fireIntervalRemoved(0, size-1);
+        if (size > 0) {
+            _partsList.fireIntervalRemoved(0, size - 1);
         }
-        if (_content.size()>0) {
-            _partsList.fireIntervalAdded(0, _content.size()-1);
+        if (_content.size() > 0) {
+            _partsList.fireIntervalAdded(0, _content.size() - 1);
         }
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#isModified()
      */
     public boolean isModified() {
         return (_editable && (_modified || _mp.isModified()));
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#getBytes()
      */
     public byte[] getBytes() {
@@ -142,11 +149,11 @@ public class MultiPartPanel extends javax.swing.JPanel implements ByteArrayEdito
         }
         return _data;
     }
-    
+
     /**
      * Inits the components.
      */
-    private void initComponents() {//GEN-BEGIN:initComponents
+    private void initComponents() {// GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -172,70 +179,86 @@ public class MultiPartPanel extends javax.swing.JPanel implements ByteArrayEdito
         gridBagConstraints.weighty = 1.0;
         add(contentPanel, gridBagConstraints);
 
-    }//GEN-END:initComponents
-    
-    
+    }// GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The content panel. */
     private javax.swing.JPanel contentPanel;
-    
+
     /** The j scroll pane1. */
     private javax.swing.JScrollPane jScrollPane1;
-    
+
     /** The part list. */
     private javax.swing.JList partList;
+
     // End of variables declaration//GEN-END:variables
-    
+
     /**
      * The Class PartsListModel.
      */
     private class PartsListModel extends AbstractListModel {
-        
-        /* (non-Javadoc)
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = -3379886412652689621L;
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.ListModel#getElementAt(int)
          */
         public Object getElementAt(int index) {
             return _content.getPartName(index);
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.ListModel#getSize()
          */
         public int getSize() {
-            if (_content == null) return 0;
+            if (_content == null)
+                return 0;
             return _content.size();
         }
-        
+
         /**
          * Fire interval added.
          * 
-         * @param index0 the index0
-         * @param index1 the index1
+         * @param index0
+         *            the index0
+         * @param index1
+         *            the index1
          */
         public void fireIntervalAdded(int index0, int index1) {
             super.fireIntervalAdded(PartsListModel.this, index0, index1);
         }
-        
+
         /**
          * Fire interval removed.
          * 
-         * @param index0 the index0
-         * @param index1 the index1
+         * @param index0
+         *            the index0
+         * @param index1
+         *            the index1
          */
         public void fireIntervalRemoved(int index0, int index1) {
             super.fireIntervalRemoved(PartsListModel.this, index0, index1);
         }
-        
+
         /**
          * Fire contents changed.
          * 
-         * @param index0 the index0
-         * @param index1 the index1
+         * @param index0
+         *            the index0
+         * @param index1
+         *            the index1
          */
         public void fireContentsChanged(int index0, int index1) {
             super.fireContentsChanged(PartsListModel.this, index0, index1);
         }
-        
+
     }
-    
+
 }

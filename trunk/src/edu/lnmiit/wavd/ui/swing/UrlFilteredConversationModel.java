@@ -27,28 +27,31 @@ import edu.lnmiit.wavd.model.HttpUrl;
  * The Class UrlFilteredConversationModel.
  */
 public class UrlFilteredConversationModel extends FilteredConversationModel {
-    
+
     /** The _model. */
     private ConversationModel _model;
-    
+
     /** The _url. */
     private HttpUrl _url = null;
-    
+
     /**
      * Instantiates a new url filtered conversation model.
      * 
-     * @param model the model
-     * @param cmodel the cmodel
+     * @param model
+     *            the model
+     * @param cmodel
+     *            the cmodel
      */
     public UrlFilteredConversationModel(FrameworkModel model, ConversationModel cmodel) {
         super(model, cmodel);
         _model = cmodel;
     }
-    
+
     /**
      * Sets the url.
      * 
-     * @param url the new url
+     * @param url
+     *            the new url
      */
     public void setUrl(HttpUrl url) {
         if (url == _url) {
@@ -58,16 +61,20 @@ public class UrlFilteredConversationModel extends FilteredConversationModel {
             updateConversations();
         }
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.model.FilteredConversationModel#shouldFilter(edu.lnmiit.wavd.model.ConversationID)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.model.FilteredConversationModel#shouldFilter(edu.lnmiit
+     * .wavd.model.ConversationID)
      */
     public boolean shouldFilter(ConversationID id) {
         if (_url == null) {
             return false;
         } else {
-            return ! _url.equals(_model.getRequestUrl(id));
+            return !_url.equals(_model.getRequestUrl(id));
         }
     }
-    
+
 }

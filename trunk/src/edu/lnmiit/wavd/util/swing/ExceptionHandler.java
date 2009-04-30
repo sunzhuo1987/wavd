@@ -18,7 +18,6 @@ package edu.lnmiit.wavd.util.swing;
 
 import java.awt.Component;
 import java.awt.Frame;
-
 import java.io.PrintStream;
 
 // TODO: Auto-generated Javadoc
@@ -26,13 +25,18 @@ import java.io.PrintStream;
  * The Class ExceptionHandler.
  */
 public class ExceptionHandler extends javax.swing.JDialog {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5492297969353969891L;
+
     /** The _parent. */
     private static Frame _parent = null;
-    
+
     /** The _disabled. */
     private static boolean _disabled = false;
-    
+
     /**
      * Instantiates a new exception handler.
      */
@@ -41,48 +45,50 @@ public class ExceptionHandler extends javax.swing.JDialog {
         initComponents();
         getRootPane().setDefaultButton(okButton);
     }
-    
+
     /**
      * Sets the parent component.
      * 
-     * @param component the new parent component
+     * @param component
+     *            the new parent component
      */
     public static void setParentComponent(Component component) {
         _parent = null;
-        while (component != null && component.getParent() != null) 
+        while (component != null && component.getParent() != null)
             component = component.getParent();
-        if (component != null && component instanceof Frame) 
+        if (component != null && component instanceof Frame)
             _parent = (Frame) component;
     }
-    
+
     /**
      * Handle.
      * 
-     * @param t the t
+     * @param t
+     *            the t
      */
     public void handle(Throwable t) {
         System.setProperty("sun.awt.exception.handler", "");
         t.printStackTrace();
-        
-        if (_disabled) 
+
+        if (_disabled)
             return;
         DocumentOutputStream dos = new DocumentOutputStream();
         t.printStackTrace(new PrintStream(dos));
         exceptionTextArea.setDocument(dos.getDocument());
-        
+
         setVisible(true);
-        
+
         if (!disableCheckBox.isSelected()) {
             System.setProperty("sun.awt.exception.handler", this.getClass().getName());
         } else {
             _disabled = true;
         }
     }
-    
+
     /**
      * Inits the components.
      */
-    private void initComponents() {//GEN-BEGIN:initComponents
+    private void initComponents() {// GEN-BEGIN:initComponents
         jScrollPane1 = new javax.swing.JScrollPane();
         exceptionTextArea = new javax.swing.JTextArea();
         disableCheckBox = new javax.swing.JCheckBox();
@@ -110,21 +116,26 @@ public class ExceptionHandler extends javax.swing.JDialog {
         getContentPane().add(okButton, java.awt.BorderLayout.SOUTH);
 
         pack();
-    }//GEN-END:initComponents
+    }// GEN-END:initComponents
 
     /**
      * Ok button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
+        // FIRST
+        // :
+        // event_okButtonActionPerformed
         dispose();
-    }//GEN-LAST:event_okButtonActionPerformed
-    
+    }// GEN-LAST:event_okButtonActionPerformed
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String args[]) {
         System.setProperty("sun.awt.exception.handler", ExceptionHandler.class.getName());
@@ -134,19 +145,19 @@ public class ExceptionHandler extends javax.swing.JDialog {
             }
         });
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The disable check box. */
     private javax.swing.JCheckBox disableCheckBox;
-    
+
     /** The exception text area. */
     private javax.swing.JTextArea exceptionTextArea;
-    
+
     /** The j scroll pane1. */
     private javax.swing.JScrollPane jScrollPane1;
-    
+
     /** The ok button. */
     private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
-    
+
 }

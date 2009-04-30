@@ -23,62 +23,64 @@
 package edu.lnmiit.wavd.ui.swing;
 
 import java.net.MalformedURLException;
-import javax.swing.JOptionPane;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.SwingUtilities;
+import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import edu.lnmiit.wavd.model.HttpUrl;
 import edu.lnmiit.wavd.model.Request;
 import edu.lnmiit.wavd.ui.swing.editors.TextPanel;
-
-import java.awt.Component;
-
-import java.util.logging.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class RequestPanel.
  */
 public class RequestPanel extends javax.swing.JPanel {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -188167000106701807L;
+
     /** The _up to date. */
     private boolean[] _upToDate;
-    
+
     /** The _editable. */
     private boolean _editable = false;
-    
+
     /** The _modified. */
     private boolean _modified = false;
-    
+
     /** The _selected. */
     private int _selected = 0;
-    
+
     /** The _request. */
     private Request _request = null;
-    
+
     /** The _message panel. */
     private MessagePanel _messagePanel;
-    
+
     /** The _text panel. */
     private TextPanel _textPanel;
-    
+
     /** The _preferred. */
     private static int _preferred = -1;
-    
+
     /** The _reverting. */
     private boolean _reverting = false;
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger(getClass().getName());
-    
+
     /**
      * Instantiates a new request panel.
      */
     public RequestPanel() {
         initComponents();
-        
+
         displayTabbedPane.getModel().addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 try {
@@ -90,7 +92,9 @@ public class RequestPanel extends javax.swing.JPanel {
                     }
                 } catch (MalformedURLException mue) {
                     if (!_reverting) {
-                        JOptionPane.showMessageDialog(RequestPanel.this, new String[] {"The URL requested is malformed", mue.getMessage()}, "Malformed URL", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(RequestPanel.this, new String[] {
+                                "The URL requested is malformed", mue.getMessage() }, "Malformed URL",
+                                JOptionPane.ERROR_MESSAGE);
                         _reverting = true;
                         displayTabbedPane.setSelectedIndex(_selected);
                         _reverting = false;
@@ -110,39 +114,43 @@ public class RequestPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         parsedPanel.add(_messagePanel, gridBagConstraints);
-        
+
         _textPanel = new TextPanel();
         displayTabbedPane.add("Raw", _textPanel);
-        
+
         _upToDate = new boolean[displayTabbedPane.getTabCount()];
         invalidatePanels();
-        
+
         updateComponents(_editable);
-        
-        if (_preferred > -1 && _preferred < displayTabbedPane.getTabCount()) displayTabbedPane.setSelectedIndex(_preferred);
+
+        if (_preferred > -1 && _preferred < displayTabbedPane.getTabCount())
+            displayTabbedPane.setSelectedIndex(_preferred);
     }
-    
+
     /**
      * Invalidate panels.
      */
     private void invalidatePanels() {
-        for (int i=0; i<_upToDate.length; i++) {
+        for (int i = 0; i < _upToDate.length; i++) {
             _upToDate[i] = false;
         }
     }
-    
+
     /**
      * Update request.
      * 
-     * @param panel the panel
+     * @param panel
+     *            the panel
      * 
-     * @throws MalformedURLException the malformed url exception
+     * @throws MalformedURLException
+     *             the malformed url exception
      */
     private void updateRequest(int panel) throws MalformedURLException {
-        if (! _editable || panel < 0) {
+        if (!_editable || panel < 0) {
             return;
         }
-        if (displayTabbedPane.getTitleAt(panel).equals("Parsed")) {// parsed text
+        if (displayTabbedPane.getTitleAt(panel).equals("Parsed")) {// parsed
+            // text
             if (_messagePanel.isModified()) {
                 _request = (Request) _messagePanel.getMessage();
                 _modified = true;
@@ -155,11 +163,14 @@ public class RequestPanel extends javax.swing.JPanel {
             if (!"".equals(url))
                 _request.setURL(new HttpUrl(url));
             _request.setVersion(versionTextField.getText());
-            // this is a bit of a hack. What we should really do is add a listener
-            // to the text fields, so we know when a change has been made. Until then
+            // this is a bit of a hack. What we should really do is add a
+            // listener
+            // to the text fields, so we know when a change has been made. Until
+            // then
             // this will do
             _modified = true;
-        } else if (displayTabbedPane.getTitleAt(panel).equals("Raw")) { // raw text
+        } else if (displayTabbedPane.getTitleAt(panel).equals("Raw")) { // raw
+            // text
             if (_textPanel.isModified()) {
                 try {
                     Request r = new Request();
@@ -177,7 +188,7 @@ public class RequestPanel extends javax.swing.JPanel {
             invalidatePanels();
         _upToDate[panel] = true;
     }
-    
+
     /**
      * Checks if is modified.
      * 
@@ -186,15 +197,17 @@ public class RequestPanel extends javax.swing.JPanel {
     public boolean isModified() {
         return _modified;
     }
-    
+
     /**
      * Update panel.
      * 
-     * @param panel the panel
+     * @param panel
+     *            the panel
      */
     private void updatePanel(int panel) {
         if (!_upToDate[panel]) {
-            if (displayTabbedPane.getTitleAt(panel).equals("Parsed")) {// parsed text
+            if (displayTabbedPane.getTitleAt(panel).equals("Parsed")) {// parsed
+                // text
                 _messagePanel.setMessage(_request);
                 if (_request != null) {
                     methodTextField.setText(_request.getMethod());
@@ -209,8 +222,10 @@ public class RequestPanel extends javax.swing.JPanel {
                     urlTextField.setText("");
                     versionTextField.setText("");
                 }
-            } else if (displayTabbedPane.getTitleAt(panel).equals("Raw")) { // raw text
-                if (_request != null && _request.getMethod() != null && _request.getURL() != null && _request.getVersion() != null) {
+            } else if (displayTabbedPane.getTitleAt(panel).equals("Raw")) { // raw
+                // text
+                if (_request != null && _request.getMethod() != null && _request.getURL() != null
+                        && _request.getVersion() != null) {
                     _textPanel.setText(null, _request.toString("\n"));
                 } else {
                     _textPanel.setText(null, "");
@@ -219,11 +234,12 @@ public class RequestPanel extends javax.swing.JPanel {
             _upToDate[panel] = true;
         }
     }
-    
+
     /**
      * Update components.
      * 
-     * @param editable the editable
+     * @param editable
+     *            the editable
      */
     private void updateComponents(boolean editable) {
         java.awt.Color color;
@@ -239,11 +255,12 @@ public class RequestPanel extends javax.swing.JPanel {
         urlTextField.setBackground(color);
         versionTextField.setBackground(color);
     }
-    
+
     /**
      * Sets the editable.
      * 
-     * @param editable the new editable
+     * @param editable
+     *            the new editable
      */
     public void setEditable(boolean editable) {
         _editable = editable;
@@ -251,11 +268,12 @@ public class RequestPanel extends javax.swing.JPanel {
         updateComponents(editable);
         _messagePanel.setEditable(editable);
     }
-    
+
     /**
      * Sets the request.
      * 
-     * @param request the new request
+     * @param request
+     *            the new request
      */
     public void setRequest(Request request) {
         _modified = false;
@@ -275,13 +293,14 @@ public class RequestPanel extends javax.swing.JPanel {
             });
         }
     }
-    
+
     /**
      * Gets the request.
      * 
      * @return the request
      * 
-     * @throws MalformedURLException the malformed url exception
+     * @throws MalformedURLException
+     *             the malformed url exception
      */
     public Request getRequest() throws MalformedURLException {
         if (_editable) {
@@ -290,14 +309,15 @@ public class RequestPanel extends javax.swing.JPanel {
         }
         return _request;
     }
-    
+
     /**
      * Select panel.
      * 
-     * @param title the title
+     * @param title
+     *            the title
      */
     public void selectPanel(String title) {
-        for (int i=0; i<displayTabbedPane.getTabCount(); i++) {
+        for (int i = 0; i < displayTabbedPane.getTabCount(); i++) {
             String tab = displayTabbedPane.getTitleAt(i);
             int selected = displayTabbedPane.getSelectedIndex();
             if (tab != null && tab.equalsIgnoreCase(title) && i != selected) {
@@ -306,11 +326,11 @@ public class RequestPanel extends javax.swing.JPanel {
             }
         }
     }
-    
+
     /**
      * Inits the components.
      */
-    private void initComponents() {//GEN-BEGIN:initComponents
+    private void initComponents() {// GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
         displayTabbedPane = new javax.swing.JTabbedPane();
@@ -401,12 +421,13 @@ public class RequestPanel extends javax.swing.JPanel {
 
         add(displayTabbedPane, java.awt.BorderLayout.CENTER);
 
-    }//GEN-END:initComponents
-    
+    }// GEN-END:initComponents
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String[] args) {
         final RequestPanel panel = new RequestPanel();
@@ -432,7 +453,7 @@ public class RequestPanel extends javax.swing.JPanel {
         // top.setBounds(100,100,600,400);
         top.pack();
         top.setVisible(true);
-        
+
         Request request = new Request();
         try {
             java.io.FileInputStream fis = new java.io.FileInputStream("l2/conversations/1-request");
@@ -443,34 +464,34 @@ public class RequestPanel extends javax.swing.JPanel {
         panel.setEditable(true);
         panel.setRequest(request);
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The display tabbed pane. */
     private javax.swing.JTabbedPane displayTabbedPane;
-    
+
     /** The j label3. */
     private javax.swing.JLabel jLabel3;
-    
+
     /** The j label4. */
     private javax.swing.JLabel jLabel4;
-    
+
     /** The j label5. */
     private javax.swing.JLabel jLabel5;
-    
+
     /** The message panel place holder. */
     private javax.swing.JPanel messagePanelPlaceHolder;
-    
+
     /** The method text field. */
     private javax.swing.JTextField methodTextField;
-    
+
     /** The parsed panel. */
     private javax.swing.JPanel parsedPanel;
-    
+
     /** The url text field. */
     private javax.swing.JTextField urlTextField;
-    
+
     /** The version text field. */
     private javax.swing.JTextField versionTextField;
     // End of variables declaration//GEN-END:variables
-    
+
 }

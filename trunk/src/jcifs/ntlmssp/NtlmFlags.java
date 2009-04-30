@@ -50,12 +50,10 @@ public interface NtlmFlags {
     public static final int NTLMSSP_NEGOTIATE_NTLM = 0x00000200;
 
     /** The Constant NTLMSSP_NEGOTIATE_OEM_DOMAIN_SUPPLIED. */
-    public static final int NTLMSSP_NEGOTIATE_OEM_DOMAIN_SUPPLIED =
-            0x00001000;
+    public static final int NTLMSSP_NEGOTIATE_OEM_DOMAIN_SUPPLIED = 0x00001000;
 
     /** The Constant NTLMSSP_NEGOTIATE_OEM_WORKSTATION_SUPPLIED. */
-    public static final int NTLMSSP_NEGOTIATE_OEM_WORKSTATION_SUPPLIED =
-            0x00002000;
+    public static final int NTLMSSP_NEGOTIATE_OEM_WORKSTATION_SUPPLIED = 0x00002000;
 
     /** The Constant NTLMSSP_NEGOTIATE_LOCAL_CALL. */
     public static final int NTLMSSP_NEGOTIATE_LOCAL_CALL = 0x00004000;
@@ -72,7 +70,7 @@ public interface NtlmFlags {
     /** The Constant NTLMSSP_TARGET_TYPE_SHARE. */
     public static final int NTLMSSP_TARGET_TYPE_SHARE = 0x00040000;
 
-    /** The Constant NTLMSSP_NEGOTIATE_NTLM2. */ 
+    /** The Constant NTLMSSP_NEGOTIATE_NTLM2. */
     public static final int NTLMSSP_NEGOTIATE_NTLM2 = 0x00080000;
 
     /** The Constant NTLMSSP_REQUEST_INIT_RESPONSE. */

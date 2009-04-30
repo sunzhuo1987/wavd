@@ -22,58 +22,55 @@
 
 package edu.lnmiit.wavd.model;
 
-import EDU.oswego.cs.dl.util.concurrent.ReadWriteLock;
-import EDU.oswego.cs.dl.util.concurrent.Sync;
-
+import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.event.EventListenerList;
 
+import EDU.oswego.cs.dl.util.concurrent.Sync;
 import edu.lnmiit.wavd.util.MRUCache;
 import edu.lnmiit.wavd.util.ReentrantReaderPreferenceReadWriteLock;
-
-import java.io.File;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class FrameworkModel.
  */
 public class FrameworkModel {
-    
+
     /** The _rwl. */
     private ReentrantReaderPreferenceReadWriteLock _rwl = new ReentrantReaderPreferenceReadWriteLock();
-    
+
     /** The Constant NO_COOKIES. */
     private static final Cookie[] NO_COOKIES = new Cookie[0];
-    
+
     /** The _listener list. */
     private EventListenerList _listenerList = new EventListenerList();
-    
+
     // keeps a fairly small cache of recently used HttpUrl objects
     /** The _url cache. */
     private Map _urlCache = new MRUCache(200);
-    
+
     /** The _store. */
     private SiteModelStore _store = null;
-    
+
     /** The _url model. */
     private FrameworkUrlModel _urlModel;
-    
+
     /** The _conversation model. */
     private FrameworkConversationModel _conversationModel;
-    
+
     /** The _modified. */
     private boolean _modified = false;
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger(getClass().getName());
-    
+
     /**
      * Instantiates a new framework model.
      */
@@ -82,15 +79,19 @@ public class FrameworkModel {
         _conversationModel = new FrameworkConversationModel(this);
         _urlModel = new FrameworkUrlModel();
     }
-    
+
     /**
      * Sets the session.
      * 
-     * @param type the type
-     * @param store the store
-     * @param session the session
+     * @param type
+     *            the type
+     * @param store
+     *            the store
+     * @param session
+     *            the session
      * 
-     * @throws StoreException the store exception
+     * @throws StoreException
+     *             the store exception
      */
     public void setSession(String type, Object store, String session) throws StoreException {
         try {
@@ -114,9 +115,9 @@ public class FrameworkModel {
         } catch (InterruptedException ie) {
             _logger.severe("Interrupted! " + ie);
         }
-        
+
     }
-    
+
     /**
      * Read lock.
      * 
@@ -125,7 +126,7 @@ public class FrameworkModel {
     public Sync readLock() {
         return _rwl.readLock();
     }
-    
+
     /**
      * Gets the url model.
      * 
@@ -134,7 +135,7 @@ public class FrameworkModel {
     public UrlModel getUrlModel() {
         return _urlModel;
     }
-    
+
     /**
      * Gets the conversation model.
      * 
@@ -143,11 +144,12 @@ public class FrameworkModel {
     public ConversationModel getConversationModel() {
         return _conversationModel;
     }
-    
+
     /**
      * Flush.
      * 
-     * @throws StoreException the store exception
+     * @throws StoreException
+     *             the store exception
      */
     public void flush() throws StoreException {
         if (_modified) {
@@ -164,7 +166,7 @@ public class FrameworkModel {
             }
         }
     }
-    
+
     /**
      * Checks if is modified.
      * 
@@ -173,7 +175,7 @@ public class FrameworkModel {
     public boolean isModified() {
         return _modified;
     }
-    
+
     /**
      * Reserve conversation id.
      * 
@@ -182,15 +184,20 @@ public class FrameworkModel {
     public ConversationID reserveConversationID() {
         return new ConversationID();
     }
-    
+
     /**
      * Adds the conversation.
      * 
-     * @param id the id
-     * @param when the when
-     * @param request the request
-     * @param response the response
-     * @param origin the origin
+     * @param id
+     *            the id
+     * @param when
+     *            the when
+     * @param request
+     *            the request
+     * @param response
+     *            the response
+     * @param origin
+     *            the origin
      */
     public void addConversation(ConversationID id, Date when, Request request, Response response, String origin) {
         try {
@@ -210,22 +217,24 @@ public class FrameworkModel {
         }
         _modified = true;
     }
-    
+
     /**
      * Gets the conversation origin.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return the conversation origin
      */
     public String getConversationOrigin(ConversationID id) {
         return getConversationProperty(id, "ORIGIN");
     }
-    
+
     /**
      * Gets the conversation date.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return the conversation date
      */
@@ -234,7 +243,8 @@ public class FrameworkModel {
             _rwl.readLock().acquire();
             try {
                 String when = getConversationProperty(id, "WHEN");
-                if (when == null) return null;
+                if (when == null)
+                    return null;
                 try {
                     long time = Long.parseLong(when);
                     return new Date(time);
@@ -250,15 +260,16 @@ public class FrameworkModel {
             return null;
         }
     }
-    
+
     /**
      * Gets the request url.
      * 
-     * @param conversation the conversation
+     * @param conversation
+     *            the conversation
      * 
      * @return the request url
      */
-    
+
     public HttpUrl getRequestUrl(ConversationID conversation) {
         try {
             _rwl.readLock().acquire();
@@ -266,7 +277,7 @@ public class FrameworkModel {
                 // this allows us to reuse HttpUrl objects
                 if (_urlCache.containsKey(conversation))
                     return (HttpUrl) _urlCache.get(conversation);
-                
+
                 String url = getConversationProperty(conversation, "URL");
                 try {
                     HttpUrl httpUrl = new HttpUrl(url);
@@ -284,13 +295,16 @@ public class FrameworkModel {
             return null;
         }
     }
-    
+
     /**
      * Sets the conversation property.
      * 
-     * @param conversation the conversation
-     * @param property the property
-     * @param value the value
+     * @param conversation
+     *            the conversation
+     * @param property
+     *            the property
+     * @param value
+     *            the value
      */
     public void setConversationProperty(ConversationID conversation, String property, String value) {
         try {
@@ -306,13 +320,16 @@ public class FrameworkModel {
         }
         _modified = true;
     }
-    
+
     /**
      * Adds the conversation property.
      * 
-     * @param conversation the conversation
-     * @param property the property
-     * @param value the value
+     * @param conversation
+     *            the conversation
+     * @param property
+     *            the property
+     * @param value
+     *            the value
      * 
      * @return true, if successful
      */
@@ -334,51 +351,60 @@ public class FrameworkModel {
         _modified = _modified || change;
         return change;
     }
-    
+
     /**
      * Gets the conversation property.
      * 
-     * @param conversation the conversation
-     * @param property the property
+     * @param conversation
+     *            the conversation
+     * @param property
+     *            the property
      * 
      * @return the conversation property
      */
     public String getConversationProperty(ConversationID conversation, String property) {
         String[] values = getConversationProperties(conversation, property);
-        if (values == null || values.length == 0) return null;
-        if (values.length == 1) return values[0];
+        if (values == null || values.length == 0)
+            return null;
+        if (values.length == 1)
+            return values[0];
         StringBuffer value = new StringBuffer(values[0]);
-        for (int i=1; i<values.length; i++) value.append(", ").append(values[i]);
+        for (int i = 1; i < values.length; i++)
+            value.append(", ").append(values[i]);
         return value.toString();
     }
-    
+
     /**
      * Gets the request method.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return the request method
      */
     public String getRequestMethod(ConversationID id) {
         return getConversationProperty(id, "METHOD");
     }
-    
+
     /**
      * Gets the response status.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return the response status
      */
     public String getResponseStatus(ConversationID id) {
         return getConversationProperty(id, "STATUS");
     }
-    
+
     /**
      * Gets the conversation properties.
      * 
-     * @param conversation the conversation
-     * @param property the property
+     * @param conversation
+     *            the conversation
+     * @param property
+     *            the property
      * 
      * @return the conversation properties
      */
@@ -395,11 +421,12 @@ public class FrameworkModel {
             return null;
         }
     }
-    
+
     /**
      * Adds the url.
      * 
-     * @param url the url
+     * @param url
+     *            the url
      */
     private void addUrl(HttpUrl url) {
         try {
@@ -407,16 +434,22 @@ public class FrameworkModel {
             try {
                 if (!_store.isKnownUrl(url)) {
                     HttpUrl[] path = url.getUrlHierarchy();
-                    for (int i=0; i<path.length; i++) {
+                    for (int i = 0; i < path.length; i++) {
                         if (!_store.isKnownUrl(path[i])) {
-                            _rwl.readLock().release(); // must give it up before writing
-                            // XXX We could be vulnerable to a race condition here
-                            // we should check again to make sure that it does not exist
+                            _rwl.readLock().release(); // must give it up before
+                            // writing
+                            // XXX We could be vulnerable to a race condition
+                            // here
+                            // we should check again to make sure that it does
+                            // not exist
                             // AFTER we get our writelock
-                            
-                            // FIXME There is something very strange going on here
-                            // sometimes we deadlock if we just do a straight acquire
-                            // but there does not seem to be anything competing for the lock.
+
+                            // FIXME There is something very strange going on
+                            // here
+                            // sometimes we deadlock if we just do a straight
+                            // acquire
+                            // but there does not seem to be anything competing
+                            // for the lock.
                             // This works, but it feels like a kluge! FIXME!!!
                             // _rwl.writeLock().acquire();
                             while (!_rwl.writeLock().attempt(5000)) {
@@ -425,11 +458,13 @@ public class FrameworkModel {
                             }
                             if (!_store.isKnownUrl(path[i])) {
                                 _store.addUrl(path[i]);
-                                _rwl.readLock().acquire(); // downgrade without giving up lock
+                                _rwl.readLock().acquire(); // downgrade without
+                                // giving up lock
                                 _rwl.writeLock().release();
                                 _urlModel.fireUrlAdded(path[i], 0); // FIXME
                                 _modified = true;
-                            } else { // modified by some other thread?! Go through the motions . . .
+                            } else { // modified by some other thread?! Go
+                                // through the motions . . .
                                 _rwl.readLock().acquire();
                                 _rwl.writeLock().release();
                             }
@@ -443,13 +478,16 @@ public class FrameworkModel {
             _logger.severe("Interrupted! " + ie);
         }
     }
-    
+
     /**
      * Sets the url property.
      * 
-     * @param url the url
-     * @param property the property
-     * @param value the value
+     * @param url
+     *            the url
+     * @param property
+     *            the property
+     * @param value
+     *            the value
      */
     public void setUrlProperty(HttpUrl url, String property, String value) {
         addUrl(url);
@@ -466,13 +504,16 @@ public class FrameworkModel {
         }
         _modified = true;
     }
-    
+
     /**
      * Adds the url property.
      * 
-     * @param url the url
-     * @param property the property
-     * @param value the value
+     * @param url
+     *            the url
+     * @param property
+     *            the property
+     * @param value
+     *            the value
      * 
      * @return true, if successful
      */
@@ -495,12 +536,14 @@ public class FrameworkModel {
         _modified = _modified || change;
         return change;
     }
-    
+
     /**
      * Gets the url properties.
      * 
-     * @param url the url
-     * @param property the property
+     * @param url
+     *            the url
+     * @param property
+     *            the property
      * 
      * @return the url properties
      */
@@ -517,29 +560,35 @@ public class FrameworkModel {
             return null;
         }
     }
-    
+
     /**
      * Gets the url property.
      * 
-     * @param url the url
-     * @param property the property
+     * @param url
+     *            the url
+     * @param property
+     *            the property
      * 
      * @return the url property
      */
     public String getUrlProperty(HttpUrl url, String property) {
         String[] values = getUrlProperties(url, property);
-        if (values == null || values.length == 0) return null;
-        if (values.length == 1) return values[0];
+        if (values == null || values.length == 0)
+            return null;
+        if (values.length == 1)
+            return values[0];
         StringBuffer value = new StringBuffer(30);
         value.append(values[0]);
-        for(int i=1; i< values.length; i++) value.append(", ").append(values[i]);
+        for (int i = 1; i < values.length; i++)
+            value.append(", ").append(values[i]);
         return value.toString();
     }
-    
+
     /**
      * Gets the request.
      * 
-     * @param conversation the conversation
+     * @param conversation
+     *            the conversation
      * 
      * @return the request
      */
@@ -556,11 +605,12 @@ public class FrameworkModel {
             return null;
         }
     }
-    
+
     /**
      * Gets the response.
      * 
-     * @param conversation the conversation
+     * @param conversation
+     *            the conversation
      * 
      * @return the response
      */
@@ -577,36 +627,39 @@ public class FrameworkModel {
             return null;
         }
     }
-    
+
     /**
      * Adds the model listener.
      * 
-     * @param listener the listener
+     * @param listener
+     *            the listener
      */
     public void addModelListener(FrameworkListener listener) {
-        synchronized(_listenerList) {
+        synchronized (_listenerList) {
             _listenerList.add(FrameworkListener.class, listener);
         }
     }
-    
+
     /**
      * Removes the model listener.
      * 
-     * @param listener the listener
+     * @param listener
+     *            the listener
      */
     public void removeModelListener(FrameworkListener listener) {
-        synchronized(_listenerList) {
+        synchronized (_listenerList) {
             _listenerList.remove(FrameworkListener.class, listener);
         }
     }
-    
+
     /**
      * Gets the cookie count.
      * 
      * @return the cookie count
      */
     public int getCookieCount() {
-        if (_store == null) return 0;
+        if (_store == null)
+            return 0;
         try {
             _rwl.readLock().acquire();
             try {
@@ -619,11 +672,12 @@ public class FrameworkModel {
             return 0;
         }
     }
-    
+
     /**
      * Gets the cookie count.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      * 
      * @return the cookie count
      */
@@ -640,11 +694,12 @@ public class FrameworkModel {
             return 0;
         }
     }
-    
+
     /**
      * Gets the cookie at.
      * 
-     * @param index the index
+     * @param index
+     *            the index
      * 
      * @return the cookie at
      */
@@ -661,12 +716,14 @@ public class FrameworkModel {
             return null;
         }
     }
-    
+
     /**
      * Gets the cookie at.
      * 
-     * @param key the key
-     * @param index the index
+     * @param key
+     *            the key
+     * @param index
+     *            the index
      * 
      * @return the cookie at
      */
@@ -683,11 +740,12 @@ public class FrameworkModel {
             return null;
         }
     }
-    
+
     /**
      * Gets the index of cookie.
      * 
-     * @param cookie the cookie
+     * @param cookie
+     *            the cookie
      * 
      * @return the index of cookie
      */
@@ -704,12 +762,14 @@ public class FrameworkModel {
             return 0;
         }
     }
-    
+
     /**
      * Gets the index of cookie.
      * 
-     * @param key the key
-     * @param cookie the cookie
+     * @param key
+     *            the key
+     * @param cookie
+     *            the cookie
      * 
      * @return the index of cookie
      */
@@ -726,11 +786,12 @@ public class FrameworkModel {
             return 0;
         }
     }
-    
+
     /**
      * Gets the current cookie.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      * 
      * @return the current cookie
      */
@@ -739,7 +800,7 @@ public class FrameworkModel {
             _rwl.readLock().acquire();
             try {
                 int count = _store.getCookieCount(key);
-                return _store.getCookieAt(key, count-1);
+                return _store.getCookieAt(key, count - 1);
             } finally {
                 _rwl.readLock().release();
             }
@@ -748,17 +809,18 @@ public class FrameworkModel {
             return null;
         }
     }
-    
+
     /**
      * Adds the cookie.
      * 
-     * @param cookie the cookie
+     * @param cookie
+     *            the cookie
      */
     public void addCookie(Cookie cookie) {
         try {
             _rwl.writeLock().acquire();
             boolean added = _store.addCookie(cookie);
-            if (! added) { // we already had the cookie
+            if (!added) { // we already had the cookie
                 _rwl.writeLock().release();
             } else {
                 _modified = true;
@@ -771,11 +833,12 @@ public class FrameworkModel {
             _logger.severe("Interrupted! " + ie);
         }
     }
-    
+
     /**
      * Removes the cookie.
      * 
-     * @param cookie the cookie
+     * @param cookie
+     *            the cookie
      */
     public void removeCookie(Cookie cookie) {
         try {
@@ -794,11 +857,12 @@ public class FrameworkModel {
             _logger.severe("Interrupted! " + ie);
         }
     }
-    
+
     /**
      * Gets the cookies for url.
      * 
-     * @param url the url
+     * @param url
+     *            the url
      * 
      * @return the cookies for url
      */
@@ -807,12 +871,12 @@ public class FrameworkModel {
             _rwl.readLock().acquire();
             try {
                 List cookies = new ArrayList();
-                
+
                 String host = url.getHost();
                 String path = url.getPath();
-                
+
                 int size = getCookieCount();
-                for (int i=0; i<size; i++) {
+                for (int i = 0; i < size; i++) {
                     String key = getCookieAt(i);
                     Cookie cookie = getCurrentCookie(key);
                     String domain = cookie.getDomain();
@@ -831,11 +895,12 @@ public class FrameworkModel {
             return NO_COOKIES;
         }
     }
-    
+
     /**
      * Fire cookie added.
      * 
-     * @param cookie the cookie
+     * @param cookie
+     *            the cookie
      */
     protected void fireCookieAdded(Cookie cookie) {
         // Guaranteed to return a non-null array
@@ -843,21 +908,22 @@ public class FrameworkModel {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         FrameworkEvent evt = new FrameworkEvent(this, cookie);
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==FrameworkListener.class) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == FrameworkListener.class) {
                 try {
-                    ((FrameworkListener)listeners[i+1]).cookieAdded(evt);
+                    ((FrameworkListener) listeners[i + 1]).cookieAdded(evt);
                 } catch (Exception e) {
                     _logger.severe("Unhandled exception: " + e);
                 }
             }
         }
     }
-    
+
     /**
      * Fire cookie removed.
      * 
-     * @param cookie the cookie
+     * @param cookie
+     *            the cookie
      */
     protected void fireCookieRemoved(Cookie cookie) {
         // Guaranteed to return a non-null array
@@ -865,17 +931,17 @@ public class FrameworkModel {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         FrameworkEvent evt = new FrameworkEvent(this, cookie);
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==FrameworkListener.class) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == FrameworkListener.class) {
                 try {
-                    ((FrameworkListener)listeners[i+1]).cookieRemoved(evt);
+                    ((FrameworkListener) listeners[i + 1]).cookieRemoved(evt);
                 } catch (Exception e) {
                     _logger.severe("Unhandled exception: " + e);
                 }
             }
         }
     }
-    
+
     /**
      * Fire cookies changed.
      */
@@ -884,22 +950,24 @@ public class FrameworkModel {
         Object[] listeners = _listenerList.getListenerList();
         // Process the listeners last to first, notifying
         // those that are interested in this event
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==FrameworkListener.class) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == FrameworkListener.class) {
                 try {
-                    ((FrameworkListener)listeners[i+1]).cookiesChanged();
+                    ((FrameworkListener) listeners[i + 1]).cookiesChanged();
                 } catch (Exception e) {
                     _logger.severe("Unhandled exception: " + e);
                 }
             }
         }
     }
-    
+
     /**
      * Fire conversation property changed.
      * 
-     * @param id the id
-     * @param property the property
+     * @param id
+     *            the id
+     * @param property
+     *            the property
      */
     protected void fireConversationPropertyChanged(ConversationID id, String property) {
         // Guaranteed to return a non-null array
@@ -907,22 +975,24 @@ public class FrameworkModel {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         FrameworkEvent evt = new FrameworkEvent(this, id, property);
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==FrameworkListener.class) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == FrameworkListener.class) {
                 try {
-                    ((FrameworkListener)listeners[i+1]).conversationPropertyChanged(evt);
+                    ((FrameworkListener) listeners[i + 1]).conversationPropertyChanged(evt);
                 } catch (Exception e) {
                     _logger.severe("Unhandled exception: " + e);
                 }
             }
         }
     }
-    
+
     /**
      * Fire url property changed.
      * 
-     * @param url the url
-     * @param property the property
+     * @param url
+     *            the url
+     * @param property
+     *            the property
      */
     protected void fireUrlPropertyChanged(HttpUrl url, String property) {
         // Guaranteed to return a non-null array
@@ -930,34 +1000,41 @@ public class FrameworkModel {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         FrameworkEvent evt = new FrameworkEvent(this, url, property);
-        for (int i = listeners.length-2; i>=0; i-=2) {
-            if (listeners[i]==FrameworkListener.class) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == FrameworkListener.class) {
                 try {
-                    ((FrameworkListener)listeners[i+1]).urlPropertyChanged(evt);
+                    ((FrameworkListener) listeners[i + 1]).urlPropertyChanged(evt);
                 } catch (Exception e) {
                     _logger.severe("Unhandled exception: " + e);
                 }
             }
         }
     }
-    
+
     /**
      * The Class FrameworkUrlModel.
      */
     private class FrameworkUrlModel extends AbstractUrlModel {
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.model.AbstractUrlModel#readLock()
          */
         public Sync readLock() {
             return _rwl.readLock();
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.model.AbstractUrlModel#getChildCount(edu.lnmiit.wavd.model.HttpUrl)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.model.AbstractUrlModel#getChildCount(edu.lnmiit.wavd
+         * .model.HttpUrl)
          */
         public int getChildCount(HttpUrl parent) {
-            if (_store == null) return 0;
+            if (_store == null)
+                return 0;
             try {
                 readLock().acquire();
                 try {
@@ -970,9 +1047,13 @@ public class FrameworkModel {
                 return 0;
             }
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.model.AbstractUrlModel#getIndexOf(edu.lnmiit.wavd.model.HttpUrl)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.model.AbstractUrlModel#getIndexOf(edu.lnmiit.wavd
+         * .model.HttpUrl)
          */
         public int getIndexOf(HttpUrl url) {
             try {
@@ -987,9 +1068,13 @@ public class FrameworkModel {
                 return -1;
             }
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.model.AbstractUrlModel#getChildAt(edu.lnmiit.wavd.model.HttpUrl, int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.model.AbstractUrlModel#getChildAt(edu.lnmiit.wavd
+         * .model.HttpUrl, int)
          */
         public HttpUrl getChildAt(HttpUrl parent, int index) {
             try {
@@ -1004,32 +1089,39 @@ public class FrameworkModel {
                 return null;
             }
         }
-        
+
     }
-    
+
     /**
      * The Class FrameworkConversationModel.
      */
     private class FrameworkConversationModel extends AbstractConversationModel {
-        
+
         /**
          * Instantiates a new framework conversation model.
          * 
-         * @param model the model
+         * @param model
+         *            the model
          */
         public FrameworkConversationModel(FrameworkModel model) {
             super(model);
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see edu.lnmiit.wavd.model.AbstractConversationModel#readLock()
          */
         public Sync readLock() {
             return _rwl.readLock();
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.model.AbstractConversationModel#getConversationAt(int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.model.AbstractConversationModel#getConversationAt
+         * (int)
          */
         public ConversationID getConversationAt(int index) {
             try {
@@ -1044,12 +1136,17 @@ public class FrameworkModel {
                 return null;
             }
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.model.AbstractConversationModel#getConversationCount()
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.model.AbstractConversationModel#getConversationCount
+         * ()
          */
         public int getConversationCount() {
-            if (_store == null) return 0;
+            if (_store == null)
+                return 0;
             try {
                 readLock().acquire();
                 try {
@@ -1062,9 +1159,13 @@ public class FrameworkModel {
                 return 0;
             }
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.model.AbstractConversationModel#getIndexOfConversation(edu.lnmiit.wavd.model.ConversationID)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.model.AbstractConversationModel#getIndexOfConversation
+         * (edu.lnmiit.wavd.model.ConversationID)
          */
         public int getIndexOfConversation(ConversationID id) {
             try {
@@ -1079,7 +1180,7 @@ public class FrameworkModel {
                 return 0;
             }
         }
-        
+
     }
-    
+
 }

@@ -16,66 +16,70 @@
 
 package edu.lnmiit.wavd.ui.swing;
 
-
-import edu.lnmiit.wavd.model.NamedValue;
-import edu.lnmiit.wavd.model.Preferences;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import java.util.List;
-import java.util.ArrayList;
+import edu.lnmiit.wavd.model.NamedValue;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class HeaderPanel.
  */
 public class HeaderPanel extends javax.swing.JPanel {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8873120037246334162L;
+
     /** The Constant NO_HEADERS. */
     private final static NamedValue[] NO_HEADERS = new NamedValue[0];
-    
+
     /** The Constant _cwt. */
     private final static ColumnWidthTracker _cwt = ColumnWidthTracker.getTracker("Header");
-    
+
     /** The _editable. */
     private boolean _editable = false;
-    
+
     /** The _modified. */
     private boolean _modified = false;
-    
+
     /** The _htm. */
     private HeaderTableModel _htm;
-    
+
     /** The _headers. */
     private List _headers = new ArrayList();
-    
+
     /**
      * Instantiates a new header panel.
      */
     public HeaderPanel() {
         _htm = new HeaderTableModel();
         initComponents();
-        
+
         _cwt.addTable(headerTable);
     }
-    
+
     /**
      * Sets the editable.
      * 
-     * @param editable the new editable
+     * @param editable
+     *            the new editable
      */
     public void setEditable(boolean editable) {
         _editable = editable;
         if (editable) {
             add(buttonPanel, java.awt.BorderLayout.EAST);
-            headerTable.setBackground(new java.awt.Color(255,255,255));
+            headerTable.setBackground(new java.awt.Color(255, 255, 255));
         } else {
             remove(buttonPanel);
-            headerTable.setBackground(new java.awt.Color(204,204,204));
+            headerTable.setBackground(new java.awt.Color(204, 204, 204));
         }
         // revalidate();
     }
-    
+
     /**
      * Checks if is editable.
      * 
@@ -84,7 +88,7 @@ public class HeaderPanel extends javax.swing.JPanel {
     public boolean isEditable() {
         return _editable;
     }
-    
+
     /**
      * Checks if is modified.
      * 
@@ -96,22 +100,23 @@ public class HeaderPanel extends javax.swing.JPanel {
         }
         return _modified;
     }
-    
+
     /**
      * Sets the headers.
      * 
-     * @param headers the new headers
+     * @param headers
+     *            the new headers
      */
     public void setHeaders(NamedValue[] headers) {
         _headers.clear();
         if (headers != null && headers.length > 0) {
-            for (int i=0; i<headers.length; i++)
+            for (int i = 0; i < headers.length; i++)
                 _headers.add(headers[i]);
         }
         _modified = false;
         _htm.fireTableDataChanged();
     }
-    
+
     /**
      * Gets the headers.
      * 
@@ -121,33 +126,36 @@ public class HeaderPanel extends javax.swing.JPanel {
         _modified = false;
         return (NamedValue[]) _headers.toArray(NO_HEADERS);
     }
-    
+
     /**
      * Insert row.
      * 
-     * @param row the row
+     * @param row
+     *            the row
      */
     public void insertRow(int row) {
         _headers.add(row, new NamedValue("Header", "value"));
         _modified = true;
         _htm.fireTableRowsInserted(row, row);
     }
-    
+
     /**
      * Removes the row.
      * 
-     * @param row the row
+     * @param row
+     *            the row
      */
     public void removeRow(int row) {
         _headers.remove(row);
         _modified = true;
         _htm.fireTableRowsDeleted(row, row);
     }
-        
+
     /**
      * Inits the components.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed"
+    // desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -202,94 +210,122 @@ public class HeaderPanel extends javax.swing.JPanel {
     /**
      * Delete button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_deleteButtonActionPerformed
         int rowIndex = headerTable.getSelectedRow();
         if (rowIndex > -1) {
             removeRow(rowIndex);
         }
-    }//GEN-LAST:event_deleteButtonActionPerformed
+    }// GEN-LAST:event_deleteButtonActionPerformed
 
     /**
      * Insert button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void insertButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertButtonActionPerformed
+    private void insertButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_insertButtonActionPerformed
         int rowIndex = headerTable.getSelectedRow();
         if (rowIndex > -1) {
             insertRow(rowIndex);
         } else {
             insertRow(_htm.getRowCount());
         }
-    }//GEN-LAST:event_insertButtonActionPerformed
-    
-    
+    }// GEN-LAST:event_insertButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The button panel. */
     private javax.swing.JPanel buttonPanel;
-    
+
     /** The delete button. */
     private javax.swing.JButton deleteButton;
-    
+
     /** The header table. */
     private javax.swing.JTable headerTable;
-    
+
     /** The insert button. */
     private javax.swing.JButton insertButton;
-    
+
     /** The j scroll pane1. */
     private javax.swing.JScrollPane jScrollPane1;
+
     // End of variables declaration//GEN-END:variables
-    
+
     /**
      * The Class HeaderTableModel.
      */
     private class HeaderTableModel extends AbstractTableModel {
-        
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = -2608943354913701810L;
         /** The _names. */
-        private String[] _names = new String[] { "Header", "Value"};
-        
-        /* (non-Javadoc)
+        private String[] _names = new String[] { "Header", "Value" };
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.AbstractTableModel#getColumnName(int)
          */
         public String getColumnName(int column) {
             return _names[column];
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getColumnCount()
          */
         public int getColumnCount() {
             return 2;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getRowCount()
          */
         public int getRowCount() {
             return _headers.size();
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getValueAt(int, int)
          */
         public Object getValueAt(int row, int column) {
-            if (row > _headers.size()-1) return "ERROR";
+            if (row > _headers.size() - 1)
+                return "ERROR";
             NamedValue nv = (NamedValue) _headers.get(row);
-            if (column == 0) return nv.getName();
+            if (column == 0)
+                return nv.getName();
             return nv.getValue();
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.table.AbstractTableModel#setValueAt(java.lang.Object, int, int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.table.AbstractTableModel#setValueAt(java.lang.Object,
+         * int, int)
          */
         public void setValueAt(Object aValue, int row, int col) {
             if (_editable && aValue instanceof String) {
                 NamedValue nv = (NamedValue) _headers.get(row);
                 if (col == 0) {
-                    _headers.set(row, new NamedValue((String)aValue, nv.getValue()));
+                    _headers.set(row, new NamedValue((String) aValue, nv.getValue()));
                 } else {
                     _headers.set(row, new NamedValue(nv.getName(), (String) aValue));
                 }
@@ -297,14 +333,16 @@ public class HeaderPanel extends javax.swing.JPanel {
                 fireTableCellUpdated(row, col);
             }
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
          */
         public boolean isCellEditable(int row, int column) {
             return _editable;
         }
-        
+
     }
-    
+
 }

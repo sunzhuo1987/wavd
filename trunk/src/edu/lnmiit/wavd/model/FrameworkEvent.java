@@ -23,56 +23,69 @@ import java.util.EventObject;
  * The Class FrameworkEvent.
  */
 public class FrameworkEvent extends EventObject {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 2882738310831406334L;
+
     /** The _id. */
     private ConversationID _id = null;
-    
+
     /** The _url. */
     private HttpUrl _url = null;
-    
+
     /** The _cookie. */
     private Cookie _cookie = null;
-    
+
     /** The _property. */
     private String _property = null;
-    
+
     /**
      * Instantiates a new framework event.
      * 
-     * @param source the source
-     * @param id the id
-     * @param property the property
+     * @param source
+     *            the source
+     * @param id
+     *            the id
+     * @param property
+     *            the property
      */
     public FrameworkEvent(Object source, ConversationID id, String property) {
         super(source);
         _id = id;
         _property = property;
     }
-    
+
     /**
      * Instantiates a new framework event.
      * 
-     * @param source the source
-     * @param url the url
-     * @param property the property
+     * @param source
+     *            the source
+     * @param url
+     *            the url
+     * @param property
+     *            the property
      */
     public FrameworkEvent(Object source, HttpUrl url, String property) {
         super(source);
         _url = url;
         _property = property;
     }
-    
+
     /**
      * Instantiates a new framework event.
      * 
-     * @param source the source
-     * @param cookie the cookie
+     * @param source
+     *            the source
+     * @param cookie
+     *            the cookie
      */
     public FrameworkEvent(Object source, Cookie cookie) {
         super(source);
         _cookie = cookie;
     }
-    
+
     /**
      * Gets the conversation id.
      * 
@@ -81,7 +94,7 @@ public class FrameworkEvent extends EventObject {
     public ConversationID getConversationID() {
         return _id;
     }
-    
+
     /**
      * Gets the url.
      * 
@@ -90,7 +103,7 @@ public class FrameworkEvent extends EventObject {
     public HttpUrl getUrl() {
         return _url;
     }
-    
+
     /**
      * Gets the cookie.
      * 
@@ -99,7 +112,7 @@ public class FrameworkEvent extends EventObject {
     public Cookie getCookie() {
         return _cookie;
     }
-    
+
     /**
      * Gets the property name.
      * 
@@ -108,5 +121,5 @@ public class FrameworkEvent extends EventObject {
     public String getPropertyName() {
         return _property;
     }
-    
+
 }

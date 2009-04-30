@@ -17,41 +17,52 @@
 package edu.lnmiit.wavd.util.swing.treetable;
 
 import edu.lnmiit.wavd.util.swing.AbstractTreeModel;
- 
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class AbstractTreeTableModel.
  */
 public abstract class AbstractTreeTableModel extends AbstractTreeModel implements TreeTableModel {
-    
+
     //
-    // Default implementations for methods in the TreeTableModel interface. 
+    // Default implementations for methods in the TreeTableModel interface.
     //
 
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getColumnClass(int)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getColumnClass(int)
      */
-    public Class getColumnClass(int column) { 
+    public Class getColumnClass(int column) {
         return column == 0 ? TreeTableModel.class : Object.class;
     }
 
-   /* (non-Javadoc)
-    * @see edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#isCellEditable(java.lang.Object, int)
-    */ 
-    public boolean isCellEditable(Object node, int column) { 
-         return getColumnClass(column) == TreeTableModel.class; 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#isCellEditable(java
+     * .lang.Object, int)
+     */
+    public boolean isCellEditable(Object node, int column) {
+        return getColumnClass(column) == TreeTableModel.class;
     }
 
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#setValueAt(java.lang.Object, java.lang.Object, int)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#setValueAt(java.lang
+     * .Object, java.lang.Object, int)
      */
-    public void setValueAt(Object aValue, Object node, int column) {}
+    public void setValueAt(Object aValue, Object node, int column) {
+    }
 
     // Left to be implemented in the subclass:
 
-    /* 
-     *   public int getColumnCount() 
-     *   public String getColumnName(Object node, int column)  
-     *   public Object getValueAt(Object node, int column) 
+    /*
+     * public int getColumnCount() public String getColumnName(Object node, int
+     * column) public Object getValueAt(Object node, int column)
      */
 }

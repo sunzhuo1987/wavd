@@ -28,8 +28,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
+import java.util.Map; //import java.util.logging.Logger;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenuItem;
@@ -45,7 +45,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import edu.lnmiit.wavd.model.ConversationID;
-import edu.lnmiit.wavd.model.ConversationModel;
 import edu.lnmiit.wavd.model.FilteredUrlModel;
 import edu.lnmiit.wavd.model.FrameworkModel;
 import edu.lnmiit.wavd.model.HttpUrl;
@@ -58,47 +57,52 @@ import edu.lnmiit.wavd.util.swing.TableSorter;
  * The Class SummaryPanel.
  */
 public class SummaryPanel extends JPanel {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3580814473861876095L;
+
     /** The _model. */
     private FrameworkModel _model;
-    
+
     /** The _conversation model. */
     private UrlFilteredConversationModel _conversationModel;
-    
+
     /** The _url model. */
     private FilteredUrlModel _urlModel;
-    
+
     /** The _url tree table. */
     private JTreeTable _urlTreeTable;
-    
+
     /** The _url actions. */
     private ArrayList _urlActions = new ArrayList();
-    
+
     /** The _tree url. */
     private HttpUrl _treeURL = null;
-    
+
     /** The _conversation table sorter. */
     private TableSorter _conversationTableSorter;
-    
+
     /** The _conversation table model. */
     private ConversationTableModel _conversationTableModel;
-    
+
     /** The _url tree table model. */
     private UrlTreeTableModelAdapter _urlTreeTableModel;
-    
+
     /** The _conversation actions. */
     private ArrayList _conversationActions = new ArrayList();
-    
+
     /** The _url columns. */
     private Map _urlColumns = new HashMap();
-    
+
     /** The _logger. */
-    private Logger _logger = Logger.getLogger(getClass().getName());
-    
+    // private Logger _logger = Logger.getLogger(getClass().getName());
     /**
      * Instantiates a new summary panel.
      * 
-     * @param model the model
+     * @param model
+     *            the model
      */
     public SummaryPanel(FrameworkModel model) {
         _model = model;
@@ -110,17 +114,15 @@ public class SummaryPanel extends JPanel {
             }
         };
         initComponents();
-        
+
         initTree();
         addTreeListeners();
-        
+
         initTable();
         addTableListeners();
-        addConversationActions(new Action[] {
-            new ShowConversationAction(_conversationModel)
-        });
+        addConversationActions(new Action[] { new ShowConversationAction(_conversationModel) });
     }
-    
+
     /**
      * Inits the tree.
      */
@@ -129,38 +131,52 @@ public class SummaryPanel extends JPanel {
         _urlTreeTable = new JTreeTable(_urlTreeTableModel);
         _urlTreeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         ColumnWidthTracker.getTracker("UrlTree").addTable(_urlTreeTable);
-        
+
         ColumnDataModel cdm = new ColumnDataModel() {
             public Object getValue(Object key) {
-                if (_model == null) return null;
+                if (_model == null)
+                    return null;
                 return _model.getUrlProperty((HttpUrl) key, "METHODS");
             }
-            public String getColumnName() { return "Methods"; }
-            public Class getColumnClass() { return String.class; }
+
+            public String getColumnName() {
+                return "Methods";
+            }
+
+            public Class getColumnClass() {
+                return String.class;
+            }
         };
         _urlColumns.put("METHODS", cdm);
         _urlTreeTableModel.addColumn(cdm);
-        
+
         cdm = new ColumnDataModel() {
             public Object getValue(Object key) {
-                if (_model == null) return null;
+                if (_model == null)
+                    return null;
                 return _model.getUrlProperty((HttpUrl) key, "STATUS");
             }
-            public String getColumnName() { return "Status"; }
-            public Class getColumnClass() { return String.class; }
+
+            public String getColumnName() {
+                return "Status";
+            }
+
+            public Class getColumnClass() {
+                return String.class;
+            }
         };
         _urlColumns.put("STATUS", cdm);
         _urlTreeTableModel.addColumn(cdm);
-        
+
         JTree urlTree = _urlTreeTable.getTree();
         urlTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         urlTree.setRootVisible(false);
         urlTree.setShowsRootHandles(true);
         urlTree.setCellRenderer(new UrlTreeRenderer());
-        
+
         treeScrollPane.setViewportView(_urlTreeTable);
     }
-    
+
     /**
      * Adds the tree listeners.
      */
@@ -183,7 +199,7 @@ public class SummaryPanel extends JPanel {
                     _conversationModel.setUrl(_treeURL);
                 }
                 synchronized (_urlActions) {
-                    for (int i=0; i<_urlActions.size(); i++) {
+                    for (int i = 0; i < _urlActions.size(); i++) {
                         AbstractAction action = (AbstractAction) _urlActions.get(i);
                         action.putValue("URL", _treeURL);
                     }
@@ -194,100 +210,119 @@ public class SummaryPanel extends JPanel {
             public void mousePressed(MouseEvent e) {
                 maybeShowPopup(e);
             }
+
             public void mouseReleased(MouseEvent e) {
                 maybeShowPopup(e);
             }
+
             private void maybeShowPopup(MouseEvent e) {
                 if (e.isPopupTrigger() && _urlActions.size() > 0) {
                     int row = _urlTreeTable.rowAtPoint(e.getPoint());
-                    _urlTreeTable.getSelectionModel().setSelectionInterval(row,row);
+                    _urlTreeTable.getSelectionModel().setSelectionInterval(row, row);
                     urlPopupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
     }
-    
+
     /**
      * Adds the url actions.
      * 
-     * @param actions the actions
+     * @param actions
+     *            the actions
      */
     public void addUrlActions(Action[] actions) {
-        if (actions == null) return;
-        for (int i=0; i<actions.length; i++) {
+        if (actions == null)
+            return;
+        for (int i = 0; i < actions.length; i++) {
             _urlActions.add(actions[i]);
         }
-        for (int i=0; i<actions.length; i++) {
+        for (int i = 0; i < actions.length; i++) {
             urlPopupMenu.add(new JMenuItem(actions[i]));
         }
     }
-    
+
     /**
      * Adds the url columns.
      * 
-     * @param columns the columns
+     * @param columns
+     *            the columns
      */
     public void addUrlColumns(ColumnDataModel[] columns) {
-        if (columns == null) return;
-        for (int i=0; i<columns.length; i++) {
+        if (columns == null)
+            return;
+        for (int i = 0; i < columns.length; i++) {
             _urlTreeTableModel.addColumn(columns[i]);
         }
     }
-    
+
     /**
      * Inits the table.
      */
     private void initTable() {
         _conversationTableModel = new ConversationTableModel(_conversationModel);
         ColumnWidthTracker.getTracker("ConversationTable").addTable(conversationTable);
-        
+
         _conversationTableSorter = new TableSorter(_conversationTableModel, conversationTable.getTableHeader());
         conversationTable.setModel(_conversationTableSorter);
-        
+
         conversationTable.setDefaultRenderer(Date.class, new DateRenderer());
     }
-    
+
     /**
      * Adds the table listeners.
      */
     private void addTableListeners() {
-        // This listener updates the registered actions with the selected Conversation
+        // This listener updates the registered actions with the selected
+        // Conversation
         conversationTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting()) return;
+                if (e.getValueIsAdjusting())
+                    return;
                 int row = conversationTable.getSelectedRow();
                 TableModel tm = conversationTable.getModel();
                 ConversationID id = null;
-                if (row >-1)
-                    id = (ConversationID) tm.getValueAt(row, 0); // UGLY hack! FIXME!!!!
+                if (row > -1)
+                    id = (ConversationID) tm.getValueAt(row, 0); // UGLY
+                // hack
+                // !
+                // FIXME
+                // !
+                // !
+                // !
+                // !
                 synchronized (_conversationActions) {
-                    for (int i=0; i<_conversationActions.size(); i++) {
+                    for (int i = 0; i < _conversationActions.size(); i++) {
                         Action action = (Action) _conversationActions.get(i);
                         action.putValue("CONVERSATION", id);
                     }
                 }
             }
         });
-        
+
         conversationTable.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 maybeShowPopup(e);
             }
+
             public void mouseReleased(MouseEvent e) {
                 maybeShowPopup(e);
             }
+
             private void maybeShowPopup(MouseEvent e) {
                 int row = conversationTable.rowAtPoint(e.getPoint());
-                conversationTable.getSelectionModel().setSelectionInterval(row,row);
+                conversationTable.getSelectionModel().setSelectionInterval(row, row);
                 if (e.isPopupTrigger() && _conversationActions.size() > 0) {
                     conversationPopupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
+
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-                    if (_conversationActions.size()>0) {
+                    if (_conversationActions.size() > 0) {
                         Action action = (Action) _conversationActions.get(0);
-                        ActionEvent evt = new ActionEvent(conversationTable, 0, (String) action.getValue(Action.ACTION_COMMAND_KEY));
+                        ActionEvent evt = new ActionEvent(conversationTable, 0, (String) action
+                                .getValue(Action.ACTION_COMMAND_KEY));
                         if (action.isEnabled()) {
                             action.actionPerformed(evt);
                         }
@@ -295,41 +330,45 @@ public class SummaryPanel extends JPanel {
                 }
             }
         });
-        
+
     }
-    
+
     /**
      * Adds the conversation actions.
      * 
-     * @param actions the actions
+     * @param actions
+     *            the actions
      */
     public void addConversationActions(Action[] actions) {
-        if (actions == null) return;
-        for (int i=0; i<actions.length; i++) {
+        if (actions == null)
+            return;
+        for (int i = 0; i < actions.length; i++) {
             _conversationActions.add(actions[i]);
         }
-        for (int i=0; i<actions.length; i++) {
+        for (int i = 0; i < actions.length; i++) {
             conversationPopupMenu.add(new JMenuItem(actions[i]));
         }
     }
-    
+
     /**
      * Adds the conversation columns.
      * 
-     * @param columns the columns
+     * @param columns
+     *            the columns
      */
     public void addConversationColumns(ColumnDataModel[] columns) {
-        if (columns == null) return;
-        for (int i=0; i<columns.length; i++) {
+        if (columns == null)
+            return;
+        for (int i = 0; i < columns.length; i++) {
             _conversationTableModel.addColumn(columns[i]);
         }
         _conversationTableSorter.setSortingStatus(0, TableSorter.DESCENDING);
     }
-    
+
     /**
      * Inits the components.
      */
-    private void initComponents() {//GEN-BEGIN:initComponents
+    private void initComponents() {// GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
         urlPopupMenu = new javax.swing.JPopupMenu();
@@ -374,14 +413,11 @@ public class SummaryPanel extends JPanel {
 
         summarySplitPane.setLeftComponent(urlPanel);
 
-        conversationTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+        conversationTable.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {
 
-            },
-            new String [] {
+        }, new String[] {
 
-            }
-        ));
+        }));
         conversationTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         conversationScrollPane.setViewportView(conversationTable);
 
@@ -389,46 +425,50 @@ public class SummaryPanel extends JPanel {
 
         add(summarySplitPane, java.awt.BorderLayout.CENTER);
 
-    }//GEN-END:initComponents
-    
+    }// GEN-END:initComponents
+
     /**
      * Tree check box action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void treeCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_treeCheckBoxActionPerformed
+    private void treeCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_treeCheckBoxActionPerformed
         if (treeCheckBox.isSelected() && _treeURL != null) {
             _conversationModel.setUrl(_treeURL);
         } else {
             _conversationModel.setUrl(null);
         }
-    }//GEN-LAST:event_treeCheckBoxActionPerformed
-    
+    }// GEN-LAST:event_treeCheckBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The conversation popup menu. */
     private javax.swing.JPopupMenu conversationPopupMenu;
-    
+
     /** The conversation scroll pane. */
     private javax.swing.JScrollPane conversationScrollPane;
-    
+
     /** The conversation table. */
     private javax.swing.JTable conversationTable;
-    
+
     /** The summary split pane. */
     private javax.swing.JSplitPane summarySplitPane;
-    
+
     /** The tree check box. */
     private javax.swing.JCheckBox treeCheckBox;
-    
+
     /** The tree scroll pane. */
     private javax.swing.JScrollPane treeScrollPane;
-    
+
     /** The url panel. */
     private javax.swing.JPanel urlPanel;
-    
+
     /** The url popup menu. */
     private javax.swing.JPopupMenu urlPopupMenu;
     // End of variables declaration//GEN-END:variables
-    
-    
+
 }

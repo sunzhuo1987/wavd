@@ -24,8 +24,6 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 import no.geosoft.cc.ui.SplashScreen;
-
-
 import edu.lnmiit.wavd.model.Preferences;
 import edu.lnmiit.wavd.plugin.Framework;
 import edu.lnmiit.wavd.plugin.fuzz.Fuzzer;
@@ -47,57 +45,56 @@ import edu.lnmiit.wavd.ui.swing.UIFramework;
 import edu.lnmiit.wavd.util.TextFormatter;
 import edu.lnmiit.wavd.util.swing.ExceptionHandler;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Main.
  */
 public class Main {
-    
 
     /**
      * Instantiates a new main.
      */
     private Main() {
     }
-    
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String[] args) {
-        
+
         System.setProperty("sun.awt.exception.handler", ExceptionHandler.class.getName());
-        
+
         final SplashScreen splash = new SplashScreen("/edu/lnmiit/wavd/da/core/waat.gif");
         splash.open(30000);
         initLogging();
-        
+
         try {
             Preferences.loadPreferences(null);
         } catch (IOException ioe) {
             System.err.println("Error loading preferences: " + ioe);
             System.exit(1);
         }
-        
+
         Framework framework = new Framework();
-        
+
         boolean lite = Boolean.valueOf(Preferences.getPreference("WebScarab.lite", "true")).booleanValue();
-        
+
         if (args != null && args.length > 0) {
             if (args[0].equalsIgnoreCase("lite")) {
                 lite = true;
-                if (args.length>1) {
-                    String[] trim = new String[args.length-1];
-                    System.arraycopy(args, 1, trim, 0, args.length-1);
+                if (args.length > 1) {
+                    String[] trim = new String[args.length - 1];
+                    System.arraycopy(args, 1, trim, 0, args.length - 1);
                     args = trim;
                 } else {
                     args = new String[0];
                 }
             }
         }
-        
-        if (! lite) {
+
+        if (!lite) {
             final UIFramework uif = new UIFramework(framework);
             ExceptionHandler.setParentComponent(uif);
             loadAllPlugins(framework, uif);
@@ -134,7 +131,7 @@ public class Main {
             }
             uif.run();
         }
-        
+
         try {
             Preferences.savePreferences();
         } catch (IOException ioe) {
@@ -142,7 +139,7 @@ public class Main {
         }
         System.exit(0);
     }
-    
+
     /**
      * Inits the logging.
      */
@@ -154,19 +151,21 @@ public class Main {
         logger.addHandler(ch);
         ch.setLevel(Level.FINE);
     }
-    
+
     /**
      * Load all plugins.
      * 
-     * @param framework the framework
-     * @param uif the uif
+     * @param framework
+     *            the framework
+     * @param uif
+     *            the uif
      */
     public static void loadAllPlugins(Framework framework, UIFramework uif) {
         Proxy proxy = new Proxy(framework);
         framework.addPlugin(proxy);
         ProxyPanel proxyPanel = new ProxyPanel(proxy);
         uif.addPlugin(proxyPanel);
-        
+
         ManualEdit me = new ManualEdit();
         proxy.addPlugin(me);
         proxyPanel.addPlugin(new ManualEditPanel(me));
@@ -180,23 +179,25 @@ public class Main {
         CookieTracker ct = new CookieTracker(framework);
         proxy.addPlugin(ct);
         proxyPanel.addPlugin(new MiscPanel(rh, bc, ct));
-        
+
         ManualRequest manualRequest = new ManualRequest(framework);
         framework.addPlugin(manualRequest);
         uif.addPlugin(new ManualRequestPanel(manualRequest));
-                
+
         Fuzzer fuzzer = new Fuzzer(framework);
         framework.addPlugin(fuzzer);
         FuzzerPanel fuzzerPanel = new FuzzerPanel(fuzzer);
         uif.addPlugin(fuzzerPanel);
 
     }
-    
+
     /**
      * Load lite plugins.
      * 
-     * @param framework the framework
-     * @param uif the uif
+     * @param framework
+     *            the framework
+     * @param uif
+     *            the uif
      */
     public static void loadLitePlugins(Framework framework, Lite uif) {
         Proxy proxy = new Proxy(framework);
@@ -204,13 +205,11 @@ public class Main {
         ManualEdit me = new ManualEdit();
         proxy.addPlugin(me);
         uif.addPanel("Intercept", new ManualEditPanel(me));
-        
+
         RevealHidden rh = new RevealHidden();
         proxy.addPlugin(rh);
         uif.setRevealHiddean(rh);
-        
 
-      
     }
-    
+
 }

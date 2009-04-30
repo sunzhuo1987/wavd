@@ -29,36 +29,38 @@ package edu.lnmiit.wavd.util;
  * Also see a paper "A Linear Time, Constant Space Differencing Algorithm" by Burns and Long
  */
 
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class LevenshteinDistance.
  */
 public class LevenshteinDistance {
-    
+
     /** The _baseline. */
     private List _baseline;
-    
+
     /** The _previous. */
     private int[] _current, _previous;
-    
+
     /**
      * Instantiates a new levenshtein distance.
      * 
-     * @param baseline the baseline
+     * @param baseline
+     *            the baseline
      */
     public LevenshteinDistance(List baseline) {
         _baseline = baseline;
-        _current = new int[_baseline.size()+1];
-        _previous = new int[_baseline.size()+1];
+        _current = new int[_baseline.size() + 1];
+        _previous = new int[_baseline.size() + 1];
     }
-    
+
     /**
      * Gets the distance.
      * 
-     * @param target the target
+     * @param target
+     *            the target
      * 
      * @return the distance
      */
@@ -67,36 +69,36 @@ public class LevenshteinDistance {
             return target.size();
         if (target.size() == 0)
             return _baseline.size();
-        
+
         for (int i = 0; i < _current.length; i++) {
             _current[i] = i;
         }
-        
+
         Iterator targIt = target.iterator();
-        int j=0;
-        while(targIt.hasNext()) {
+        int j = 0;
+        while (targIt.hasNext()) {
             Object targObj = targIt.next();
             j++;
-            
+
             int[] t = _previous;
             _previous = _current;
             _current = t;
-            
-            _current[0] = _previous[0]+1;
-            
+
+            _current[0] = _previous[0] + 1;
+
             Iterator baseIt = _baseline.iterator();
-            int i=0;
-            while(baseIt.hasNext()) {
+            int i = 0;
+            while (baseIt.hasNext()) {
                 Object baseObj = baseIt.next();
                 i++;
-                
+
                 int cost;
                 if (baseObj.equals(targObj)) {
-                  cost = 0;
+                    cost = 0;
                 } else {
-                  cost = 1;
+                    cost = 1;
                 }
-                _current[i] = Math.min(Math.min(_previous[i]+1, _current[i-1]+1), _previous[i-1] + cost);
+                _current[i] = Math.min(Math.min(_previous[i] + 1, _current[i - 1] + 1), _previous[i - 1] + cost);
             }
         }
         return _current[_baseline.size()];
@@ -105,7 +107,8 @@ public class LevenshteinDistance {
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String[] args) {
         List baseline = new java.util.ArrayList();
