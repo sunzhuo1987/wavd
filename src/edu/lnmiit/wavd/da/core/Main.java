@@ -1,13 +1,18 @@
 /*
- * WebScarab.java
+ * Copyright 2009 Udai Gupta, Hemant Purohit
  *
- * Created on 06 February 2006, 04:59
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * To change this template, choose Tools | Options and locate the template under
- * the Source Creation and Management node. Right-click the template and choose
- * Open. You can then make changes to the template in the Source Editor.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package edu.lnmiit.wavd.da.core;
 
 import java.io.IOException;
@@ -15,62 +20,50 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.SwingUtilities;
-import no.geosoft.cc.ui.SplashScreen;
-import org.owasp.webscarab.model.Preferences;
-import org.owasp.webscarab.plugin.Framework;
-import org.owasp.webscarab.plugin.compare.Compare;
-import org.owasp.webscarab.plugin.compare.swing.ComparePanel;
-import org.owasp.webscarab.plugin.extensions.Extensions;
-import org.owasp.webscarab.plugin.extensions.swing.ExtensionsPanel;
-import org.owasp.webscarab.plugin.fragments.Fragments;
-import org.owasp.webscarab.plugin.fragments.swing.FragmentsPanel;
-import org.owasp.webscarab.plugin.fuzz.Fuzzer;
-import org.owasp.webscarab.plugin.fuzz.swing.FuzzerPanel;
-import org.owasp.webscarab.plugin.manualrequest.ManualRequest;
-import org.owasp.webscarab.plugin.manualrequest.swing.ManualRequestPanel;
-import org.owasp.webscarab.plugin.proxy.BeanShell;
-import org.owasp.webscarab.plugin.proxy.BrowserCache;
-import org.owasp.webscarab.plugin.proxy.CookieTracker;
-import org.owasp.webscarab.plugin.proxy.ManualEdit;
-import org.owasp.webscarab.plugin.proxy.Proxy;
-import org.owasp.webscarab.plugin.proxy.RevealHidden;
-import org.owasp.webscarab.plugin.proxy.swing.BeanShellPanel;
-import org.owasp.webscarab.plugin.proxy.swing.ManualEditPanel;
-import org.owasp.webscarab.plugin.proxy.swing.MiscPanel;
-import org.owasp.webscarab.plugin.proxy.swing.ProxyPanel;
-import org.owasp.webscarab.plugin.scripted.Scripted;
-import org.owasp.webscarab.plugin.scripted.swing.ScriptedPanel;
-import org.owasp.webscarab.plugin.search.Search;
-import org.owasp.webscarab.plugin.search.swing.SearchPanel;
-import org.owasp.webscarab.plugin.sessionid.SessionIDAnalysis;
-import org.owasp.webscarab.plugin.sessionid.swing.SessionIDPanel;
-import org.owasp.webscarab.plugin.spider.Spider;
-import org.owasp.webscarab.plugin.spider.swing.SpiderPanel;
-import org.owasp.webscarab.plugin.webservice.WebService;
-import org.owasp.webscarab.plugin.webservice.swing.WebServicePanel;
-import org.owasp.webscarab.plugin.xsscrlf.XSSCRLF;
-import org.owasp.webscarab.plugin.xsscrlf.swing.XSSCRLFPanel;
-import org.owasp.webscarab.ui.swing.Lite;
-import org.owasp.webscarab.ui.swing.UIFramework;
-import org.owasp.webscarab.util.TextFormatter;
-import org.owasp.webscarab.util.swing.ExceptionHandler;
 
+import javax.swing.SwingUtilities;
+
+import no.geosoft.cc.ui.SplashScreen;
+
+
+import edu.lnmiit.wavd.model.Preferences;
+import edu.lnmiit.wavd.plugin.Framework;
+import edu.lnmiit.wavd.plugin.fuzz.Fuzzer;
+import edu.lnmiit.wavd.plugin.fuzz.swing.FuzzerPanel;
+import edu.lnmiit.wavd.plugin.manualrequest.ManualRequest;
+import edu.lnmiit.wavd.plugin.manualrequest.swing.ManualRequestPanel;
+import edu.lnmiit.wavd.plugin.proxy.BeanShell;
+import edu.lnmiit.wavd.plugin.proxy.BrowserCache;
+import edu.lnmiit.wavd.plugin.proxy.CookieTracker;
+import edu.lnmiit.wavd.plugin.proxy.ManualEdit;
+import edu.lnmiit.wavd.plugin.proxy.Proxy;
+import edu.lnmiit.wavd.plugin.proxy.RevealHidden;
+import edu.lnmiit.wavd.plugin.proxy.swing.BeanShellPanel;
+import edu.lnmiit.wavd.plugin.proxy.swing.ManualEditPanel;
+import edu.lnmiit.wavd.plugin.proxy.swing.MiscPanel;
+import edu.lnmiit.wavd.plugin.proxy.swing.ProxyPanel;
+import edu.lnmiit.wavd.ui.swing.Lite;
+import edu.lnmiit.wavd.ui.swing.UIFramework;
+import edu.lnmiit.wavd.util.TextFormatter;
+import edu.lnmiit.wavd.util.swing.ExceptionHandler;
+
+// TODO: Auto-generated Javadoc
 /**
- *
- * @author udai
+ * The Class Main.
  */
 public class Main {
     
-    /** Creates a new instance of WebScarab */
+
+    /**
+     * Instantiates a new main.
+     */
     private Main() {
     }
     
-    /* This class exists purely to ensure that the
-     * program version information is properly loaded at run-time
-     *
-     * It may eventually become a dispatcher for different versions
-     * of user interfaces
+    /**
+     * The main method.
+     * 
+     * @param args the arguments
      */
     public static void main(String[] args) {
         
@@ -150,6 +143,9 @@ public class Main {
         System.exit(0);
     }
     
+    /**
+     * Inits the logging.
+     */
     private static void initLogging() {
         Logger logger = Logger.getLogger("org.owasp.webscarab");
         logger.setUseParentHandlers(false);
@@ -159,6 +155,12 @@ public class Main {
         ch.setLevel(Level.FINE);
     }
     
+    /**
+     * Load all plugins.
+     * 
+     * @param framework the framework
+     * @param uif the uif
+     */
     public static void loadAllPlugins(Framework framework, UIFramework uif) {
         Proxy proxy = new Proxy(framework);
         framework.addPlugin(proxy);
@@ -190,6 +192,12 @@ public class Main {
 
     }
     
+    /**
+     * Load lite plugins.
+     * 
+     * @param framework the framework
+     * @param uif the uif
+     */
     public static void loadLitePlugins(Framework framework, Lite uif) {
         Proxy proxy = new Proxy(framework);
         framework.addPlugin(proxy);
@@ -201,13 +209,8 @@ public class Main {
         proxy.addPlugin(rh);
         uif.setRevealHiddean(rh);
         
-        SessionIDAnalysis sessionIDAnalysis = new SessionIDAnalysis(framework);
-        framework.addPlugin(sessionIDAnalysis);
-        uif.addPluginEnhancements(new SessionIDPanel(sessionIDAnalysis));
-        
-        Fragments fragments = new Fragments(framework);
-        framework.addPlugin(fragments);
-        uif.addPluginEnhancements(new FragmentsPanel(fragments));
+
+      
     }
     
 }
