@@ -22,7 +22,13 @@
 
 package edu.lnmiit.wavd.ui.swing;
 
+import java.awt.Color;
+import java.util.Date;
+import java.util.logging.Logger;
 
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
 
 import edu.lnmiit.wavd.model.Cookie;
 import edu.lnmiit.wavd.model.FrameworkEvent;
@@ -30,40 +36,37 @@ import edu.lnmiit.wavd.model.FrameworkListener;
 import edu.lnmiit.wavd.model.FrameworkModel;
 import edu.lnmiit.wavd.util.swing.TableSorter;
 
-import javax.swing.table.AbstractTableModel;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
-
-import java.awt.Color;
-
-import java.util.Date;
-import java.util.logging.Logger;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class CookieJarViewer.
  */
 public class CookieJarViewer extends javax.swing.JFrame {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3925706509853099157L;
+
     /** The _model. */
     private FrameworkModel _model;
-    
+
     /** The _cookie table model. */
     private CookieTableModel _cookieTableModel;
-    
+
     /** The _detail table model. */
     private HistoricalCookieTableModel _detailTableModel;
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger(getClass().getName());
-    
+
     /** The _key. */
     private String _key = null;
-    
+
     /**
      * Instantiates a new cookie jar viewer.
      * 
-     * @param model the model
+     * @param model
+     *            the model
      */
     public CookieJarViewer(FrameworkModel model) {
         _model = model;
@@ -74,9 +77,10 @@ public class CookieJarViewer extends javax.swing.JFrame {
         cookieDetailTable.setModel(new TableSorter(_detailTableModel, cookieDetailTable.getTableHeader()));
         cookieTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent evt) {
-                if (evt.getValueIsAdjusting()) return;
+                if (evt.getValueIsAdjusting())
+                    return;
                 int row = cookieTable.getSelectedRow();
-                if (row>-1) {
+                if (row > -1) {
                     _key = _cookieTableModel.getKeyAt(row);
                 } else {
                     _key = null;
@@ -86,11 +90,12 @@ public class CookieJarViewer extends javax.swing.JFrame {
         });
         addDialog.pack();
     }
-    
+
     /**
      * Inits the components.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed"
+    // desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -221,14 +226,11 @@ public class CookieJarViewer extends javax.swing.JFrame {
         getContentPane().add(jLabel1, gridBagConstraints);
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(600, 200));
-        cookieTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+        cookieTable.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {
 
-            },
-            new String [] {
+        }, new String[] {
 
-            }
-        ));
+        }));
         jScrollPane1.setViewportView(cookieTable);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -249,14 +251,11 @@ public class CookieJarViewer extends javax.swing.JFrame {
         getContentPane().add(jLabel2, gridBagConstraints);
 
         jScrollPane2.setPreferredSize(new java.awt.Dimension(300, 200));
-        cookieDetailTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+        cookieDetailTable.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {
 
-            },
-            new String [] {
+        }, new String[] {
 
-            }
-        ));
+        }));
         jScrollPane2.setViewportView(cookieDetailTable);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -322,146 +321,175 @@ public class CookieJarViewer extends javax.swing.JFrame {
         getContentPane().add(jPanel1, gridBagConstraints);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-600)/2, (screenSize.height-400)/2, 600, 400);
+        setBounds((screenSize.width - 600) / 2, (screenSize.height - 400) / 2, 600, 400);
     }
+
     // </editor-fold>//GEN-END:initComponents
 
     /**
      * Ok button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
+        // FIRST
+        // :
+        // event_okButtonActionPerformed
         String domain = domainTextField.getText();
-        domainTextField.setBackground("".equals(domain)?Color.RED:Color.WHITE);
+        domainTextField.setBackground("".equals(domain) ? Color.RED : Color.WHITE);
         String path = pathTextField.getText();
-        if ("".equals(path)) path = "/";
+        if ("".equals(path))
+            path = "/";
         String name = nameTextField.getText();
-        nameTextField.setBackground("".equals(name)?Color.RED:Color.WHITE);
+        nameTextField.setBackground("".equals(name) ? Color.RED : Color.WHITE);
         String value = valueTextField.getText();
-        if ("".equals(domain) || "".equals(name)) return;
-        Cookie cookie = new Cookie(new Date(), name + "=" + value + "; domain=" + domain + "; path="+path);
+        if ("".equals(domain) || "".equals(name))
+            return;
+        Cookie cookie = new Cookie(new Date(), name + "=" + value + "; domain=" + domain + "; path=" + path);
         _logger.info("Cookie is " + cookie);
         _model.addCookie(cookie);
         addDialog.setVisible(false);
-    }//GEN-LAST:event_okButtonActionPerformed
-    
+    }// GEN-LAST:event_okButtonActionPerformed
+
     /**
      * Delete button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_deleteButtonActionPerformed
         int row = cookieDetailTable.getSelectedRow();
         if (row < cookieDetailTable.getRowCount() && row > -1) {
             Cookie cookie = _model.getCookieAt(_key, row);
             _model.removeCookie(cookie);
         }
-    }//GEN-LAST:event_deleteButtonActionPerformed
-    
+    }// GEN-LAST:event_deleteButtonActionPerformed
+
     /**
      * Adds the button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
+        // FIRST
+        // :
+        // event_addButtonActionPerformed
         addDialog.setVisible(true);
-    }//GEN-LAST:event_addButtonActionPerformed
-    
+    }// GEN-LAST:event_addButtonActionPerformed
+
     /**
      * Close button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_closeButtonActionPerformed
         setVisible(false);
-    }//GEN-LAST:event_closeButtonActionPerformed
-    
+    }// GEN-LAST:event_closeButtonActionPerformed
+
     /**
      * Exit form.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
+    private void exitForm(java.awt.event.WindowEvent evt) {// GEN-FIRST:
+        // event_exitForm
         setVisible(false);
-    }//GEN-LAST:event_exitForm
-    
+    }// GEN-LAST:event_exitForm
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The add button. */
     private javax.swing.JButton addButton;
-    
+
     /** The add dialog. */
     private javax.swing.JDialog addDialog;
-    
+
     /** The cancel button. */
     private javax.swing.JButton cancelButton;
-    
+
     /** The close button. */
     private javax.swing.JButton closeButton;
-    
+
     /** The cookie detail table. */
     private javax.swing.JTable cookieDetailTable;
-    
+
     /** The cookie table. */
     private javax.swing.JTable cookieTable;
-    
+
     /** The delete button. */
     private javax.swing.JButton deleteButton;
-    
+
     /** The domain text field. */
     private javax.swing.JTextField domainTextField;
-    
+
     /** The j label1. */
     private javax.swing.JLabel jLabel1;
-    
+
     /** The j label2. */
     private javax.swing.JLabel jLabel2;
-    
+
     /** The j label3. */
     private javax.swing.JLabel jLabel3;
-    
+
     /** The j label4. */
     private javax.swing.JLabel jLabel4;
-    
+
     /** The j label5. */
     private javax.swing.JLabel jLabel5;
-    
+
     /** The j label6. */
     private javax.swing.JLabel jLabel6;
-    
+
     /** The j panel1. */
     private javax.swing.JPanel jPanel1;
-    
+
     /** The j panel2. */
     private javax.swing.JPanel jPanel2;
-    
+
     /** The j scroll pane1. */
     private javax.swing.JScrollPane jScrollPane1;
-    
+
     /** The j scroll pane2. */
     private javax.swing.JScrollPane jScrollPane2;
-    
+
     /** The name text field. */
     private javax.swing.JTextField nameTextField;
-    
+
     /** The ok button. */
     private javax.swing.JButton okButton;
-    
+
     /** The path text field. */
     private javax.swing.JTextField pathTextField;
-    
+
     /** The value text field. */
     private javax.swing.JTextField valueTextField;
+
     // End of variables declaration//GEN-END:variables
-    
+
     /**
      * The Class CookieTableModel.
      */
     private class CookieTableModel extends AbstractTableModel {
-        
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = -6338125968816881529L;
+
         /** The _model. */
         private FrameworkModel _model;
-        
+
         /** The _listener. */
         private FrameworkListener _listener = new FrameworkListener() {
             public void cookieAdded(FrameworkEvent evt) {
@@ -474,7 +502,7 @@ public class CookieJarViewer extends javax.swing.JFrame {
                     fireTableRowsUpdated(row, row);
                 }
             }
-            
+
             public void cookieRemoved(FrameworkEvent evt) {
                 Cookie cookie = evt.getCookie();
                 int count = _model.getCookieCount(cookie.getKey());
@@ -485,200 +513,254 @@ public class CookieJarViewer extends javax.swing.JFrame {
                     fireTableRowsUpdated(row, row);
                 }
             }
-            
+
             public void cookiesChanged() {
                 fireTableDataChanged();
             }
-            
-            public void conversationPropertyChanged(FrameworkEvent evt) {}
-            
-            public void urlPropertyChanged(FrameworkEvent evt) {}
-            
+
+            public void conversationPropertyChanged(FrameworkEvent evt) {
+            }
+
+            public void urlPropertyChanged(FrameworkEvent evt) {
+            }
+
         };
-        
+
         /** The _column names. */
-        private String[] _columnNames = new String[] { "Domain", "Path", "Name", "Date", "Value", "Secure", "Max age", "Comment" };
-        
+        private String[] _columnNames = new String[] { "Domain", "Path", "Name", "Date", "Value", "Secure", "Max age",
+                "Comment" };
+
         /** The _column class. */
-        private Class[] _columnClass = new Class[] { String.class, String.class, String.class, Date.class, String.class, Boolean.class, String.class, String.class };
-        
+        private Class[] _columnClass = new Class[] { String.class, String.class, String.class, Date.class,
+                String.class, Boolean.class, String.class, String.class };
+
         /**
          * Instantiates a new cookie table model.
          * 
-         * @param model the model
+         * @param model
+         *            the model
          */
         public CookieTableModel(FrameworkModel model) {
             this._model = model;
             this._model.addModelListener(_listener);
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getColumnCount()
          */
         public int getColumnCount() {
             return _columnNames.length;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getRowCount()
          */
         public int getRowCount() {
-            if (this._model == null) return 0;
+            if (this._model == null)
+                return 0;
             return this._model.getCookieCount();
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getValueAt(int, int)
          */
         public Object getValueAt(int rowIndex, int columnIndex) {
             String key = this._model.getCookieAt(rowIndex);
             Cookie cookie = this._model.getCurrentCookie(key);
             switch (columnIndex) {
-                case 0: return cookie.getDomain();
-                case 1: return cookie.getPath();
-                case 2: return cookie.getName();
-                case 3: return cookie.getDate();
-                case 4: return cookie.getValue();
-                case 5: return Boolean.valueOf(cookie.getSecure());
-                case 6: return cookie.getMaxAge();
-                case 7: return cookie.getComment();
+            case 0:
+                return cookie.getDomain();
+            case 1:
+                return cookie.getPath();
+            case 2:
+                return cookie.getName();
+            case 3:
+                return cookie.getDate();
+            case 4:
+                return cookie.getValue();
+            case 5:
+                return Boolean.valueOf(cookie.getSecure());
+            case 6:
+                return cookie.getMaxAge();
+            case 7:
+                return cookie.getComment();
             }
             return null;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.AbstractTableModel#getColumnName(int)
          */
         public String getColumnName(int columnIndex) {
             return _columnNames[columnIndex];
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
          */
         public Class getColumnClass(int columnIndex) {
             return _columnClass[columnIndex];
         }
-        
+
         /**
          * Gets the key at.
          * 
-         * @param row the row
+         * @param row
+         *            the row
          * 
          * @return the key at
          */
         public String getKeyAt(int row) {
             return this._model.getCookieAt(row);
         }
-        
+
     }
-    
+
     /**
      * The Class HistoricalCookieTableModel.
      */
     private class HistoricalCookieTableModel extends AbstractTableModel {
-        
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = 5787430847392612300L;
+
         /** The _model. */
         private FrameworkModel _model = null;
-        
+
         /** The _key. */
         private String _key = null;
-        
+
         /** The _listener. */
         private FrameworkListener _listener = new FrameworkListener() {
             public void cookieAdded(FrameworkEvent evt) {
                 Cookie cookie = evt.getCookie();
-                if (_key == null || ! _key.equals(cookie.getKey())) return;
+                if (_key == null || !_key.equals(cookie.getKey()))
+                    return;
                 int row = _model.getIndexOfCookie(_key, cookie);
                 fireTableRowsInserted(row, row);
             }
-            
+
             public void cookieRemoved(FrameworkEvent evt) {
                 Cookie cookie = evt.getCookie();
-                if (_key == null || ! _key.equals(cookie.getKey())) return;
+                if (_key == null || !_key.equals(cookie.getKey()))
+                    return;
                 fireTableDataChanged();
             }
-            
+
             public void cookiesChanged() {
                 fireTableDataChanged();
             }
-            
-            public void conversationPropertyChanged(FrameworkEvent evt) {}
-            
-            public void urlPropertyChanged(FrameworkEvent evt) {}
-            
+
+            public void conversationPropertyChanged(FrameworkEvent evt) {
+            }
+
+            public void urlPropertyChanged(FrameworkEvent evt) {
+            }
+
         };
-        
+
         /** The _column names. */
         private String[] _columnNames = new String[] { "Date", "Value", "Secure", "Max age", "Comment" };
-        
+
         /** The _column class. */
-        private Class[] _columnClass = new Class[] { Date.class, String.class, Boolean.class, String.class, String.class };
-        
+        private Class[] _columnClass = new Class[] { Date.class, String.class, Boolean.class, String.class,
+                String.class };
+
         /**
          * Instantiates a new historical cookie table model.
          * 
-         * @param model the model
+         * @param model
+         *            the model
          */
         public HistoricalCookieTableModel(FrameworkModel model) {
             this._model = model;
             this._model.addModelListener(_listener);
         }
-        
+
         /**
          * Sets the key.
          * 
-         * @param key the new key
+         * @param key
+         *            the new key
          */
         public void setKey(String key) {
             _key = key;
             fireTableDataChanged();
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getRowCount()
          */
         public int getRowCount() {
-            if (this._model == null) return 0;
-            if (_key == null) return 0;
+            if (this._model == null)
+                return 0;
+            if (_key == null)
+                return 0;
             return this._model.getCookieCount(_key);
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getValueAt(int, int)
          */
         public Object getValueAt(int row, int column) {
             Cookie cookie = this._model.getCookieAt(_key, row);
             switch (column) {
-                case 0: return cookie.getDate();
-                case 1: return cookie.getValue();
-                case 2: return Boolean.valueOf(cookie.getSecure());
-                case 3: return cookie.getMaxAge();
-                case 4: return cookie.getComment();
+            case 0:
+                return cookie.getDate();
+            case 1:
+                return cookie.getValue();
+            case 2:
+                return Boolean.valueOf(cookie.getSecure());
+            case 3:
+                return cookie.getMaxAge();
+            case 4:
+                return cookie.getComment();
             }
             return null;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getColumnCount()
          */
         public int getColumnCount() {
             return _columnNames.length;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.AbstractTableModel#getColumnName(int)
          */
         public String getColumnName(int columnIndex) {
             return _columnNames[columnIndex];
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
          */
         public Class getColumnClass(int columnIndex) {
             return _columnClass[columnIndex];
         }
-        
+
     }
 }

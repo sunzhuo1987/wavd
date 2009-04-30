@@ -15,6 +15,8 @@
  */
 package edu.lnmiit.wavd.ui.swing.editors;
 
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -22,10 +24,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextPane;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 
 import org.openamf.AMFBody;
 import org.openamf.AMFHeader;
@@ -34,162 +41,154 @@ import org.openamf.io.AMFDeserializer;
 
 import flashgateway.io.ASObject;
 
-import javax.swing.JTextPane;
-import java.awt.GridBagConstraints;
-import javax.swing.JTabbedPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
-
-import java.awt.BorderLayout;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class AMFPanel.
  */
 public class AMFPanel extends JPanel implements ByteArrayEditor {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-    
+
     /** The bytes data. */
     private byte[] bytesData = null;
-    
+
     /** The info text pane. */
     private JTextPane infoTextPane = null;
-    
+
     /** The amf tabbed pane. */
     private JTabbedPane amfTabbedPane = null;
-    
+
     /** The info scroll pane. */
     private JScrollPane infoScrollPane = null;
-    
+
     /** The data pane. */
     private JPanel dataPane = null;
-    
-        /* (non-Javadoc)
-         * @see org.owasp.webscarab.ui.swing.editors.ByteArrayEditor#getBytes()
-         */
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.owasp.webscarab.ui.swing.editors.ByteArrayEditor#getBytes()
+     */
     public byte[] getBytes() {
         return bytesData;
     }
-    
-        /* (non-Javadoc)
-         * @see org.owasp.webscarab.ui.swing.editors.ByteArrayEditor#isModified()
-         */
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.owasp.webscarab.ui.swing.editors.ByteArrayEditor#isModified()
+     */
     public boolean isModified() {
         return false;
     }
-    
-        /* (non-Javadoc)
-         * @see org.owasp.webscarab.ui.swing.editors.ByteArrayEditor#setBytes(java.lang.String, byte[])
-         */
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.owasp.webscarab.ui.swing.editors.ByteArrayEditor#setBytes(java.lang
+     * .String, byte[])
+     */
     public void setBytes(String contentType, byte[] bytes) {
-        //contentType is always application/x-amf
+        // contentType is always application/x-amf
         this.bytesData = bytes;
         DataInputStream dis = new DataInputStream(new ByteArrayInputStream(this.bytesData));
         try {
-            AMFDeserializer deserializer =  new AMFDeserializer(dis);
+            AMFDeserializer deserializer = new AMFDeserializer(dis);
             AMFMessage message = deserializer.getAMFMessage();
-            
-            //Info panel
+
+            // Info panel
             StringBuffer sb = new StringBuffer();
-            sb.append("Version: "+message.getVersion()+"\n");
-            sb.append("Headers:" + message.getHeaderCount()+"\n");
-            for (int i=0;i<message.getHeaderCount();i++){
+            sb.append("Version: " + message.getVersion() + "\n");
+            sb.append("Headers:" + message.getHeaderCount() + "\n");
+            for (int i = 0; i < message.getHeaderCount(); i++) {
                 AMFHeader header = message.getHeader(i);
-                sb.append(header.toString()+"\n\n");
+                sb.append(header.toString() + "\n\n");
             }
-            sb.append("Bodies: "+message.getBodyCount()+"\n");
-            
-            for (int i=0;i<message.getBodyCount();i++){
+            sb.append("Bodies: " + message.getBodyCount() + "\n");
+
+            for (int i = 0; i < message.getBodyCount(); i++) {
                 AMFBody messagebody = message.getBody(i);
-                sb.append("Body : "+(i+1)+"\n");
-                sb.append("   Service Name: "+messagebody.getServiceName()+"\n");
-                sb.append("   Method Name: "+messagebody.getServiceMethodName()+"\n");
-                sb.append("   Response: "+messagebody.getResponse()+"\n");
-                sb.append("   Target: "+messagebody.getTarget()+"\n");
-                sb.append("   Type: " + AMFBody.getObjectTypeDescription(messagebody.getType())+"\n");
-                
+                sb.append("Body : " + (i + 1) + "\n");
+                sb.append("   Service Name: " + messagebody.getServiceName() + "\n");
+                sb.append("   Method Name: " + messagebody.getServiceMethodName() + "\n");
+                sb.append("   Response: " + messagebody.getResponse() + "\n");
+                sb.append("   Target: " + messagebody.getTarget() + "\n");
+                sb.append("   Type: " + AMFBody.getObjectTypeDescription(messagebody.getType()) + "\n");
+
             }
             this.getInfoTextPane().setText(sb.toString());
-            
-            //Data panel
+
+            // Data panel
             ObjectPanel oPanel = new ObjectPanel();
             if (message.getBodyCount() > 1) {
                 HashMap bodies = new HashMap();
-                for (int i=0;i<message.getBodyCount();i++){
-                    bodies.put("Body :"+(i+1), message.getBody(i).getValue());
-                    
+                for (int i = 0; i < message.getBodyCount(); i++) {
+                    bodies.put("Body :" + (i + 1), message.getBody(i).getValue());
+
                     oPanel.setObject(bodies);
                 }
             } else {
                 oPanel.setObject(message.getBody(0).getValue());
             }
-            
-            
-            this.getDataPane().add(oPanel,BorderLayout.CENTER);
-            
-            //Recordsets
-            //TODO:Recordsets are found as Custom Class...need to chceck it.
-            for (int i=0;i<message.getBodyCount();i++){
-                //recordset is an ASObject too which is a HashMap
+
+            this.getDataPane().add(oPanel, BorderLayout.CENTER);
+
+            // Recordsets
+            // TODO:Recordsets are found as Custom Class...need to chceck it.
+            for (int i = 0; i < message.getBodyCount(); i++) {
+                // recordset is an ASObject too which is a HashMap
                 if (message.getBody(i).getValue() instanceof flashgateway.io.ASObject) {
                     ASObject object = (ASObject) message.getBody(i).getValue();
-                    //check if it's a RecordSet
+                    // check if it's a RecordSet
                     if (object.containsKey("serverinfo") && object.get("serverinfo") instanceof ASObject) {
-                        ASObject rs = (ASObject)object.get("serverinfo");
-                        
-                        if (rs.containsKey("cursor")
-                        && rs.containsKey("initialdata")
-                        && rs.containsKey("id")
-                        && rs.containsKey("servicename")
-                        && rs.containsKey("totalcount")
-                        && rs.containsKey("version")
-                        && rs.containsKey("columnnames")
-                        ) {
-                            
-                            //Looks like a recordset
-                            this.addRecordsetPanel(rs,i+1);
+                        ASObject rs = (ASObject) object.get("serverinfo");
+
+                        if (rs.containsKey("cursor") && rs.containsKey("initialdata") && rs.containsKey("id")
+                                && rs.containsKey("servicename") && rs.containsKey("totalcount")
+                                && rs.containsKey("version") && rs.containsKey("columnnames")) {
+
+                            // Looks like a recordset
+                            this.addRecordsetPanel(rs, i + 1);
                         }
                     }
                 }
-                
+
             }
-            
-            
-            
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
     }
-    
+
     /**
      * Adds the recordset panel.
      * 
-     * @param rs the rs
-     * @param number the number
+     * @param rs
+     *            the rs
+     * @param number
+     *            the number
      */
     private void addRecordsetPanel(ASObject rs, int number) {
         TableModel model = new RecordsetTableModel(rs);
         JTable rsTable = new JTable(model);
-        JScrollPane  rsScroll = new JScrollPane(rsTable);
-        getAmfTabbedPane().addTab("Recordset "+number, rsScroll);
-        
-        
-        
+        JScrollPane rsScroll = new JScrollPane(rsTable);
+        getAmfTabbedPane().addTab("Recordset " + number, rsScroll);
+
     }
-    
-        /* (non-Javadoc)
-         * @see org.owasp.webscarab.ui.swing.editors.ByteArrayEditor#setEditable(boolean)
-         */
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.owasp.webscarab.ui.swing.editors.ByteArrayEditor#setEditable(boolean)
+     */
     public void setEditable(boolean editable) {
-        //This panel is to render. We can't edit data here.
+        // This panel is to render. We can't edit data here.
     }
-    
+
     /**
      * Instantiates a new aMF panel.
      */
@@ -198,7 +197,7 @@ public class AMFPanel extends JPanel implements ByteArrayEditor {
         setName("AMF");
         initialize();
     }
-    
+
     /**
      * Gets the content types.
      * 
@@ -207,7 +206,7 @@ public class AMFPanel extends JPanel implements ByteArrayEditor {
     public String[] getContentTypes() {
         return new String[] { "application/x-amf" };
     }
-    
+
     /**
      * Initialize.
      */
@@ -220,7 +219,7 @@ public class AMFPanel extends JPanel implements ByteArrayEditor {
         this.setLayout(new GridBagLayout());
         this.add(getAmfTabbedPane(), gridBagConstraints1);
     }
-    
+
     /**
      * Gets the info text pane.
      * 
@@ -232,7 +231,7 @@ public class AMFPanel extends JPanel implements ByteArrayEditor {
         }
         return infoTextPane;
     }
-    
+
     /**
      * Gets the amf tabbed pane.
      * 
@@ -246,7 +245,7 @@ public class AMFPanel extends JPanel implements ByteArrayEditor {
         }
         return amfTabbedPane;
     }
-    
+
     /**
      * Gets the info scroll pane.
      * 
@@ -259,7 +258,7 @@ public class AMFPanel extends JPanel implements ByteArrayEditor {
         }
         return infoScrollPane;
     }
-    
+
     /**
      * Gets the data pane.
      * 
@@ -272,37 +271,43 @@ public class AMFPanel extends JPanel implements ByteArrayEditor {
         }
         return dataPane;
     }
-    
+
     /**
      * The Class RecordsetTableModel.
      */
     private class RecordsetTableModel extends AbstractTableModel {
-        
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = -7823558629830081682L;
+
         /** The data. */
-        private ArrayList data=null;
-        
+        private ArrayList data = null;
+
         /** The col names. */
-        private ArrayList colNames=null;
-        
+        private ArrayList colNames = null;
+
         /**
          * Instantiates a new recordset table model.
          * 
-         * @param rs the rs
+         * @param rs
+         *            the rs
          */
         public RecordsetTableModel(ASObject rs) {
             if (rs.get("columnnames") instanceof ArrayList) {
-                if (rs.get("initialdata") instanceof ArrayList ) {
-                    ArrayList rows = (ArrayList)rs.get("initialdata");
-                    
-                    boolean allOk=true;
+                if (rs.get("initialdata") instanceof ArrayList) {
+                    ArrayList rows = (ArrayList) rs.get("initialdata");
+
+                    boolean allOk = true;
                     Iterator it = rows.iterator();
                     while (it.hasNext()) {
                         Object row = it.next();
                         if (row instanceof ArrayList) {
-                            Vector vRow = new Vector((ArrayList)row);
-                            
+                            new Vector((ArrayList) row);
+
                         } else {
-                            allOk =false;
+                            allOk = false;
                             break;
                         }
                     }
@@ -312,10 +317,12 @@ public class AMFPanel extends JPanel implements ByteArrayEditor {
                     }
                 }
             }
-            
+
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getColumnCount()
          */
         public int getColumnCount() {
@@ -325,8 +332,10 @@ public class AMFPanel extends JPanel implements ByteArrayEditor {
                 return this.colNames.size();
             }
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.AbstractTableModel#getColumnName(int)
          */
         public String getColumnName(int no) {
@@ -336,8 +345,10 @@ public class AMFPanel extends JPanel implements ByteArrayEditor {
                 return this.colNames.get(no).toString();
             }
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getRowCount()
          */
         public int getRowCount() {
@@ -347,17 +358,17 @@ public class AMFPanel extends JPanel implements ByteArrayEditor {
                 return data.size();
             }
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getValueAt(int, int)
          */
         public Object getValueAt(int rowNo, int colNo) {
             ArrayList row = (ArrayList) data.get(rowNo);
             return row.get(colNo);
         }
-        
+
     }
-    
+
 }
-
-

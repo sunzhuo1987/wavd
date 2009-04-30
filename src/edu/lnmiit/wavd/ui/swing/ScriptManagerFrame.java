@@ -16,9 +16,19 @@
 
 package edu.lnmiit.wavd.ui.swing;
 
-import org.apache.bsf.BSFException;
+import java.awt.Component;
+import java.io.File;
 
-
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 import edu.lnmiit.wavd.model.Preferences;
 import edu.lnmiit.wavd.plugin.Hook;
@@ -28,48 +38,31 @@ import edu.lnmiit.wavd.plugin.ScriptManager;
 import edu.lnmiit.wavd.util.swing.JTreeTable;
 import edu.lnmiit.wavd.util.swing.treetable.AbstractTreeTableModel;
 
-import java.awt.Component;
-
-import javax.swing.SwingUtilities;
-import javax.swing.JLabel;
-import javax.swing.JTree;
-import javax.swing.tree.TreeSelectionModel;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreePath;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-
-import java.io.File;
-import java.io.IOException;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class ScriptManagerFrame.
  */
 public class ScriptManagerFrame extends javax.swing.JFrame implements ScriptListener {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1884106744504826998L;
+
     /** The _manager. */
     private ScriptManager _manager;
-    
-    /** The _hook. */
-    private Hook _hook = null;
-    
-    /** The _script. */
-    private Script _script = null;
-    
+
     /** The _hook tree. */
     private JTreeTable _hookTree;
-    
+
     /** The _tree model. */
     private HookScriptTreeModel _treeModel;
-    
+
     /**
      * Instantiates a new script manager frame.
      * 
-     * @param manager the manager
+     * @param manager
+     *            the manager
      */
     public ScriptManagerFrame(ScriptManager manager) {
         _manager = manager;
@@ -89,10 +82,10 @@ public class ScriptManagerFrame extends javax.swing.JFrame implements ScriptList
                 if (selection != null) {
                     Object o = selection.getLastPathComponent();
                     if (o instanceof Hook) {
-                        showHook((Hook)o);
+                        showHook((Hook) o);
                         showScript(null);
                     } else if (o instanceof Script) {
-                        showHook((Hook)selection.getParentPath().getLastPathComponent());
+                        showHook((Hook) selection.getParentPath().getLastPathComponent());
                         showScript((Script) o);
                     }
                 } else {
@@ -104,14 +97,14 @@ public class ScriptManagerFrame extends javax.swing.JFrame implements ScriptList
         _hookTree.getColumnModel().getColumn(1).setMaxWidth(50);
         _manager.addScriptListener(this);
     }
-    
+
     /**
      * Show hook.
      * 
-     * @param hook the hook
+     * @param hook
+     *            the hook
      */
     private void showHook(Hook hook) {
-        _hook = hook;
         if (hook != null) {
             descriptionTextArea.setText(hook.getDescription());
             descriptionTextArea.setCaretPosition(0);
@@ -121,14 +114,14 @@ public class ScriptManagerFrame extends javax.swing.JFrame implements ScriptList
             addButton.setEnabled(false);
         }
     }
-    
+
     /**
      * Show script.
      * 
-     * @param script the script
+     * @param script
+     *            the script
      */
     private void showScript(Script script) {
-        _script = script;
         if (script == null) {
             scriptTextField.setText("");
             scriptTextArea.setText("");
@@ -141,82 +134,114 @@ public class ScriptManagerFrame extends javax.swing.JFrame implements ScriptList
         }
         saveButton.setEnabled(false);
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.ScriptListener#hooksChanged()
      */
     public void hooksChanged() {
         _treeModel.fireStructureChanged();
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.ScriptListener#hookStarted(java.lang.String, edu.lnmiit.wavd.plugin.Hook)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see edu.lnmiit.wavd.plugin.ScriptListener#hookStarted(java.lang.String,
+     * edu.lnmiit.wavd.plugin.Hook)
      */
     public void hookStarted(String plugin, Hook hook) {
-        //             firePathChanged(new TreePath(new Object[] {plugin, hook}));
+        // firePathChanged(new TreePath(new Object[] {plugin, hook}));
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.ScriptListener#scriptStarted(java.lang.String, edu.lnmiit.wavd.plugin.Hook, edu.lnmiit.wavd.plugin.Script)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.plugin.ScriptListener#scriptStarted(java.lang.String,
+     * edu.lnmiit.wavd.plugin.Hook, edu.lnmiit.wavd.plugin.Script)
      */
     public void scriptStarted(String plugin, Hook hook, Script script) {
-        //             firePathChanged(new TreePath(new Object[] {plugin, hook, script}));
+        // firePathChanged(new TreePath(new Object[] {plugin, hook, script}));
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.ScriptListener#scriptChanged(java.lang.String, edu.lnmiit.wavd.plugin.Hook, edu.lnmiit.wavd.plugin.Script)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.plugin.ScriptListener#scriptChanged(java.lang.String,
+     * edu.lnmiit.wavd.plugin.Hook, edu.lnmiit.wavd.plugin.Script)
      */
     public void scriptChanged(final String plugin, final Hook hook, final Script script) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                _treeModel.firePathChanged(new TreePath(new Object[] {_treeModel.getRoot(), plugin, hook, script}));
+                _treeModel.firePathChanged(new TreePath(new Object[] { _treeModel.getRoot(), plugin, hook, script }));
             }
         });
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.ScriptListener#scriptEnded(java.lang.String, edu.lnmiit.wavd.plugin.Hook, edu.lnmiit.wavd.plugin.Script)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see edu.lnmiit.wavd.plugin.ScriptListener#scriptEnded(java.lang.String,
+     * edu.lnmiit.wavd.plugin.Hook, edu.lnmiit.wavd.plugin.Script)
      */
     public void scriptEnded(String plugin, Hook hook, Script script) {
-        //             firePathChanged(new TreePath(new Object[] {plugin, hook, script}));
+        // firePathChanged(new TreePath(new Object[] {plugin, hook, script}));
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.ScriptListener#hookEnded(java.lang.String, edu.lnmiit.wavd.plugin.Hook)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see edu.lnmiit.wavd.plugin.ScriptListener#hookEnded(java.lang.String,
+     * edu.lnmiit.wavd.plugin.Hook)
      */
     public void hookEnded(String plugin, Hook hook) {
-        //             firePathChanged(new TreePath(new Object[] {plugin, hook}));
+        // firePathChanged(new TreePath(new Object[] {plugin, hook}));
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.ScriptListener#scriptError(java.lang.String, edu.lnmiit.wavd.plugin.Hook, edu.lnmiit.wavd.plugin.Script, java.lang.Throwable)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see edu.lnmiit.wavd.plugin.ScriptListener#scriptError(java.lang.String,
+     * edu.lnmiit.wavd.plugin.Hook, edu.lnmiit.wavd.plugin.Script,
+     * java.lang.Throwable)
      */
     public void scriptError(final String plugin, final Hook hook, final Script script, final Throwable error) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                JOptionPane.showMessageDialog(null, new String[] {"Error running script : ", plugin + hook.getName(), script.getFile().getName(), error.getMessage()}, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, new String[] { "Error running script : ", plugin + hook.getName(),
+                        script.getFile().getName(), error.getMessage() }, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.ScriptListener#scriptAdded(java.lang.String, edu.lnmiit.wavd.plugin.Hook, edu.lnmiit.wavd.plugin.Script)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see edu.lnmiit.wavd.plugin.ScriptListener#scriptAdded(java.lang.String,
+     * edu.lnmiit.wavd.plugin.Hook, edu.lnmiit.wavd.plugin.Script)
      */
     public void scriptAdded(String plugin, Hook hook, Script script) {
-        _treeModel.fireTreeStructureChanged(new TreePath(new Object[] {_treeModel.getRoot(), plugin, hook}));
+        _treeModel.fireTreeStructureChanged(new TreePath(new Object[] { _treeModel.getRoot(), plugin, hook }));
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.ScriptListener#scriptRemoved(java.lang.String, edu.lnmiit.wavd.plugin.Hook, edu.lnmiit.wavd.plugin.Script)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.plugin.ScriptListener#scriptRemoved(java.lang.String,
+     * edu.lnmiit.wavd.plugin.Hook, edu.lnmiit.wavd.plugin.Script)
      */
     public void scriptRemoved(String plugin, Hook hook, Script script) {
-        _treeModel.fireTreeStructureChanged(new TreePath(new Object[] {_treeModel.getRoot(), plugin, hook}));
+        _treeModel.fireTreeStructureChanged(new TreePath(new Object[] { _treeModel.getRoot(), plugin, hook }));
     }
-    
+
     /**
      * Inits the components.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed"
+    // desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -348,43 +373,57 @@ public class ScriptManagerFrame extends javax.swing.JFrame implements ScriptList
         getContentPane().add(jSplitPane1, java.awt.BorderLayout.CENTER);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-600)/2, (screenSize.height-400)/2, 600, 400);
+        setBounds((screenSize.width - 600) / 2, (screenSize.height - 400) / 2, 600, 400);
     }// </editor-fold>//GEN-END:initComponents
-    
+
     /**
      * Save button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_saveButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_saveButtonActionPerformed
-        
+    }// GEN-LAST:event_saveButtonActionPerformed
+
     /**
      * Removes the button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
+    private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_removeButtonActionPerformed
         TreePath path = _hookTree.getTree().getSelectionPath();
-        if (path.getPathCount()==4) {
+        if (path.getPathCount() == 4) {
             String plugin = (String) path.getPathComponent(1);
             Hook hook = (Hook) path.getPathComponent(2);
             Script script = (Script) path.getPathComponent(3);
             _manager.removeScript(plugin, hook, script);
         }
-    }//GEN-LAST:event_removeButtonActionPerformed
-    
+    }// GEN-LAST:event_removeButtonActionPerformed
+
     /**
      * Adds the button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
+        // FIRST
+        // :
+        // event_addButtonActionPerformed
         TreePath path = _hookTree.getTree().getSelectionPath();
         String plugin = null;
         Hook hook = null;
-        if (path.getPathCount()>=3) {
+        if (path.getPathCount() >= 3) {
             plugin = (String) path.getPathComponent(1);
             hook = (Hook) path.getPathComponent(2);
         } else {
@@ -399,112 +438,133 @@ public class ScriptManagerFrame extends javax.swing.JFrame implements ScriptList
                 Script script = new Script(file);
                 _manager.addScript(plugin, hook, script);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, new String[] {"Error loading Script : ", e.getMessage()}, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, new String[] { "Error loading Script : ", e.getMessage() },
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         Preferences.setPreference("ScriptManager.DefaultDir", jfc.getCurrentDirectory().getAbsolutePath());
-    }//GEN-LAST:event_addButtonActionPerformed
-    
+    }// GEN-LAST:event_addButtonActionPerformed
+
     /** The add button. */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
-    
+
     /** The description text area. */
     private javax.swing.JTextArea descriptionTextArea;
-    
+
     /** The hook scroll pane. */
     private javax.swing.JScrollPane hookScrollPane;
-    
+
     /** The j label2. */
     private javax.swing.JLabel jLabel2;
-    
+
     /** The j label3. */
     private javax.swing.JLabel jLabel3;
-    
+
     /** The j panel2. */
     private javax.swing.JPanel jPanel2;
-    
+
     /** The j panel3. */
     private javax.swing.JPanel jPanel3;
-    
+
     /** The j scroll pane1. */
     private javax.swing.JScrollPane jScrollPane1;
-    
+
     /** The j scroll pane3. */
     private javax.swing.JScrollPane jScrollPane3;
-    
+
     /** The j split pane1. */
     private javax.swing.JSplitPane jSplitPane1;
-    
+
     /** The j split pane2. */
     private javax.swing.JSplitPane jSplitPane2;
-    
+
     /** The new button. */
     private javax.swing.JButton newButton;
-    
+
     /** The remove button. */
     private javax.swing.JButton removeButton;
-    
+
     /** The save as button. */
     private javax.swing.JButton saveAsButton;
-    
+
     /** The save button. */
     private javax.swing.JButton saveButton;
-    
+
     /** The script text area. */
     private javax.swing.JTextArea scriptTextArea;
-    
+
     /** The script text field. */
     private javax.swing.JTextField scriptTextField;
-    
+
     /** The script tool bar. */
     private javax.swing.JToolBar scriptToolBar;
+
     // End of variables declaration//GEN-END:variables
-    
+
     /**
      * The Class HookScriptTreeModel.
      */
     private class HookScriptTreeModel extends AbstractTreeTableModel {
-        
+
         /** The _root. */
         Object _root = new String("RooT");
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.treetable.AbstractTreeTableModel#getColumnClass(int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @seeedu.lnmiit.wavd.util.swing.treetable.AbstractTreeTableModel#
+         * getColumnClass(int)
          */
         public Class getColumnClass(int column) {
-            if (column == 0) return super.getColumnClass(column);
+            if (column == 0)
+                return super.getColumnClass(column);
             return Boolean.class;
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getColumnCount()
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getColumnCount()
          */
         public int getColumnCount() {
             return 2;
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getColumnName(int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getColumnName
+         * (int)
          */
         public String getColumnName(int i) {
-            if (i == 1) return "Enabled";
+            if (i == 1)
+                return "Enabled";
             return "";
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getValueAt(java.lang.Object, int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getValueAt(java
+         * .lang.Object, int)
          */
         public Object getValueAt(Object node, int column) {
-            if (column == 0) return node;
+            if (column == 0)
+                return node;
             if (node instanceof Script) {
                 Script script = (Script) node;
                 return new Boolean(script.isEnabled());
             }
             return null;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
          */
         public Object getChild(Object parent, int index) {
@@ -514,10 +574,13 @@ public class ScriptManagerFrame extends javax.swing.JFrame implements ScriptList
                 return _manager.getHook((String) parent, index);
             } else if (parent instanceof Hook) {
                 return ((Hook) parent).getScript(index);
-            } else return null;
+            } else
+                return null;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
          */
         public int getChildCount(Object parent) {
@@ -527,79 +590,120 @@ public class ScriptManagerFrame extends javax.swing.JFrame implements ScriptList
                 return _manager.getHookCount((String) parent);
             } else if (parent instanceof Hook) {
                 return ((Hook) parent).getScriptCount();
-            } else return 0;
+            } else
+                return 0;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.tree.TreeModel#getRoot()
          */
         public Object getRoot() {
             return _root;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
          */
         public boolean isLeaf(Object node) {
-            if (node instanceof Script) return true;
+            if (node instanceof Script)
+                return true;
             return false;
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath, java.lang.Object)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath
+         * , java.lang.Object)
          */
         public void valueForPathChanged(javax.swing.tree.TreePath path, Object newValue) {
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.AbstractTreeModel#fireStructureChanged()
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.util.swing.AbstractTreeModel#fireStructureChanged()
          */
         public void fireStructureChanged() {
             super.fireStructureChanged();
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.AbstractTreeModel#fireTreeStructureChanged(javax.swing.tree.TreePath)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.util.swing.AbstractTreeModel#fireTreeStructureChanged
+         * (javax.swing.tree.TreePath)
          */
         public void fireTreeStructureChanged(TreePath path) {
             super.fireTreeStructureChanged(path);
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.AbstractTreeModel#firePathChanged(javax.swing.tree.TreePath)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.util.swing.AbstractTreeModel#firePathChanged(javax
+         * .swing.tree.TreePath)
          */
         public void firePathChanged(TreePath path) {
             super.firePathChanged(path);
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.treetable.AbstractTreeTableModel#setValueAt(java.lang.Object, java.lang.Object, int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.util.swing.treetable.AbstractTreeTableModel#setValueAt
+         * (java.lang.Object, java.lang.Object, int)
          */
         public void setValueAt(Object aValue, Object node, int column) {
             if (column == 1 && node instanceof Script) {
                 ((Script) node).setEnabled(aValue == Boolean.TRUE);
-            } else super.setValueAt(aValue, node, column);
+            } else
+                super.setValueAt(aValue, node, column);
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.util.swing.treetable.AbstractTreeTableModel#isCellEditable(java.lang.Object, int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @seeedu.lnmiit.wavd.util.swing.treetable.AbstractTreeTableModel#
+         * isCellEditable(java.lang.Object, int)
          */
         public boolean isCellEditable(Object node, int column) {
-            if (node instanceof Script && column == 1) return true;
+            if (node instanceof Script && column == 1)
+                return true;
             return super.isCellEditable(node, column);
         }
-        
+
     }
-    
+
     /**
      * The Class HookTreeRenderer.
      */
     private class HookTreeRenderer extends DefaultTreeCellRenderer {
-        
-        /* (non-Javadoc)
-         * @see javax.swing.tree.DefaultTreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int, boolean)
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = -7409599484697564375L;
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.tree.DefaultTreeCellRenderer#getTreeCellRendererComponent
+         * (javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int,
+         * boolean)
          */
-        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
+                boolean leaf, int row, boolean hasFocus) {
             Component comp = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
             if (value instanceof Hook && comp instanceof JLabel) {
                 JLabel label = (JLabel) comp;
@@ -616,7 +720,7 @@ public class ScriptManagerFrame extends javax.swing.JFrame implements ScriptList
             }
             return comp;
         }
-        
+
     }
-    
+
 }

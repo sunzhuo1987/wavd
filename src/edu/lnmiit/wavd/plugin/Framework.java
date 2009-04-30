@@ -22,27 +22,16 @@
 
 package edu.lnmiit.wavd.plugin;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.LinkedList;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-import java.util.jar.Attributes.Name;
+import java.util.List;
 import java.util.logging.Logger;
-import java.util.Vector;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-
 import edu.lnmiit.wavd.httpclient.HTTPClientFactory;
-import edu.lnmiit.wavd.httpclient.SSLContextManager;
 import edu.lnmiit.wavd.model.ConversationID;
 import edu.lnmiit.wavd.model.FrameworkModel;
 import edu.lnmiit.wavd.model.Preferences;
@@ -55,46 +44,44 @@ import edu.lnmiit.wavd.model.StoreException;
  * The Class Framework.
  */
 public class Framework {
-    
+
     /** The _plugins. */
     private List _plugins = new ArrayList();
-    
+
     /** The _analysis queue. */
     private List _analysisQueue = new LinkedList();
-    
+
     /** The _model. */
     private FrameworkModel _model;
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger(getClass().getName());
-    
+
     /** The _version. */
     private String _version;
-    
+
     /** The _ui. */
-    private FrameworkUI _ui = null;
-    
+    // private FrameworkUI _ui = null;
     /** The _script manager. */
     private ScriptManager _scriptManager;
-    
+
     /** The _credential manager. */
     private CredentialManager _credentialManager;
-    
+
     /** The _allow add conversation. */
     private AddConversationHook _allowAddConversation;
-    
+
     /** The _analyse conversation. */
-    private Hook _analyseConversation;
-    
+    // private Hook _analyseConversation;
     /** The _queue thread. */
     private Thread _queueThread = null;
-    
+
     /** The _qp. */
     private QueueProcessor _qp = null;
-    
+
     /** The drop pattern. */
     private Pattern dropPattern = null;
-    
+
     /**
      * Instantiates a new framework.
      */
@@ -111,7 +98,8 @@ public class Framework {
             try {
                 dropPattern = Pattern.compile(dropRegex);
             } catch (PatternSyntaxException pse) {
-                _logger.warning("Got an invalid regular expression for conversations to ignore: " + dropRegex + " results in " + pse.toString());
+                _logger.warning("Got an invalid regular expression for conversations to ignore: " + dropRegex
+                        + " results in " + pse.toString());
             }
         }
         _qp = new Framework.QueueProcessor();
@@ -120,7 +108,7 @@ public class Framework {
         _queueThread.setPriority(Thread.MIN_PRIORITY);
         _queueThread.start();
     }
-    
+
     /**
      * Gets the script manager.
      * 
@@ -129,7 +117,7 @@ public class Framework {
     public ScriptManager getScriptManager() {
         return _scriptManager;
     }
-    
+
     /**
      * Gets the credential manager.
      * 
@@ -138,24 +126,29 @@ public class Framework {
     public CredentialManager getCredentialManager() {
         return _credentialManager;
     }
-    
+
     /**
      * Sets the uI.
      * 
-     * @param ui the new uI
+     * @param ui
+     *            the new uI
      */
     public void setUI(FrameworkUI ui) {
-        _ui = ui;
+        // _ui = ui;
     }
-    
+
     /**
      * Sets the session.
      * 
-     * @param type the type
-     * @param store the store
-     * @param session the session
+     * @param type
+     *            the type
+     * @param store
+     *            the store
+     * @param session
+     *            the session
      * 
-     * @throws StoreException the store exception
+     * @throws StoreException
+     *             the store exception
      */
     public void setSession(String type, Object store, String session) throws StoreException {
         _model.setSession(type, store, session);
@@ -169,7 +162,7 @@ public class Framework {
             }
         }
     }
-    
+
     /**
      * Gets the model.
      * 
@@ -178,32 +171,37 @@ public class Framework {
     public FrameworkModel getModel() {
         return _model;
     }
-    
+
     /**
      * Extract version from manifest.
      */
     private void extractVersionFromManifest() {
         Package pkg = Package.getPackage("org.owasp.webscarab");
-        if (pkg != null) _version = pkg.getImplementationVersion();
-        else _logger.severe("PKG is null");
-        if (_version == null) _version = "unknown (local build?)";
+        if (pkg != null)
+            _version = pkg.getImplementationVersion();
+        else
+            _logger.severe("PKG is null");
+        if (_version == null)
+            _version = "unknown (local build?)";
     }
-    
+
     /**
      * Adds the plugin.
      * 
-     * @param plugin the plugin
+     * @param plugin
+     *            the plugin
      */
     public void addPlugin(Plugin plugin) {
         _plugins.add(plugin);
         Hook[] hooks = plugin.getScriptingHooks();
         _scriptManager.registerHooks(plugin.getPluginName(), hooks);
     }
-    
+
     /**
      * Gets the plugin.
      * 
-     * @param name the name
+     * @param name
+     *            the name
      * 
      * @return the plugin
      */
@@ -212,11 +210,12 @@ public class Framework {
         Iterator it = _plugins.iterator();
         while (it.hasNext()) {
             plugin = (Plugin) it.next();
-            if (plugin.getPluginName().equals(name)) return plugin;
+            if (plugin.getPluginName().equals(name))
+                return plugin;
         }
         return null;
     }
-    
+
     /**
      * Start plugins.
      */
@@ -235,7 +234,7 @@ public class Framework {
         }
         _scriptManager.loadScripts();
     }
-    
+
     /**
      * Checks if is busy.
      * 
@@ -245,11 +244,12 @@ public class Framework {
         Iterator it = _plugins.iterator();
         while (it.hasNext()) {
             Plugin plugin = (Plugin) it.next();
-            if (plugin.isBusy()) return true;
+            if (plugin.isBusy())
+                return true;
         }
         return false;
     }
-    
+
     /**
      * Checks if is running.
      * 
@@ -259,26 +259,29 @@ public class Framework {
         Iterator it = _plugins.iterator();
         while (it.hasNext()) {
             Plugin plugin = (Plugin) it.next();
-            if (plugin.isRunning()) return true;
+            if (plugin.isRunning())
+                return true;
         }
         return false;
     }
-    
+
     /**
      * Checks if is modified.
      * 
      * @return true, if is modified
      */
     public boolean isModified() {
-        if (_model.isModified()) return true;
+        if (_model.isModified())
+            return true;
         Iterator it = _plugins.iterator();
         while (it.hasNext()) {
             Plugin plugin = (Plugin) it.next();
-            if (plugin.isModified()) return true;
+            if (plugin.isModified())
+                return true;
         }
         return false;
     }
-    
+
     /**
      * Gets the status.
      * 
@@ -293,14 +296,15 @@ public class Framework {
         }
         return (String[]) status.toArray(new String[0]);
     }
-    
+
     /**
      * Stop plugins.
      * 
      * @return true, if successful
      */
     public boolean stopPlugins() {
-        if (isBusy()) return false;
+        if (isBusy())
+            return false;
         Iterator it = _plugins.iterator();
         while (it.hasNext()) {
             Plugin plugin = (Plugin) it.next();
@@ -315,11 +319,12 @@ public class Framework {
         _scriptManager.saveScripts();
         return true;
     }
-    
+
     /**
      * Save session data.
      * 
-     * @throws StoreException the store exception
+     * @throws StoreException
+     *             the store exception
      */
     public void saveSessionData() throws StoreException {
         StoreException storeException = null;
@@ -337,15 +342,17 @@ public class Framework {
                     plugin.flush();
                     _logger.info("Done");
                 } catch (StoreException se) {
-                    if (storeException == null) storeException = se;
+                    if (storeException == null)
+                        storeException = se;
                     _logger.severe("Error saving data for " + plugin.getPluginName() + ": " + se);
                 }
             }
         }
-        
-        if (storeException != null) throw storeException;
+
+        if (storeException != null)
+            throw storeException;
     }
-    
+
     /**
      * Gets the version.
      * 
@@ -354,7 +361,7 @@ public class Framework {
     public String getVersion() {
         return _version;
     }
-    
+
     /**
      * Reserve conversation id.
      * 
@@ -363,48 +370,62 @@ public class Framework {
     public ConversationID reserveConversationID() {
         return _model.reserveConversationID();
     }
-    
+
     /**
      * Adds the conversation.
      * 
-     * @param id the id
-     * @param request the request
-     * @param response the response
-     * @param origin the origin
+     * @param id
+     *            the id
+     * @param request
+     *            the request
+     * @param response
+     *            the response
+     * @param origin
+     *            the origin
      */
     public void addConversation(ConversationID id, Request request, Response response, String origin) {
         addConversation(id, new Date(), request, response, origin);
     }
-    
+
     /**
      * Adds the conversation.
      * 
-     * @param id the id
-     * @param when the when
-     * @param request the request
-     * @param response the response
-     * @param origin the origin
+     * @param id
+     *            the id
+     * @param when
+     *            the when
+     * @param request
+     *            the request
+     * @param response
+     *            the response
+     * @param origin
+     *            the origin
      */
     public void addConversation(ConversationID id, Date when, Request request, Response response, String origin) {
         ScriptableConversation conversation = new ScriptableConversation(request, response, origin);
         _allowAddConversation.runScripts(conversation);
-        if (conversation.isCancelled()) return;
+        if (conversation.isCancelled())
+            return;
         if (dropPattern != null && dropPattern.matcher(request.getURL().toString()).matches()) {
             return;
         }
         _model.addConversation(id, when, request, response, origin);
-        if (!conversation.shouldAnalyse()) return;
-        synchronized(_analysisQueue) {
+        if (!conversation.shouldAnalyse())
+            return;
+        synchronized (_analysisQueue) {
             _analysisQueue.add(id);
         }
     }
-    
+
     /**
      * Adds the conversation.
      * 
-     * @param request the request
-     * @param response the response
-     * @param origin the origin
+     * @param request
+     *            the request
+     * @param response
+     *            the response
+     * @param origin
+     *            the origin
      * 
      * @return the conversation id
      */
@@ -413,7 +434,7 @@ public class Framework {
         addConversation(id, new Date(), request, response, origin);
         return id;
     }
-    
+
     /**
      * Configure http client.
      */
@@ -427,39 +448,44 @@ public class Framework {
             // and do not use our default value???
             prop = "WebScarab.httpProxy";
             value = Preferences.getPreference(prop);
-            if (value == null || value.equals("")) value = ":3128";
+            if (value == null || value.equals(""))
+                value = ":3128";
             colon = value.indexOf(":");
-            factory.setHttpProxy(value.substring(0,colon), Integer.parseInt(value.substring(colon+1).trim()));
-            
+            factory.setHttpProxy(value.substring(0, colon), Integer.parseInt(value.substring(colon + 1).trim()));
+
             prop = "WebScarab.httpsProxy";
             value = Preferences.getPreference(prop);
-            if (value == null || value.equals("")) value = ":3128";
+            if (value == null || value.equals(""))
+                value = ":3128";
             colon = value.indexOf(":");
-            factory.setHttpsProxy(value.substring(0,colon), Integer.parseInt(value.substring(colon+1).trim()));
-            
+            factory.setHttpsProxy(value.substring(0, colon), Integer.parseInt(value.substring(colon + 1).trim()));
+
             prop = "WebScarab.noProxy";
             value = Preferences.getPreference(prop, "");
-            if (value == null) value = "";
+            if (value == null)
+                value = "";
             factory.setNoProxy(value.split(" *, *"));
-            
+
             int connectTimeout = 30000;
             prop = "HttpClient.connectTimeout";
-            value = Preferences.getPreference(prop,"");
+            value = Preferences.getPreference(prop, "");
             if (value != null && !value.equals("")) {
                 try {
                     connectTimeout = Integer.parseInt(value);
-                } catch (NumberFormatException nfe) {}
+                } catch (NumberFormatException nfe) {
+                }
             }
             int readTimeout = 0;
             prop = "HttpClient.readTimeout";
-            value = Preferences.getPreference(prop,"");
+            value = Preferences.getPreference(prop, "");
             if (value != null && !value.equals("")) {
                 try {
                     readTimeout = Integer.parseInt(value);
-                } catch (NumberFormatException nfe) {}
+                } catch (NumberFormatException nfe) {
+                }
             }
             factory.setTimeouts(connectTimeout, readTimeout);
-            
+
         } catch (NumberFormatException nfe) {
             _logger.warning("Error parsing property " + prop + ": " + nfe);
         } catch (Exception e) {
@@ -467,20 +493,22 @@ public class Framework {
         }
         factory.setAuthenticator(_credentialManager);
     }
-    
+
     /**
      * The Class QueueProcessor.
      */
     private class QueueProcessor implements Runnable {
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see java.lang.Runnable#run()
          */
         public void run() {
             while (true) {
                 ConversationID id = null;
                 synchronized (_analysisQueue) {
-                    if (_analysisQueue.size()>0)
+                    if (_analysisQueue.size() > 0)
                         id = (ConversationID) _analysisQueue.remove(0);
                 }
                 if (id != null) {
@@ -502,36 +530,38 @@ public class Framework {
                 } else {
                     try {
                         Thread.sleep(100);
-                    } catch (InterruptedException ie) {}
+                    } catch (InterruptedException ie) {
+                    }
                 }
             }
         }
-        
+
     }
-    
+
     /**
      * The Class AddConversationHook.
      */
     private class AddConversationHook extends Hook {
-        
+
         /**
          * Instantiates a new adds the conversation hook.
          */
         public AddConversationHook() {
-            super("Add Conversation", 
-            "Called when a new conversation is added to the framework.\n" +
-            "Use conversation.setCancelled(boolean) and conversation.setAnalyse(boolean) " +
-            "after deciding using conversation.getRequest() and conversation.getResponse()");
+            super("Add Conversation", "Called when a new conversation is added to the framework.\n"
+                    + "Use conversation.setCancelled(boolean) and conversation.setAnalyse(boolean) "
+                    + "after deciding using conversation.getRequest() and conversation.getResponse()");
         }
-        
+
         /**
          * Run scripts.
          * 
-         * @param conversation the conversation
+         * @param conversation
+         *            the conversation
          */
         public void runScripts(ScriptableConversation conversation) {
-            if (_bsfManager == null) return;
-            synchronized(_bsfManager) {
+            if (_bsfManager == null)
+                return;
+            synchronized (_bsfManager) {
                 try {
                     _bsfManager.declareBean("conversation", conversation, conversation.getClass());
                     super.runScripts();
@@ -541,7 +571,7 @@ public class Framework {
                 }
             }
         }
-        
+
     }
-    
+
 }

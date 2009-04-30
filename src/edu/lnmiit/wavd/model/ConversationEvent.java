@@ -23,26 +23,34 @@ import java.util.EventObject;
  * The Class ConversationEvent.
  */
 public class ConversationEvent extends EventObject {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -703071094507504012L;
+
     /** The _id. */
     private ConversationID _id;
-    
+
     /** The _position. */
     private int _position;
-    
+
     /**
      * Instantiates a new conversation event.
      * 
-     * @param source the source
-     * @param id the id
-     * @param position the position
+     * @param source
+     *            the source
+     * @param id
+     *            the id
+     * @param position
+     *            the position
      */
     public ConversationEvent(Object source, ConversationID id, int position) {
         super(source);
         _id = id;
         _position = position;
     }
-    
+
     /**
      * Gets the conversation id.
      * 
@@ -51,7 +59,7 @@ public class ConversationEvent extends EventObject {
     public ConversationID getConversationID() {
         return _id;
     }
-    
+
     /**
      * Gets the position.
      * 
@@ -60,5 +68,5 @@ public class ConversationEvent extends EventObject {
     public int getPosition() {
         return _position;
     }
-    
+
 }

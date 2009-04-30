@@ -21,50 +21,50 @@ package edu.lnmiit.wavd.plugin.fuzz;
  * The Interface FuzzSource.
  */
 public interface FuzzSource {
-    
+
     /**
      * Gets the description.
      * 
      * @return the description
      */
     String getDescription();
-    
+
     /**
      * Size.
      * 
      * @return the int
      */
     int size();
-    
+
     /**
      * Reset.
      */
     void reset();
-    
+
     /**
      * Checks for next.
      * 
      * @return true, if successful
      */
     boolean hasNext();
-    
+
     /**
      * Current.
      * 
      * @return the object
      */
     Object current();
-    
+
     /**
      * Increment.
      */
     void increment();
-    
+
     /**
      * New instance.
      * 
      * @return the fuzz source
      */
     FuzzSource newInstance();
-    
+
 }

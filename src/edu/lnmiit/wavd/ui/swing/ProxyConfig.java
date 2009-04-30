@@ -22,56 +22,60 @@
 
 package edu.lnmiit.wavd.ui.swing;
 
-import java.awt.event.WindowEvent;
+//import java.util.logging.Logger;
 
-
+import javax.swing.JOptionPane;
+import javax.swing.ScrollPaneConstants;
 
 import edu.lnmiit.wavd.httpclient.HTTPClientFactory;
 import edu.lnmiit.wavd.model.Preferences;
 import edu.lnmiit.wavd.plugin.Framework;
 import edu.lnmiit.wavd.util.W32WinInet;
 
-import java.util.logging.Logger;
-
-import javax.swing.JOptionPane;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class ProxyConfig.
  */
 public class ProxyConfig extends javax.swing.JDialog {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4322937546231707187L;
+
     /** The _factory. */
     private HTTPClientFactory _factory = HTTPClientFactory.getInstance();
-    
+
     /** The _framework. */
     private Framework _framework;
-    
+
     /** The _logger. */
-    private Logger _logger = Logger.getLogger(getClass().getName());
-    
+   // private Logger _logger = Logger.getLogger(getClass().getName());
+
     /**
      * Instantiates a new proxy config.
      * 
-     * @param parent the parent
-     * @param framework the framework
+     * @param parent
+     *            the parent
+     * @param framework
+     *            the framework
      */
     public ProxyConfig(java.awt.Frame parent, Framework framework) {
         super(parent, true);
         _framework = framework;
         initComponents();
-        
+
         httpProxyServerTextField.setText(_factory.getHttpProxy());
         httpProxyPortTextField.setText(Integer.toString(_factory.getHttpProxyPort()));
-        
+
         httpsProxyServerTextField.setText(_factory.getHttpsProxy());
         httpsProxyPortTextField.setText(Integer.toString(_factory.getHttpsProxyPort()));
-        
+
         String[] noproxies = _factory.getNoProxy();
-        if (noproxies.length>0) {
+        if (noproxies.length > 0) {
             StringBuffer buff = new StringBuffer();
             buff.append(noproxies[0]);
-            for (int i=1; i<noproxies.length;i++) {
+            for (int i = 1; i < noproxies.length; i++) {
                 buff.append(", ").append(noproxies[i]);
             }
             noProxyTextArea.setText(buff.toString());
@@ -82,11 +86,11 @@ public class ProxyConfig extends javax.swing.JDialog {
             w32Button.getParent().remove(w32Button);
         }
     }
-    
+
     /**
      * Inits the components.
      */
-    private void initComponents() {//GEN-BEGIN:initComponents
+    private void initComponents() {// GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel2 = new javax.swing.JLabel();
@@ -188,11 +192,12 @@ public class ProxyConfig extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
         getContentPane().add(jLabel1, gridBagConstraints);
 
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setMinimumSize(new java.awt.Dimension(250, 48));
         jScrollPane1.setPreferredSize(new java.awt.Dimension(250, 51));
         noProxyTextArea.setLineWrap(true);
-        noProxyTextArea.setToolTipText("Enter a comma separated list of hosts that do not need to go through the proxy");
+        noProxyTextArea
+                .setToolTipText("Enter a comma separated list of hosts that do not need to go through the proxy");
         noProxyTextArea.setMinimumSize(new java.awt.Dimension(250, 40));
         noProxyTextArea.setPreferredSize(new java.awt.Dimension(250, 40));
         jScrollPane1.setViewportView(noProxyTextArea);
@@ -242,48 +247,62 @@ public class ProxyConfig extends javax.swing.JDialog {
         pack();
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         java.awt.Dimension dialogSize = getSize();
-        setLocation((screenSize.width-dialogSize.width)/2,(screenSize.height-dialogSize.height)/2);
-    }//GEN-END:initComponents
+        setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
+    }// GEN-END:initComponents
 
     /**
      * W32 button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void w32ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_w32ButtonActionPerformed
+    private void w32ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
+        // FIRST
+        // :
+        // event_w32ButtonActionPerformed
         if (W32WinInet.isAvailable()) {
             String server = W32WinInet.getHttpProxyServer();
             httpProxyServerTextField.setText(server == null ? "" : server);
             int port = W32WinInet.getHttpProxyPort();
-            if (port < 1) port = 3128;
+            if (port < 1)
+                port = 3128;
             httpProxyPortTextField.setText(Integer.toString(port));
-            
+
             server = W32WinInet.getHttpsProxyServer();
             httpsProxyServerTextField.setText(server == null ? "" : server);
             port = W32WinInet.getHttpsProxyPort();
-            if (port < 1) port = 3128;
+            if (port < 1)
+                port = 3128;
             httpsProxyPortTextField.setText(Integer.toString(port));
-            
+
             String bypass = W32WinInet.getNoProxy();
-            if (bypass == null) bypass = "";
-            noProxyTextArea.setText(bypass.replaceAll(";",","));
+            if (bypass == null)
+                bypass = "";
+            noProxyTextArea.setText(bypass.replaceAll(";", ","));
         }
-    }//GEN-LAST:event_w32ButtonActionPerformed
-    
+    }// GEN-LAST:event_w32ButtonActionPerformed
+
     /**
      * Apply button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
+    private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_applyButtonActionPerformed
         String error = null;
         String httpserver = httpProxyServerTextField.getText().trim();
         int httpport = -1;
         try {
             String p = httpProxyPortTextField.getText().trim();
-            if (httpserver.equals("") && p.equals("")) p = "3128";
+            if (httpserver.equals("") && p.equals(""))
+                p = "3128";
             httpport = Integer.parseInt(p);
-            if (httpport<1 || httpport>65535) error = "HTTP Proxy port must be between 0 and 65536";
+            if (httpport < 1 || httpport > 65535)
+                error = "HTTP Proxy port must be between 0 and 65536";
         } catch (NumberFormatException nfe) {
             error = "Error parsing the HTTP Proxy port number";
         }
@@ -291,14 +310,16 @@ public class ProxyConfig extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         String httpsserver = httpsProxyServerTextField.getText().trim();
         int httpsport = -1;
         try {
             String p = httpsProxyPortTextField.getText().trim();
-            if (httpsserver.equals("") && p.equals("")) p = "3128";
+            if (httpsserver.equals("") && p.equals(""))
+                p = "3128";
             httpsport = Integer.parseInt(p);
-            if (httpsport<1 || httpsport>65535) error = "HTTPS Proxy port must be between 0 and 65536";
+            if (httpsport < 1 || httpsport > 65535)
+                error = "HTTPS Proxy port must be between 0 and 65536";
         } catch (NumberFormatException nfe) {
             error = "Error parsing the HTTPS Proxy port number";
         }
@@ -306,9 +327,9 @@ public class ProxyConfig extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         String[] noproxies = noProxyTextArea.getText().trim().split(" *, *");
-        
+
         boolean running = _framework.isRunning();
         if (running) {
             if (_framework.isBusy()) {
@@ -324,80 +345,87 @@ public class ProxyConfig extends javax.swing.JDialog {
         if (running) {
             _framework.startPlugins();
         }
-        
-        Preferences.setPreference("WebScarab.httpProxy", httpserver+":"+httpport);
-        Preferences.setPreference("WebScarab.httpsProxy", httpsserver+":"+httpsport);
+
+        Preferences.setPreference("WebScarab.httpProxy", httpserver + ":" + httpport);
+        Preferences.setPreference("WebScarab.httpsProxy", httpsserver + ":" + httpsport);
         Preferences.setPreference("WebScarab.noProxy", noProxyTextArea.getText());
-        
+
         setVisible(false);
         dispose();
-    }//GEN-LAST:event_applyButtonActionPerformed
-    
+    }// GEN-LAST:event_applyButtonActionPerformed
+
     /**
      * Cancel button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_cancelButtonActionPerformed
         setVisible(false);
         dispose();
-    }//GEN-LAST:event_cancelButtonActionPerformed
-    
+    }// GEN-LAST:event_cancelButtonActionPerformed
+
     /**
      * Close dialog.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void closeDialog(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_closeDialog
+    private void closeDialog(java.awt.event.WindowEvent evt) {// GEN-FIRST:
+        // event_closeDialog
         setVisible(false);
         dispose();
-    }//GEN-LAST:event_closeDialog
-    
+    }// GEN-LAST:event_closeDialog
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The apply button. */
     private javax.swing.JButton applyButton;
-    
+
     /** The cancel button. */
     private javax.swing.JButton cancelButton;
-    
+
     /** The http proxy port text field. */
     private javax.swing.JTextField httpProxyPortTextField;
-    
+
     /** The http proxy server text field. */
     private javax.swing.JTextField httpProxyServerTextField;
-    
+
     /** The https proxy port text field. */
     private javax.swing.JTextField httpsProxyPortTextField;
-    
+
     /** The https proxy server text field. */
     private javax.swing.JTextField httpsProxyServerTextField;
-    
+
     /** The j label1. */
     private javax.swing.JLabel jLabel1;
-    
+
     /** The j label2. */
     private javax.swing.JLabel jLabel2;
-    
+
     /** The j label3. */
     private javax.swing.JLabel jLabel3;
-    
+
     /** The j label4. */
     private javax.swing.JLabel jLabel4;
-    
+
     /** The j label5. */
     private javax.swing.JLabel jLabel5;
-    
+
     /** The j panel1. */
     private javax.swing.JPanel jPanel1;
-    
+
     /** The j scroll pane1. */
     private javax.swing.JScrollPane jScrollPane1;
-    
+
     /** The no proxy text area. */
     private javax.swing.JTextArea noProxyTextArea;
-    
+
     /** The w32 button. */
     private javax.swing.JButton w32Button;
     // End of variables declaration//GEN-END:variables
-    
+
 }

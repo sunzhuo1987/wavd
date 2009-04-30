@@ -16,13 +16,11 @@
 
 package edu.lnmiit.wavd.model;
 
-import EDU.oswego.cs.dl.util.concurrent.Sync;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
+import EDU.oswego.cs.dl.util.concurrent.Sync;
 import edu.lnmiit.wavd.util.ReentrantReaderPreferenceReadWriteLock;
 
 // TODO: Auto-generated Javadoc
@@ -30,25 +28,26 @@ import edu.lnmiit.wavd.util.ReentrantReaderPreferenceReadWriteLock;
  * The Class FilteredConversationModel.
  */
 public abstract class FilteredConversationModel extends AbstractConversationModel {
-    
+
     /** The _model. */
     private ConversationModel _model;
-    
+
     /** The _rwl. */
     private ReentrantReaderPreferenceReadWriteLock _rwl = new ReentrantReaderPreferenceReadWriteLock();
-    
+
     // contains conversations that should be visible
     /** The _conversations. */
     private List _conversations = new ArrayList();
-    
+
     /** The _logger. */
-    private Logger _logger = Logger.getLogger(getClass().toString());
-    
+    // private Logger _logger = Logger.getLogger(getClass().toString());
     /**
      * Instantiates a new filtered conversation model.
      * 
-     * @param model the model
-     * @param cmodel the cmodel
+     * @param model
+     *            the model
+     * @param cmodel
+     *            the cmodel
      */
     public FilteredConversationModel(FrameworkModel model, ConversationModel cmodel) {
         super(model);
@@ -56,7 +55,7 @@ public abstract class FilteredConversationModel extends AbstractConversationMode
         _model.addConversationListener(new Listener());
         updateConversations();
     }
-    
+
     /**
      * Update conversations.
      */
@@ -65,7 +64,7 @@ public abstract class FilteredConversationModel extends AbstractConversationMode
             _rwl.writeLock().acquire();
             _conversations.clear();
             int count = _model.getConversationCount();
-            for (int i=0 ; i<count; i++) {
+            for (int i = 0; i < count; i++) {
                 ConversationID id = _model.getConversationAt(i);
                 if (!shouldFilter(id)) {
                     _conversations.add(id);
@@ -76,23 +75,26 @@ public abstract class FilteredConversationModel extends AbstractConversationMode
             fireConversationsChanged();
             _rwl.readLock().release();
         } catch (InterruptedException ie) {
-            // _logger.warning("Interrupted waiting for the read lock! " + ie.getMessage());
+            // _logger.warning("Interrupted waiting for the read lock! " +
+            // ie.getMessage());
         }
     }
-    
+
     /**
      * Should filter.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return true, if successful
      */
     public abstract boolean shouldFilter(ConversationID id);
-    
+
     /**
      * Checks if is filtered.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return true, if is filtered
      */
@@ -101,76 +103,96 @@ public abstract class FilteredConversationModel extends AbstractConversationMode
             _rwl.readLock().acquire();
             return _conversations.indexOf(id) == -1;
         } catch (InterruptedException ie) {
-            // _logger.warning("Interrupted waiting for the read lock! " + ie.getMessage());
+            // _logger.warning("Interrupted waiting for the read lock! " +
+            // ie.getMessage());
             return false;
         } finally {
             _rwl.readLock().release();
         }
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.model.AbstractConversationModel#getConversationAt(int)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.model.AbstractConversationModel#getConversationAt(int)
      */
     public ConversationID getConversationAt(int index) {
         try {
             _rwl.readLock().acquire();
             return (ConversationID) _conversations.get(index);
         } catch (InterruptedException ie) {
-            // _logger.warning("Interrupted waiting for the read lock! " + ie.getMessage());
+            // _logger.warning("Interrupted waiting for the read lock! " +
+            // ie.getMessage());
             return null;
         } finally {
             _rwl.readLock().release();
         }
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.model.AbstractConversationModel#getConversationCount()
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.model.AbstractConversationModel#getConversationCount()
      */
     public int getConversationCount() {
         try {
             _rwl.readLock().acquire();
             return _conversations.size();
         } catch (InterruptedException ie) {
-            // _logger.warning("Interrupted waiting for the read lock! " + ie.getMessage());
+            // _logger.warning("Interrupted waiting for the read lock! " +
+            // ie.getMessage());
             return 0;
         } finally {
             _rwl.readLock().release();
         }
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.model.AbstractConversationModel#getIndexOfConversation(edu.lnmiit.wavd.model.ConversationID)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.model.AbstractConversationModel#getIndexOfConversation
+     * (edu.lnmiit.wavd.model.ConversationID)
      */
     public int getIndexOfConversation(ConversationID id) {
         try {
             _rwl.readLock().acquire();
             return Collections.binarySearch(_conversations, id);
         } catch (InterruptedException ie) {
-            // _logger.warning("Interrupted waiting for the read lock! " + ie.getMessage());
+            // _logger.warning("Interrupted waiting for the read lock! " +
+            // ie.getMessage());
             return -1;
         } finally {
             _rwl.readLock().release();
         }
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.AbstractConversationModel#readLock()
      */
     public Sync readLock() {
         return _rwl.readLock();
     }
-    
+
     /**
      * The Class Listener.
      */
     private class Listener implements ConversationListener {
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.model.ConversationListener#conversationAdded(edu.lnmiit.wavd.model.ConversationEvent)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.model.ConversationListener#conversationAdded(edu.
+         * lnmiit.wavd.model.ConversationEvent)
          */
         public void conversationAdded(ConversationEvent evt) {
             ConversationID id = evt.getConversationID();
-            if (! shouldFilter(id)) {
+            if (!shouldFilter(id)) {
                 try {
                     _rwl.writeLock().acquire();
                     int index = getIndexOfConversation(id);
@@ -183,13 +205,18 @@ public abstract class FilteredConversationModel extends AbstractConversationMode
                     fireConversationAdded(id, index);
                     _rwl.readLock().release();
                 } catch (InterruptedException ie) {
-                    // _logger.warning("Interrupted waiting for the read lock! " + ie.getMessage());
+                    // _logger.warning("Interrupted waiting for the read lock! "
+                    // + ie.getMessage());
                 }
             }
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.model.ConversationListener#conversationChanged(edu.lnmiit.wavd.model.ConversationEvent)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.model.ConversationListener#conversationChanged(edu
+         * .lnmiit.wavd.model.ConversationEvent)
          */
         public void conversationChanged(ConversationEvent evt) {
             ConversationID id = evt.getConversationID();
@@ -204,12 +231,14 @@ public abstract class FilteredConversationModel extends AbstractConversationMode
                         fireConversationRemoved(id, index);
                         _rwl.readLock().release();
                     } catch (InterruptedException ie) {
-                        // _logger.warning("Interrupted waiting for the read lock! " + ie.getMessage());
+                        // _logger.warning(
+                        // "Interrupted waiting for the read lock! " +
+                        // ie.getMessage());
                     }
                 }
             } else {
                 if (index < 0) {
-                    index = -index -1;
+                    index = -index - 1;
                     try {
                         _rwl.writeLock().acquire();
                         _conversations.add(index, id);
@@ -218,14 +247,20 @@ public abstract class FilteredConversationModel extends AbstractConversationMode
                         fireConversationAdded(id, index);
                         _rwl.readLock().release();
                     } catch (InterruptedException ie) {
-                        // _logger.warning("Interrupted waiting for the read lock! " + ie.getMessage());
+                        // _logger.warning(
+                        // "Interrupted waiting for the read lock! " +
+                        // ie.getMessage());
                     }
                 }
             }
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.model.ConversationListener#conversationRemoved(edu.lnmiit.wavd.model.ConversationEvent)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.model.ConversationListener#conversationRemoved(edu
+         * .lnmiit.wavd.model.ConversationEvent)
          */
         public void conversationRemoved(ConversationEvent evt) {
             ConversationID id = evt.getConversationID();
@@ -239,18 +274,22 @@ public abstract class FilteredConversationModel extends AbstractConversationMode
                     fireConversationRemoved(id, index);
                     _rwl.readLock().release();
                 } catch (InterruptedException ie) {
-                    // _logger.warning("Interrupted waiting for the read lock! " + ie.getMessage());
+                    // _logger.warning("Interrupted waiting for the read lock! "
+                    // + ie.getMessage());
                 }
             }
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.model.ConversationListener#conversationsChanged()
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.model.ConversationListener#conversationsChanged()
          */
         public void conversationsChanged() {
             updateConversations();
         }
-        
+
     }
-    
+
 }

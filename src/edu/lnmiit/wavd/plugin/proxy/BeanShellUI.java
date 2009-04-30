@@ -29,19 +29,19 @@ import java.io.PrintStream;
  * The Interface BeanShellUI.
  */
 public interface BeanShellUI {
-    
+
     /**
      * Gets the out.
      * 
      * @return the out
      */
     PrintStream getOut();
-    
+
     /**
      * Gets the err.
      * 
      * @return the err
      */
     PrintStream getErr();
-    
+
 }

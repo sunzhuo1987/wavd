@@ -21,26 +21,30 @@ package edu.lnmiit.wavd.plugin;
  * The Class BasicCredential.
  */
 public class BasicCredential {
-    
+
     /** The _host. */
     private String _host;
-    
+
     /** The _realm. */
     private String _realm;
-    
+
     /** The _username. */
     private String _username;
-    
+
     /** The _password. */
     private String _password;
-    
+
     /**
      * Instantiates a new basic credential.
      * 
-     * @param host the host
-     * @param realm the realm
-     * @param username the username
-     * @param password the password
+     * @param host
+     *            the host
+     * @param realm
+     *            the realm
+     * @param username
+     *            the username
+     * @param password
+     *            the password
      */
     public BasicCredential(String host, String realm, String username, String password) {
         _host = host;
@@ -48,7 +52,7 @@ public class BasicCredential {
         _username = username;
         _password = password;
     }
-    
+
     /**
      * Gets the host.
      * 
@@ -57,7 +61,7 @@ public class BasicCredential {
     public String getHost() {
         return _host;
     }
-    
+
     /**
      * Gets the realm.
      * 
@@ -66,7 +70,7 @@ public class BasicCredential {
     public String getRealm() {
         return _realm;
     }
-    
+
     /**
      * Gets the username.
      * 
@@ -75,7 +79,7 @@ public class BasicCredential {
     public String getUsername() {
         return _username;
     }
-    
+
     /**
      * Gets the password.
      * 
@@ -84,5 +88,5 @@ public class BasicCredential {
     public String getPassword() {
         return _password;
     }
-    
+
 }

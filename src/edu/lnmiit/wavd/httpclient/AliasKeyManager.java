@@ -25,61 +25,72 @@ import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import javax.net.ssl.KeyManager;
+
 import javax.net.ssl.X509KeyManager;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AliasKeyManager.
  */
 public class AliasKeyManager implements X509KeyManager {
-    
+
     /** The _ks. */
     private KeyStore _ks;
-    
+
     /** The _alias. */
     private String _alias;
-    
+
     /** The _key password. */
     private String _keyPassword;
-    
+
     /**
      * Instantiates a new alias key manager.
      * 
-     * @param ks the ks
-     * @param alias the alias
-     * @param keyPassword the key password
+     * @param ks
+     *            the ks
+     * @param alias
+     *            the alias
+     * @param keyPassword
+     *            the key password
      */
     public AliasKeyManager(KeyStore ks, String alias, String keyPassword) {
         _ks = ks;
         _alias = alias;
         _keyPassword = keyPassword;
     }
-    
-    /* (non-Javadoc)
-     * @see javax.net.ssl.X509KeyManager#chooseClientAlias(java.lang.String[], java.security.Principal[], java.net.Socket)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.net.ssl.X509KeyManager#chooseClientAlias(java.lang.String[],
+     * java.security.Principal[], java.net.Socket)
      */
     public String chooseClientAlias(String[] str, Principal[] principal, Socket socket) {
         return _alias;
     }
 
-    /* (non-Javadoc)
-     * @see javax.net.ssl.X509KeyManager#chooseServerAlias(java.lang.String, java.security.Principal[], java.net.Socket)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.net.ssl.X509KeyManager#chooseServerAlias(java.lang.String,
+     * java.security.Principal[], java.net.Socket)
      */
     public String chooseServerAlias(String str, Principal[] principal, Socket socket) {
         return _alias;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.net.ssl.X509KeyManager#getCertificateChain(java.lang.String)
      */
     public X509Certificate[] getCertificateChain(String alias) {
         try {
             Certificate[] certs = _ks.getCertificateChain(alias);
-            if (certs == null) return null;
+            if (certs == null)
+                return null;
             X509Certificate[] x509certs = new X509Certificate[certs.length];
-            for (int i=0; i<certs.length; i++) {
-                x509certs[i]=(X509Certificate) certs[i];
+            for (int i = 0; i < certs.length; i++) {
+                x509certs[i] = (X509Certificate) certs[i];
             }
             return x509certs;
         } catch (KeyStoreException kse) {
@@ -88,14 +99,19 @@ public class AliasKeyManager implements X509KeyManager {
         }
     }
 
-    /* (non-Javadoc)
-     * @see javax.net.ssl.X509KeyManager#getClientAliases(java.lang.String, java.security.Principal[])
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.net.ssl.X509KeyManager#getClientAliases(java.lang.String,
+     * java.security.Principal[])
      */
     public String[] getClientAliases(String str, Principal[] principal) {
         return new String[] { _alias };
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.net.ssl.X509KeyManager#getPrivateKey(java.lang.String)
      */
     public PrivateKey getPrivateKey(String alias) {
@@ -113,11 +129,14 @@ public class AliasKeyManager implements X509KeyManager {
         }
     }
 
-    /* (non-Javadoc)
-     * @see javax.net.ssl.X509KeyManager#getServerAliases(java.lang.String, java.security.Principal[])
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.net.ssl.X509KeyManager#getServerAliases(java.lang.String,
+     * java.security.Principal[])
      */
     public String[] getServerAliases(String str, Principal[] principal) {
         return new String[] { _alias };
     }
-    
+
 }

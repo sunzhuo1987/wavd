@@ -22,20 +22,20 @@
 
 package edu.lnmiit.wavd.util;
 
+import java.util.Iterator;
+
 import EDU.oswego.cs.dl.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import EDU.oswego.cs.dl.util.concurrent.Sync;
-
-import java.util.Iterator;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ReentrantReaderPreferenceReadWriteLock.
  */
 public class ReentrantReaderPreferenceReadWriteLock extends ReentrantWriterPreferenceReadWriteLock {
-    
+
     /** The _write lock. */
     private Sync _writeLock;
-    
+
     /**
      * Instantiates a new reentrant reader preference read write lock.
      */
@@ -43,22 +43,25 @@ public class ReentrantReaderPreferenceReadWriteLock extends ReentrantWriterPrefe
         super();
         _writeLock = new LoggingLock(super.writeLock());
     }
-    
-    
-    /* (non-Javadoc)
-     * @see EDU.oswego.cs.dl.util.concurrent.ReentrantWriterPreferenceReadWriteLock#allowReader()
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * EDU.oswego.cs.dl.util.concurrent.ReentrantWriterPreferenceReadWriteLock
+     * #allowReader()
      */
     protected boolean allowReader() {
         return activeWriter_ == null || activeWriter_ == Thread.currentThread();
     }
-    
+
     /**
      * Debug.
      */
     public void debug() {
         Iterator it = readers_.keySet().iterator();
         System.err.println("Readers:");
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             Object key = it.next();
             Object value = readers_.get(key);
             System.err.println(key + " : " + value);
@@ -67,53 +70,66 @@ public class ReentrantReaderPreferenceReadWriteLock extends ReentrantWriterPrefe
         System.err.println("Writer thread:");
         System.err.println(activeWriter_.getName());
         System.err.println("Stack Trace:");
-        activeWriter_.dumpStack();
+        Thread.dumpStack();
     }
-    
-    /* (non-Javadoc)
-     * @see EDU.oswego.cs.dl.util.concurrent.WriterPreferenceReadWriteLock#writeLock()
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * EDU.oswego.cs.dl.util.concurrent.WriterPreferenceReadWriteLock#writeLock
+     * ()
      */
     public EDU.oswego.cs.dl.util.concurrent.Sync writeLock() {
         return _writeLock;
     }
-    
+
     /**
      * The Class LoggingLock.
      */
     private class LoggingLock implements Sync {
-        
+
         /** The _sync. */
         private Sync _sync;
-        
+
         /**
          * Instantiates a new logging lock.
          * 
-         * @param sync the sync
+         * @param sync
+         *            the sync
          */
         public LoggingLock(Sync sync) {
             _sync = sync;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see EDU.oswego.cs.dl.util.concurrent.Sync#acquire()
          */
         public void acquire() throws InterruptedException {
-            // System.err.println(Thread.currentThread().getName() + " acquiring");
+            // System.err.println(Thread.currentThread().getName() +
+            // " acquiring");
             while (!_sync.attempt(5000)) {
                 debug();
             }
-            // System.err.println(Thread.currentThread().getName() + " acquired");
+            // System.err.println(Thread.currentThread().getName() +
+            // " acquired");
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see EDU.oswego.cs.dl.util.concurrent.Sync#attempt(long)
          */
         public boolean attempt(long msecs) throws InterruptedException {
-            // System.err.println(Thread.currentThread().getName() + " attempting");
+            // System.err.println(Thread.currentThread().getName() +
+            // " attempting");
             try {
                 boolean result = _sync.attempt(msecs);
                 if (result) {
-                    // System.err.println(Thread.currentThread().getName() + " successful");
+                    // System.err.println(Thread.currentThread().getName() +
+                    // " successful");
                 } else {
                     System.err.println(Thread.currentThread().getName() + "sync attempt unsuccessful");
                 }
@@ -123,15 +139,19 @@ public class ReentrantReaderPreferenceReadWriteLock extends ReentrantWriterPrefe
                 throw ie;
             }
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see EDU.oswego.cs.dl.util.concurrent.Sync#release()
          */
         public void release() {
-            // System.err.println(Thread.currentThread().getName() + " releasing");
+            // System.err.println(Thread.currentThread().getName() +
+            // " releasing");
             _sync.release();
-            // System.err.println(Thread.currentThread().getName() + " released");
+            // System.err.println(Thread.currentThread().getName() +
+            // " released");
         }
-        
+
     }
 }

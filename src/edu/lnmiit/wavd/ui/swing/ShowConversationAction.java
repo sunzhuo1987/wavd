@@ -22,28 +22,32 @@
 
 package edu.lnmiit.wavd.ui.swing;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.JFrame;
+
 import edu.lnmiit.wavd.model.ConversationID;
 import edu.lnmiit.wavd.model.ConversationModel;
-import edu.lnmiit.wavd.model.Request;
-import edu.lnmiit.wavd.model.Response;
-
-import javax.swing.JFrame;
-import javax.swing.AbstractAction;
-import java.awt.event.ActionEvent;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ShowConversationAction.
  */
 public class ShowConversationAction extends AbstractAction {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3925273975056563855L;
     /** The _model. */
     private ConversationModel _model;
-    
+
     /**
      * Instantiates a new show conversation action.
      * 
-     * @param model the model
+     * @param model
+     *            the model
      */
     public ShowConversationAction(ConversationModel model) {
         _model = model;
@@ -51,13 +55,17 @@ public class ShowConversationAction extends AbstractAction {
         putValue(SHORT_DESCRIPTION, "Opens a new window showing the request and response");
         putValue("CONVERSATION", null);
     }
-    
-    /* (non-Javadoc)
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
         Object o = getValue("CONVERSATION");
-        if (o == null || ! (o instanceof ConversationID)) return;
+        if (o == null || !(o instanceof ConversationID))
+            return;
         ConversationID id = (ConversationID) o;
         ConversationPanel cp = new ConversationPanel(_model);
         cp.setSelectedConversation(id);
@@ -66,9 +74,12 @@ public class ShowConversationAction extends AbstractAction {
         frame.toFront();
         frame.requestFocus();
     }
-    
-    /* (non-Javadoc)
-     * @see javax.swing.AbstractAction#putValue(java.lang.String, java.lang.Object)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.swing.AbstractAction#putValue(java.lang.String,
+     * java.lang.Object)
      */
     public void putValue(String key, Object value) {
         super.putValue(key, value);
@@ -80,5 +91,5 @@ public class ShowConversationAction extends AbstractAction {
             }
         }
     }
-    
+
 }

@@ -16,8 +16,6 @@
 
 package edu.lnmiit.wavd.plugin.manualrequest;
 
-
-
 import edu.lnmiit.wavd.model.ConversationModel;
 import edu.lnmiit.wavd.model.Cookie;
 import edu.lnmiit.wavd.model.FrameworkModel;
@@ -29,19 +27,20 @@ import edu.lnmiit.wavd.plugin.AbstractPluginModel;
  * The Class ManualRequestModel.
  */
 public class ManualRequestModel extends AbstractPluginModel {
-    
+
     /** The _model. */
     private FrameworkModel _model;
-    
+
     /**
      * Instantiates a new manual request model.
      * 
-     * @param model the model
+     * @param model
+     *            the model
      */
     public ManualRequestModel(FrameworkModel model) {
         _model = model;
     }
-    
+
     /**
      * Gets the conversation model.
      * 
@@ -50,25 +49,27 @@ public class ManualRequestModel extends AbstractPluginModel {
     public ConversationModel getConversationModel() {
         return _model.getConversationModel();
     }
-    
+
     /**
      * Gets the cookies for url.
      * 
-     * @param url the url
+     * @param url
+     *            the url
      * 
      * @return the cookies for url
      */
     public Cookie[] getCookiesForUrl(HttpUrl url) {
         return _model.getCookiesForUrl(url);
     }
-    
+
     /**
      * Adds the cookie.
      * 
-     * @param cookie the cookie
+     * @param cookie
+     *            the cookie
      */
     public void addCookie(Cookie cookie) {
         _model.addCookie(cookie);
     }
-    
+
 }

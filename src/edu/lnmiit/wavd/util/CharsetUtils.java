@@ -24,11 +24,12 @@ import org.mozilla.intl.chardet.nsPSMDetector;
  * The Class CharsetUtils.
  */
 public class CharsetUtils {
-    
+
     /**
      * Gets the charset.
      * 
-     * @param bytes the bytes
+     * @param bytes
+     *            the bytes
      * 
      * @return the charset
      */
@@ -36,40 +37,44 @@ public class CharsetUtils {
         nsDetector det = new nsDetector(nsPSMDetector.ALL);
         CharsetListener listener = new CharsetListener();
         det.Init(listener);
-        
-        boolean isAscii = det.isAscii(bytes,bytes.length);
+
+        boolean isAscii = det.isAscii(bytes, bytes.length);
         // DoIt if non-ascii and not done yet.
         if (!isAscii)
-            det.DoIt(bytes,bytes.length, false);
+            det.DoIt(bytes, bytes.length, false);
         det.DataEnd();
-        if (isAscii) return "ASCII";
-        
+        if (isAscii)
+            return "ASCII";
+
         return listener.getCharset();
     }
-    
+
     /**
-     * The listener interface for receiving charset events.
-     * The class that is interested in processing a charset
-     * event implements this interface, and the object created
-     * with that class is registered with a component using the
-     * component's <code>addCharsetListener<code> method. When
+     * The listener interface for receiving charset events. The class that is
+     * interested in processing a charset event implements this interface, and
+     * the object created with that class is registered with a component using
+     * the component's <code>addCharsetListener<code> method. When
      * the charset event occurs, that object's appropriate
      * method is invoked.
      * 
      * @see CharsetEvent
      */
     private static class CharsetListener implements nsICharsetDetectionObserver {
-        
+
         /** The charset. */
         private String charset = null;
-        
-        /* (non-Javadoc)
-         * @see org.mozilla.intl.chardet.nsICharsetDetectionObserver#Notify(java.lang.String)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * org.mozilla.intl.chardet.nsICharsetDetectionObserver#Notify(java.
+         * lang.String)
          */
         public void Notify(String charset) {
             this.charset = charset;
         }
-        
+
         /**
          * Gets the charset.
          * 
@@ -78,7 +83,7 @@ public class CharsetUtils {
         public String getCharset() {
             return this.charset;
         }
-        
+
     }
-    
+
 }

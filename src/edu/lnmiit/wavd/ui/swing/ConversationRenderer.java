@@ -34,27 +34,37 @@ import edu.lnmiit.wavd.model.ConversationModel;
  * The Class ConversationRenderer.
  */
 public class ConversationRenderer extends JLabel implements ListCellRenderer {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3583700653798989536L;
     /** The _conversation model. */
     private ConversationModel _conversationModel;
-    
+
     /**
      * Instantiates a new conversation renderer.
      * 
-     * @param conversationModel the conversation model
+     * @param conversationModel
+     *            the conversation model
      */
     public ConversationRenderer(ConversationModel conversationModel) {
         _conversationModel = conversationModel;
     }
-    
-    /* (non-Javadoc)
-     * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing
+     * .JList, java.lang.Object, int, boolean, boolean)
      */
-    public java.awt.Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        //Get the selected index. (The index param isn't
-        //always valid, so just use the value.)
+    public java.awt.Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+            boolean cellHasFocus) {
+        // Get the selected index. (The index param isn't
+        // always valid, so just use the value.)
         ConversationID id = (ConversationID) value;
-        
+
         if (isSelected) {
             setBackground(list.getSelectionBackground());
             setForeground(list.getSelectionForeground());
@@ -62,7 +72,7 @@ public class ConversationRenderer extends JLabel implements ListCellRenderer {
             setBackground(list.getBackground());
             setForeground(list.getForeground());
         }
-        
+
         if (id == null) {
             setText("");
             return this;
@@ -77,8 +87,8 @@ public class ConversationRenderer extends JLabel implements ListCellRenderer {
         text.append(_conversationModel.getRequestUrl(id).getSHPP()).append("    ");
         text.append(_conversationModel.getResponseStatus(id));
         setText(text.toString());
-        
+
         return this;
     }
-    
+
 }

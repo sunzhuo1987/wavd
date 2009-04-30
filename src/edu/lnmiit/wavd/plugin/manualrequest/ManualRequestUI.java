@@ -22,8 +22,6 @@
 
 package edu.lnmiit.wavd.plugin.manualrequest;
 
-
-
 import edu.lnmiit.wavd.model.Request;
 import edu.lnmiit.wavd.model.Response;
 import edu.lnmiit.wavd.plugin.PluginUI;
@@ -33,19 +31,21 @@ import edu.lnmiit.wavd.plugin.PluginUI;
  * The Interface ManualRequestUI.
  */
 public interface ManualRequestUI extends PluginUI {
-    
+
     /**
      * Request changed.
      * 
-     * @param request the request
+     * @param request
+     *            the request
      */
     void requestChanged(Request request);
-    
+
     /**
      * Response changed.
      * 
-     * @param response the response
+     * @param response
+     *            the response
      */
     void responseChanged(Response response);
-    
+
 }

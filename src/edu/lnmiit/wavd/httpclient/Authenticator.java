@@ -27,21 +27,25 @@ public interface Authenticator {
     /**
      * Gets the credentials.
      * 
-     * @param url the url
-     * @param challenges the challenges
+     * @param url
+     *            the url
+     * @param challenges
+     *            the challenges
      * 
      * @return the credentials
      */
     String getCredentials(HttpUrl url, String[] challenges);
-    
+
     /**
      * Gets the proxy credentials.
      * 
-     * @param hostname the hostname
-     * @param challenges the challenges
+     * @param hostname
+     *            the hostname
+     * @param challenges
+     *            the challenges
      * 
      * @return the proxy credentials
      */
     String getProxyCredentials(String hostname, String[] challenges);
-    
+
 }

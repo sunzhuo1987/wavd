@@ -22,42 +22,41 @@
 
 package edu.lnmiit.wavd.model;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
-
 import java.text.ParseException;
-import java.util.logging.Level;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Request.
  */
 public class Request extends Message {
-    
+
     /** The _method. */
     private String _method = "GET";
-    
+
     /** The _url. */
     private HttpUrl _url = null;
-    
+
     /** The _version. */
     private String _version = "HTTP/1.0";
-    
+
     /**
      * Instantiates a new request.
      */
     public Request() {
     }
-    
+
     /**
      * Instantiates a new request.
      * 
-     * @param req the req
-     */    
+     * @param req
+     *            the req
+     */
     public Request(Request req) {
         _method = req.getMethod();
         _url = req.getURL();
@@ -65,22 +64,27 @@ public class Request extends Message {
         setHeaders(req.getHeaders());
         setContent(req.getContent());
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.Message#read(java.io.InputStream)
      */
     public void read(InputStream is) throws IOException {
         read(is, null);
     }
-    
+
     /**
      * Read.
      * 
-     * @param is the is
-     * @param base the base
+     * @param is
+     *            the is
+     * @param base
+     *            the base
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
-     */    
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     */
     public void read(InputStream is, HttpUrl base) throws IOException {
         String line = null;
         _logger.finer("Base: " + base);
@@ -105,7 +109,7 @@ public class Request extends Message {
                 setURL(new HttpUrl(base, parts[1]));
             }
         } else {
-            throw new IOException("Invalid request line reading from the InputStream '"+line+"'");
+            throw new IOException("Invalid request line reading from the InputStream '" + line + "'");
         }
         if (parts.length == 3) {
             setVersion(parts[2]);
@@ -119,21 +123,25 @@ public class Request extends Message {
             setNoBody();
         }
     }
-    
+
     /**
      * Parses the.
      * 
-     * @param string the string
+     * @param string
+     *            the string
      * 
-     * @throws ParseException the parse exception
-     */    
+     * @throws ParseException
+     *             the parse exception
+     */
     public void parse(String string) throws ParseException {
         parse(new StringBuffer(string));
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.Message#parse(java.lang.StringBuffer)
-     */    
+     */
     public void parse(StringBuffer buff) throws ParseException {
         String line = null;
         line = getLine(buff);
@@ -147,7 +155,7 @@ public class Request extends Message {
                     setURL(new HttpUrl(parts[1]));
                 }
             } catch (MalformedURLException mue) {
-                throw new ParseException("Malformed URL '" + parts[1] + "' : " + mue, parts[0].length()+1);
+                throw new ParseException("Malformed URL '" + parts[1] + "' : " + mue, parts[0].length() + 1);
             }
         } else {
             throw new ParseException("Invalid request line '" + line + "'", 0);
@@ -164,49 +172,59 @@ public class Request extends Message {
             setNoBody();
         }
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.Message#write(java.io.OutputStream)
-     */    
+     */
     public void write(OutputStream os) throws IOException {
-        write(os,"\r\n");
+        write(os, "\r\n");
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.model.Message#write(java.io.OutputStream, java.lang.String)
-     */    
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see edu.lnmiit.wavd.model.Message#write(java.io.OutputStream,
+     * java.lang.String)
+     */
     public void write(OutputStream os, String crlf) throws IOException {
         if (_method == null || _url == null || _version == null) {
             System.err.println("Uninitialised Request!");
             return;
         }
         os = new BufferedOutputStream(os);
-        String requestLine = _method+" "+_url+" " + _version + crlf;
+        String requestLine = _method + " " + _url + " " + _version + crlf;
         os.write(requestLine.getBytes());
         _logger.finer("Request: " + requestLine);
         super.write(os, crlf);
         os.flush();
     }
-    
+
     /**
      * Write direct.
      * 
-     * @param os the os
+     * @param os
+     *            the os
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
-     */    
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     */
     public void writeDirect(OutputStream os) throws IOException {
         writeDirect(os, "\r\n");
     }
-    
+
     /**
      * Write direct.
      * 
-     * @param os the os
-     * @param crlf the crlf
+     * @param os
+     *            the os
+     * @param crlf
+     *            the crlf
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
-     */    
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     */
     public void writeDirect(OutputStream os, String crlf) throws IOException {
         if (_method == null || _url == null || _version == null) {
             System.err.println("Uninitialised Request!");
@@ -214,76 +232,83 @@ public class Request extends Message {
         }
         os = new BufferedOutputStream(os);
         String requestLine = _method + " " + _url.direct() + " " + _version;
-        os.write((requestLine+crlf).getBytes());
+        os.write((requestLine + crlf).getBytes());
         _logger.finer("Request: " + requestLine);
         super.write(os, crlf);
         os.flush();
     }
-    
+
     /**
      * Sets the method.
      * 
-     * @param method the new method
-     */    
+     * @param method
+     *            the new method
+     */
     public void setMethod(String method) {
         _method = method.toUpperCase();
     }
-    
+
     /**
      * Gets the method.
      * 
      * @return the method
-     */    
+     */
     public String getMethod() {
         return _method;
     }
-    
+
     /**
      * Sets the uRL.
      * 
-     * @param url the new uRL
-     */    
+     * @param url
+     *            the new uRL
+     */
     public void setURL(HttpUrl url) {
         _url = url;
     }
-    
+
     /**
      * Gets the uRL.
      * 
      * @return the uRL
-     */    
+     */
     public HttpUrl getURL() {
         return _url;
     }
-    
+
     /**
      * Sets the version.
      * 
-     * @param version the new version
-     */    
+     * @param version
+     *            the new version
+     */
     public void setVersion(String version) {
         _version = version.toUpperCase();
     }
-    
+
     /**
      * Gets the version.
      * 
      * @return the version
-     */    
+     */
     public String getVersion() {
         return _version;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.Message#toString()
-     */    
+     */
     public String toString() {
         return toString("\r\n");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.Message#toString(java.lang.String)
-     */    
+     */
     public String toString(String crlf) {
         if (_method == null || _url == null || _version == null) {
             return "Unitialised Request!";
@@ -295,17 +320,23 @@ public class Request extends Message {
         buff.append(super.toString(crlf));
         return buff.toString();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.model.Message#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        if (!(obj instanceof Request)) return false;
-        Request req = (Request)obj;
-        if (!getMethod().equals(req.getMethod())) return false;
-        if (!getURL().equals(req.getURL())) return false;
-        if (!getVersion().equals(req.getVersion())) return false;
+        if (!(obj instanceof Request))
+            return false;
+        Request req = (Request) obj;
+        if (!getMethod().equals(req.getMethod()))
+            return false;
+        if (!getURL().equals(req.getURL()))
+            return false;
+        if (!getVersion().equals(req.getVersion()))
+            return false;
         return super.equals(req);
     }
-    
+
 }

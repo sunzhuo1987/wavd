@@ -22,63 +22,59 @@
 
 package edu.lnmiit.wavd.ui.swing;
 
-import java.util.List;
+import java.awt.Component;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor;
 import edu.lnmiit.wavd.ui.swing.editors.EditorFactory;
-
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.SwingUtilities;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.Dimension;
-import java.awt.Component;
-
-// for main()
-import java.io.ByteArrayOutputStream;
-
-import java.util.logging.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ContentPanel.
  */
 public class ContentPanel extends javax.swing.JPanel {
-    
+
+    /**
+	 * 
+	 */
+    private static final long serialVersionUID = -5716702920663186833L;
+
     /** The _content type. */
     private String _contentType = null;
-    
+
     /** The _editable. */
     private boolean _editable = false;
-    
+
     /** The _modified. */
     private boolean _modified = false;
-    
+
     /** The _data. */
     private byte[] _data = null;
-    
+
     /** The _editors. */
     private ByteArrayEditor[] _editors = null;
-    
+
     /** The _selected. */
     private int _selected = -1;
-    
+
     /** The _up to date. */
-    private boolean[] _upToDate = new boolean[] {false};
-    
+    private boolean[] _upToDate = new boolean[] { false };
+
     /** The _logger. */
-    private Logger _logger = Logger.getLogger(getClass().getName());
-    
+    // private Logger _logger = Logger.getLogger(getClass().getName());
     // This list is sorted in increasing order of preference
     /** The _preferred. */
     private static List _preferred = new ArrayList();
-    
+
     /** The _creating panels. */
     private boolean _creatingPanels = false;
-    
+
     /**
      * Instantiates a new content panel.
      */
@@ -86,12 +82,13 @@ public class ContentPanel extends javax.swing.JPanel {
         initComponents();
         viewTabbedPane.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                if (_creatingPanels) return;
+                if (_creatingPanels)
+                    return;
                 // update our view of the data, after (possible) modifications
                 // in the previously selected editor
                 updateData(_selected);
                 _selected = viewTabbedPane.getSelectedIndex();
-                if (_selected>-1) {
+                if (_selected > -1) {
                     updatePanel(_selected);
                     String name = _editors[_selected].getName();
                     _preferred.remove(name);
@@ -100,25 +97,27 @@ public class ContentPanel extends javax.swing.JPanel {
             }
         });
     }
-    
+
     /**
      * Sets the editable.
      * 
-     * @param editable the new editable
+     * @param editable
+     *            the new editable
      */
     public void setEditable(boolean editable) {
         _editable = editable;
         if (_editors != null) {
-            for (int i=0; i<_editors.length; i++) {
+            for (int i = 0; i < _editors.length; i++) {
                 _editors[i].setEditable(editable);
             }
         }
     }
-    
+
     /**
      * Sets the content type.
      * 
-     * @param contentType the new content type
+     * @param contentType
+     *            the new content type
      */
     public void setContentType(String contentType) {
         if (_contentType == null || !_contentType.equals(contentType)) {
@@ -126,15 +125,16 @@ public class ContentPanel extends javax.swing.JPanel {
             createPanels(_contentType);
         }
     }
-    
+
     /**
      * Creates the panels.
      * 
-     * @param contentType the content type
+     * @param contentType
+     *            the content type
      */
     private void createPanels(final String contentType) {
         if (!SwingUtilities.isEventDispatchThread()) {
-            try { 
+            try {
                 SwingUtilities.invokeAndWait(new Runnable() {
                     public void run() {
                         createPanels(contentType);
@@ -147,13 +147,13 @@ public class ContentPanel extends javax.swing.JPanel {
             _creatingPanels = true;
             viewTabbedPane.removeAll();
             _editors = EditorFactory.getEditors(contentType);
-            for (int i=0; i<_editors.length; i++) {
+            for (int i = 0; i < _editors.length; i++) {
                 _editors[i].setEditable(_editable);
-                viewTabbedPane.add((Component)_editors[i]);
+                viewTabbedPane.add((Component) _editors[i]);
             }
             int preferred = -1;
-            for (int i=0; i<_preferred.size(); i++) {
-                for (int e=0; e<_editors.length; e++) {
+            for (int i = 0; i < _preferred.size(); i++) {
+                for (int e = 0; e < _editors.length; e++) {
                     if (_editors[e].getName().equals(_preferred.get(i))) {
                         preferred = e;
                         break;
@@ -168,20 +168,21 @@ public class ContentPanel extends javax.swing.JPanel {
             _creatingPanels = false;
         }
     }
-    
+
     /**
      * Invalidate editors.
      */
     private void invalidateEditors() {
         _upToDate = new boolean[_editors.length];
-        for (int i=0; i<_upToDate.length; i++)
+        for (int i = 0; i < _upToDate.length; i++)
             _upToDate[i] = false;
     }
-    
+
     /**
      * Sets the content.
      * 
-     * @param content the new content
+     * @param content
+     *            the new content
      */
     public void setContent(byte[] content) {
         _modified = false;
@@ -191,12 +192,12 @@ public class ContentPanel extends javax.swing.JPanel {
             _data = new byte[content.length];
             System.arraycopy(content, 0, _data, 0, content.length);
         }
-        
+
         if (_editors == null || _editors.length == 0) {
             return;
         }
         invalidateEditors();
-        
+
         _selected = viewTabbedPane.getSelectedIndex();
         if (_selected < 0) {
             _selected = 0;
@@ -204,19 +205,21 @@ public class ContentPanel extends javax.swing.JPanel {
         }
         updatePanel(_selected);
     }
-    
+
     /**
      * Checks if is modified.
      * 
      * @return true, if is modified
      */
     public boolean isModified() {
-        if (! _editable) return false;
+        if (!_editable)
+            return false;
         int selected = viewTabbedPane.getSelectedIndex();
-        if (selected < 0) return false;
+        if (selected < 0)
+            return false;
         return _modified || _editors[selected].isModified();
     }
-    
+
     /**
      * Gets the content.
      * 
@@ -230,14 +233,15 @@ public class ContentPanel extends javax.swing.JPanel {
         }
         return _data;
     }
-    
+
     /**
      * Update panel.
      * 
-     * @param panel the panel
+     * @param panel
+     *            the panel
      */
     private void updatePanel(int panel) {
-        if (panel<0 || _upToDate.length == 0) {
+        if (panel < 0 || _upToDate.length == 0) {
             return;
         } else if (panel >= _upToDate.length) {
             panel = 0;
@@ -247,11 +251,12 @@ public class ContentPanel extends javax.swing.JPanel {
             _upToDate[panel] = true;
         }
     }
-    
+
     /**
      * Update data.
      * 
-     * @param panel the panel
+     * @param panel
+     *            the panel
      */
     private void updateData(int panel) {
         if (_editable && panel >= 0) {
@@ -264,11 +269,12 @@ public class ContentPanel extends javax.swing.JPanel {
             }
         }
     }
-    
+
     /**
      * Inits the components.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed"
+    // desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -284,26 +290,24 @@ public class ContentPanel extends javax.swing.JPanel {
         add(viewTabbedPane, gridBagConstraints);
 
     }
+
     // </editor-fold>//GEN-END:initComponents
-    
-    
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String[] args) {
         edu.lnmiit.wavd.model.Response response = new edu.lnmiit.wavd.model.Response();
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            new ByteArrayOutputStream();
             /*
-            FileInputStream fis = new FileInputStream("/home/rdawes/exodus/HowTo.html");
-            byte[] buff = new byte[1024];
-            int got = 0;
-            while ((got = fis.read(buff)) > 0) {
-                baos.write(buff, 0, got);
-            }
-            content = baos.toByteArray();
+             * FileInputStream fis = new
+             * FileInputStream("/home/rdawes/exodus/HowTo.html"); byte[] buff =
+             * new byte[1024]; int got = 0; while ((got = fis.read(buff)) > 0) {
+             * baos.write(buff, 0, got); } content = baos.toByteArray();
              */
             String filename = "/home/rogan/workspace/webscarab/test/data/index-resp";
             if (args.length == 1) {
@@ -315,7 +319,7 @@ public class ContentPanel extends javax.swing.JPanel {
             e.printStackTrace();
             System.exit(0);
         }
-        
+
         javax.swing.JFrame top = new javax.swing.JFrame("Content Pane");
         top.getContentPane().setLayout(new java.awt.BorderLayout());
         top.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -323,7 +327,7 @@ public class ContentPanel extends javax.swing.JPanel {
                 System.exit(0);
             }
         });
-        
+
         javax.swing.JButton button = new javax.swing.JButton("GET");
         final ContentPanel cp = new ContentPanel();
         top.getContentPane().add(cp);
@@ -345,11 +349,10 @@ public class ContentPanel extends javax.swing.JPanel {
             e.printStackTrace();
         }
     }
-    
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The view tabbed pane. */
     private javax.swing.JTabbedPane viewTabbedPane;
     // End of variables declaration//GEN-END:variables
-    
+
 }

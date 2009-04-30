@@ -25,15 +25,12 @@ import jcifs.Config;
 public abstract class NtlmMessage implements NtlmFlags {
 
     /** The Constant NTLMSSP_SIGNATURE. */
-    protected static final byte[] NTLMSSP_SIGNATURE = new byte[] {
-        (byte) 'N', (byte) 'T', (byte) 'L', (byte) 'M',
-        (byte) 'S', (byte) 'S', (byte) 'P', (byte) 0
-    };
+    protected static final byte[] NTLMSSP_SIGNATURE = new byte[] { (byte) 'N', (byte) 'T', (byte) 'L', (byte) 'M',
+            (byte) 'S', (byte) 'S', (byte) 'P', (byte) 0 };
 
     /** The Constant OEM_ENCODING. */
-    private static final String OEM_ENCODING =
-                Config.getProperty("jcifs.encoding",
-                        System.getProperty("file.encoding"));
+    private static final String OEM_ENCODING = Config
+            .getProperty("jcifs.encoding", System.getProperty("file.encoding"));
 
     /** The flags. */
     private int flags;
@@ -50,7 +47,8 @@ public abstract class NtlmMessage implements NtlmFlags {
     /**
      * Sets the flags.
      * 
-     * @param flags the new flags
+     * @param flags
+     *            the new flags
      */
     public void setFlags(int flags) {
         this.flags = flags;
@@ -59,7 +57,8 @@ public abstract class NtlmMessage implements NtlmFlags {
     /**
      * Gets the flag.
      * 
-     * @param flag the flag
+     * @param flag
+     *            the flag
      * 
      * @return the flag
      */
@@ -70,34 +69,37 @@ public abstract class NtlmMessage implements NtlmFlags {
     /**
      * Sets the flag.
      * 
-     * @param flag the flag
-     * @param value the value
+     * @param flag
+     *            the flag
+     * @param value
+     *            the value
      */
     public void setFlag(int flag, boolean value) {
-        setFlags(value ? (getFlags() | flag) :
-                (getFlags() & (0xffffffff ^ flag)));
+        setFlags(value ? (getFlags() | flag) : (getFlags() & (0xffffffff ^ flag)));
     }
 
     /**
      * Read u long.
      * 
-     * @param src the src
-     * @param index the index
+     * @param src
+     *            the src
+     * @param index
+     *            the index
      * 
      * @return the int
      */
     static int readULong(byte[] src, int index) {
-        return (src[index] & 0xff) |
-                ((src[index + 1] & 0xff) << 8) |
-                ((src[index + 2] & 0xff) << 16) |
-                ((src[index + 3] & 0xff) << 24);
+        return (src[index] & 0xff) | ((src[index + 1] & 0xff) << 8) | ((src[index + 2] & 0xff) << 16)
+                | ((src[index + 3] & 0xff) << 24);
     }
 
     /**
      * Read u short.
      * 
-     * @param src the src
-     * @param index the index
+     * @param src
+     *            the src
+     * @param index
+     *            the index
      * 
      * @return the int
      */
@@ -108,8 +110,10 @@ public abstract class NtlmMessage implements NtlmFlags {
     /**
      * Read security buffer.
      * 
-     * @param src the src
-     * @param index the index
+     * @param src
+     *            the src
+     * @param index
+     *            the index
      * 
      * @return the byte[]
      */
@@ -124,9 +128,12 @@ public abstract class NtlmMessage implements NtlmFlags {
     /**
      * Write u long.
      * 
-     * @param dest the dest
-     * @param offset the offset
-     * @param ulong the ulong
+     * @param dest
+     *            the dest
+     * @param offset
+     *            the offset
+     * @param ulong
+     *            the ulong
      */
     static void writeULong(byte[] dest, int offset, int ulong) {
         dest[offset] = (byte) (ulong & 0xff);
@@ -138,9 +145,12 @@ public abstract class NtlmMessage implements NtlmFlags {
     /**
      * Write u short.
      * 
-     * @param dest the dest
-     * @param offset the offset
-     * @param ushort the ushort
+     * @param dest
+     *            the dest
+     * @param offset
+     *            the offset
+     * @param ushort
+     *            the ushort
      */
     static void writeUShort(byte[] dest, int offset, int ushort) {
         dest[offset] = (byte) (ushort & 0xff);
@@ -150,15 +160,19 @@ public abstract class NtlmMessage implements NtlmFlags {
     /**
      * Write security buffer.
      * 
-     * @param dest the dest
-     * @param offset the offset
-     * @param bodyOffset the body offset
-     * @param src the src
+     * @param dest
+     *            the dest
+     * @param offset
+     *            the offset
+     * @param bodyOffset
+     *            the body offset
+     * @param src
+     *            the src
      */
-    static void writeSecurityBuffer(byte[] dest, int offset, int bodyOffset,
-            byte[] src) {
+    static void writeSecurityBuffer(byte[] dest, int offset, int bodyOffset, byte[] src) {
         int length = (src != null) ? src.length : 0;
-        if (length == 0) return;
+        if (length == 0)
+            return;
         writeUShort(dest, offset, length);
         writeUShort(dest, offset + 2, length);
         writeULong(dest, offset + 4, bodyOffset);

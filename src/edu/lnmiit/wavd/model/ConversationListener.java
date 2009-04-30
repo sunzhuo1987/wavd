@@ -20,10 +20,9 @@ import java.util.EventListener;
 
 // TODO: Auto-generated Javadoc
 /**
- * The listener interface for receiving conversation events.
- * The class that is interested in processing a conversation
- * event implements this interface, and the object created
- * with that class is registered with a component using the
+ * The listener interface for receiving conversation events. The class that is
+ * interested in processing a conversation event implements this interface, and
+ * the object created with that class is registered with a component using the
  * component's <code>addConversationListener<code> method. When
  * the conversation event occurs, that object's appropriate
  * method is invoked.
@@ -31,31 +30,34 @@ import java.util.EventListener;
  * @see ConversationEvent
  */
 public interface ConversationListener extends EventListener {
-    
+
     /**
      * Conversation added.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void conversationAdded(ConversationEvent evt);
-    
+
     /**
      * Conversation changed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void conversationChanged(ConversationEvent evt);
-    
+
     /**
      * Conversation removed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void conversationRemoved(ConversationEvent evt);
-    
+
     /**
      * Conversations changed.
      */
     void conversationsChanged();
-    
+
 }

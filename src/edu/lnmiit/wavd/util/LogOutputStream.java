@@ -22,9 +22,9 @@
 
 package edu.lnmiit.wavd.util;
 
-import java.io.OutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 
 // TODO: Auto-generated Javadoc
@@ -33,40 +33,45 @@ import java.io.PrintStream;
  */
 
 public class LogOutputStream extends FilterOutputStream {
-    
+
     /** The _os. */
     OutputStream _os;
-    
+
     /** The _ps. */
     PrintStream _ps;
-    
+
     /**
      * Instantiates a new log output stream.
      * 
-     * @param os the os
-     * @param ps the ps
+     * @param os
+     *            the os
+     * @param ps
+     *            the ps
      */
     public LogOutputStream(OutputStream os, PrintStream ps) {
         super(os);
         _os = os;
         _ps = ps;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterOutputStream#write(int)
      */
     public void write(int b) throws IOException {
         _os.write(b);
         _ps.write(b);
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterOutputStream#write(byte[], int, int)
      */
     public void write(byte b[], int off, int len) throws IOException {
         _os.write(b, off, len);
         _ps.write(b, off, len);
     }
-    
-}
 
+}

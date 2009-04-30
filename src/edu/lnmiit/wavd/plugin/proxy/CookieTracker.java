@@ -25,7 +25,6 @@ package edu.lnmiit.wavd.plugin.proxy;
 import java.io.IOException;
 import java.util.Date;
 
-
 import edu.lnmiit.wavd.httpclient.HTTPClient;
 import edu.lnmiit.wavd.model.Cookie;
 import edu.lnmiit.wavd.model.FrameworkModel;
@@ -40,54 +39,58 @@ import edu.lnmiit.wavd.plugin.Framework;
  * The Class CookieTracker.
  */
 public class CookieTracker extends ProxyPlugin {
-    
+
     /** The _model. */
     private FrameworkModel _model = null;
-    
+
     /** The _inject requests. */
     private boolean _injectRequests = false;
-    
+
     /** The _read responses. */
     private boolean _readResponses = false;
-    
+
     /**
      * Instantiates a new cookie tracker.
      * 
-     * @param framework the framework
+     * @param framework
+     *            the framework
      */
     public CookieTracker(Framework framework) {
         _model = framework.getModel();
         parseProperties();
     }
-    
+
     /**
      * Parses the properties.
      */
     public void parseProperties() {
         String prop = "CookieTracker.injectRequests";
         String value = Preferences.getPreference(prop, "false");
-        _injectRequests = ("true".equalsIgnoreCase( value ) || "yes".equalsIgnoreCase( value ));
+        _injectRequests = ("true".equalsIgnoreCase(value) || "yes".equalsIgnoreCase(value));
         prop = "CookieTracker.readResponses";
         value = Preferences.getPreference(prop, "true");
-        _readResponses = ("true".equalsIgnoreCase( value ) || "yes".equalsIgnoreCase( value ));
+        _readResponses = ("true".equalsIgnoreCase(value) || "yes".equalsIgnoreCase(value));
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.proxy.ProxyPlugin#getPluginName()
      */
     public String getPluginName() {
         return new String("Cookie Tracker");
     }
-    
+
     /**
      * Sets the inject requests.
      * 
-     * @param bool the new inject requests
+     * @param bool
+     *            the new inject requests
      */
     public void setInjectRequests(boolean bool) {
         _injectRequests = bool;
         String prop = "CookieTracker.injectRequests";
-        Preferences.setPreference(prop,Boolean.toString(bool));
+        Preferences.setPreference(prop, Boolean.toString(bool));
     }
 
     /**
@@ -98,16 +101,17 @@ public class CookieTracker extends ProxyPlugin {
     public boolean getInjectRequests() {
         return _injectRequests;
     }
-    
+
     /**
      * Sets the read responses.
      * 
-     * @param bool the new read responses
+     * @param bool
+     *            the new read responses
      */
     public void setReadResponses(boolean bool) {
         _readResponses = bool;
         String prop = "CookieTracker.readResponses";
-        Preferences.setPreference(prop,Boolean.toString(bool));
+        Preferences.setPreference(prop, Boolean.toString(bool));
     }
 
     /**
@@ -118,43 +122,53 @@ public class CookieTracker extends ProxyPlugin {
     public boolean getReadResponses() {
         return _readResponses;
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.plugin.proxy.ProxyPlugin#getProxyPlugin(edu.lnmiit.wavd.httpclient.HTTPClient)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.plugin.proxy.ProxyPlugin#getProxyPlugin(edu.lnmiit.wavd
+     * .httpclient.HTTPClient)
      */
     public HTTPClient getProxyPlugin(HTTPClient in) {
         return new Plugin(in);
-    }    
-    
+    }
+
     /**
      * The Class Plugin.
      */
     private class Plugin implements HTTPClient {
-    
+
         /** The _in. */
         private HTTPClient _in;
-        
+
         /**
          * Instantiates a new plugin.
          * 
-         * @param in the in
+         * @param in
+         *            the in
          */
         public Plugin(HTTPClient in) {
             _in = in;
         }
-        
-        /* (non-Javadoc)
-         * @see edu.lnmiit.wavd.httpclient.HTTPClient#fetchResponse(edu.lnmiit.wavd.model.Request)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * edu.lnmiit.wavd.httpclient.HTTPClient#fetchResponse(edu.lnmiit.wavd
+         * .model.Request)
          */
         public Response fetchResponse(Request request) throws IOException {
             if (_injectRequests) {
-                // FIXME we should do something about any existing cookies that are in the Request
+                // FIXME we should do something about any existing cookies that
+                // are in the Request
                 // they could have been set via JavaScript, or some such!
                 Cookie[] cookies = _model.getCookiesForUrl(request.getURL());
-                if (cookies.length>0) {
+                if (cookies.length > 0) {
                     StringBuffer buff = new StringBuffer();
                     buff.append(cookies[0].getName()).append("=").append(cookies[0].getValue());
-                    for (int i=1; i<cookies.length; i++) {
+                    for (int i = 1; i < cookies.length; i++) {
                         buff.append("; ").append(cookies[i].getName()).append("=").append(cookies[i].getValue());
                     }
                     request.setHeader("Cookie", buff.toString());
@@ -163,8 +177,9 @@ public class CookieTracker extends ProxyPlugin {
             Response response = _in.fetchResponse(request);
             if (_readResponses && response != null) {
                 NamedValue[] headers = response.getHeaders();
-                for (int i=0; i<headers.length; i++) {
-                    if (headers[i].getName().equalsIgnoreCase("Set-Cookie") || headers[i].getName().equalsIgnoreCase("Set-Cookie2")) {
+                for (int i = 0; i < headers.length; i++) {
+                    if (headers[i].getName().equalsIgnoreCase("Set-Cookie")
+                            || headers[i].getName().equalsIgnoreCase("Set-Cookie2")) {
                         Cookie cookie = new Cookie(new Date(), request.getURL(), headers[i].getValue());
                         _model.addCookie(cookie);
                     }
@@ -172,7 +187,7 @@ public class CookieTracker extends ProxyPlugin {
             }
             return response;
         }
-        
+
     }
-    
+
 }

@@ -22,26 +22,28 @@
 
 package edu.lnmiit.wavd.httpclient;
 
+import java.io.IOException;
+
 import edu.lnmiit.wavd.model.Request;
 import edu.lnmiit.wavd.model.Response;
-
-import java.io.IOException;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Interface HTTPClient.
  */
 public interface HTTPClient {
-    
+
     /**
      * Fetch response.
      * 
-     * @param request the request
+     * @param request
+     *            the request
      * 
      * @return the response
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     Response fetchResponse(Request request) throws IOException;
-    
+
 }

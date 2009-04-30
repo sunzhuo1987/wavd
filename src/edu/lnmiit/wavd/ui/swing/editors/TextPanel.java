@@ -22,29 +22,18 @@
 
 package edu.lnmiit.wavd.ui.swing.editors;
 
-import java.awt.Color;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.PlainDocument;
-
-import javax.swing.AbstractAction;
-import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
+import java.awt.Event;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.Event;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.Keymap;
-import java.awt.Container;
-import javax.swing.JFrame;
-
 import java.io.UnsupportedEncodingException;
+import java.util.regex.PatternSyntaxException;
+
+import javax.swing.AbstractAction;
+import javax.swing.InputMap;
+import javax.swing.KeyStroke;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.DefaultHighlighter;
 
 import edu.lnmiit.wavd.model.Preferences;
 import edu.lnmiit.wavd.util.CharsetUtils;
@@ -54,64 +43,79 @@ import edu.lnmiit.wavd.util.CharsetUtils;
  * The Class TextPanel.
  */
 public class TextPanel extends javax.swing.JPanel implements ByteArrayEditor {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2633864558038585241L;
+
     /** The _find visible. */
     private static boolean _findVisible = false;
-    
+
     /** The _find. */
     private static String _find = "";
-    
+
     /** The _case sensitive. */
     private static boolean _caseSensitive = false;
-    
+
     /** The _start. */
     private int _start = 0;
-    
+
     /** The _editable. */
     private boolean _editable = false;
-    
+
     /** The _modified. */
     private boolean _modified = false;
-    
+
     /** The _bytes. */
     private byte[] _bytes = null;
-    
+
     /** The _charset. */
     private String _charset = null;
-    
+
     /** The _text. */
     private String _text = null;
-    
+
     /** The _dcl. */
     private DocumentChangeListener _dcl = new DocumentChangeListener();
-    
+
     /** The searcher. */
     private RegexSearcher searcher;
-    
+
     /**
      * Instantiates a new text panel.
      */
     public TextPanel() {
         initComponents();
         findCaseCheckBox.setSelected(_caseSensitive);
-        
+
         setName("Text");
-        
+
         searcher = new RegexSearcher(textTextArea, DefaultHighlighter.DefaultPainter);
-        
+
         InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        
+
         getActionMap().put("TOGGLEWRAP", new AbstractAction() {
+            /**
+	     * 
+	     */
+            private static final long serialVersionUID = 3180710491820185700L;
+
             public void actionPerformed(ActionEvent event) {
-                textTextArea.setLineWrap(! textTextArea.getLineWrap());
+                textTextArea.setLineWrap(!textTextArea.getLineWrap());
             }
         });
         // Ctrl-W to toggle wordwrap
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.CTRL_MASK), "TOGGLEWRAP");
-        
+
         getActionMap().put("TOGGLEFIND", new AbstractAction() {
+            /**
+	     * 
+	     */
+            private static final long serialVersionUID = 1667191933246150422L;
+
             public void actionPerformed(ActionEvent event) {
-                _findVisible = ! findPanel.isVisible();
+                _findVisible = !findPanel.isVisible();
                 findPanel.setVisible(_findVisible);
                 if (_findVisible) {
                     findTextField.requestFocusInWindow();
@@ -120,36 +124,46 @@ public class TextPanel extends javax.swing.JPanel implements ByteArrayEditor {
         });
         // Ctrl-F to toggle the find bar
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Event.CTRL_MASK), "TOGGLEFIND");
-        
+
         findPanel.setVisible(_findVisible);
         findTextField.setText(_find);
         findTextField.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent evt) {
                 find();
             }
+
             public void removeUpdate(DocumentEvent evt) {
                 find();
             }
+
             public void insertUpdate(DocumentEvent evt) {
                 find();
             }
+
             private void find() {
                 _find = findTextField.getText();
                 _start = doFind(_find, 0, _caseSensitive) + 1;
             }
         });
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setEditable(boolean)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setEditable(boolean)
      */
     public void setEditable(boolean editable) {
         _editable = editable;
         textTextArea.setEditable(editable);
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setBytes(java.lang.String, byte[])
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setBytes(java.lang.String
+     * , byte[])
      */
     public void setBytes(String contentType, byte[] bytes) {
         _bytes = bytes;
@@ -158,10 +172,10 @@ public class TextPanel extends javax.swing.JPanel implements ByteArrayEditor {
         } else {
             _charset = null;
             int ci = contentType.indexOf("charset");
-            if ( ci == -1) {
+            if (ci == -1) {
                 _charset = CharsetUtils.getCharset(bytes);
             } else {
-                _charset = contentType.substring(ci+8);
+                _charset = contentType.substring(ci + 8);
             }
             try {
                 setText(contentType, new String(bytes, _charset));
@@ -170,17 +184,20 @@ public class TextPanel extends javax.swing.JPanel implements ByteArrayEditor {
             }
         }
     }
-    
+
     /**
      * Sets the text.
      * 
-     * @param contentType the content type
-     * @param text the text
+     * @param contentType
+     *            the content type
+     * @param text
+     *            the text
      */
     public void setText(String contentType, String text) {
         String wrap = Preferences.getPreference("TextPanel.wrap", "false");
-        if (wrap != null && wrap.equals("true")) textTextArea.setLineWrap(true);
-        
+        if (wrap != null && wrap.equals("true"))
+            textTextArea.setLineWrap(true);
+
         _text = text;
         textTextArea.getDocument().removeDocumentListener(_dcl);
         _modified = false;
@@ -191,7 +208,7 @@ public class TextPanel extends javax.swing.JPanel implements ByteArrayEditor {
             textTextArea.getDocument().addDocumentListener(_dcl);
         _start = doFind(_find, 0, _caseSensitive) + 1;
     }
-    
+
     /**
      * Gets the text.
      * 
@@ -201,15 +218,19 @@ public class TextPanel extends javax.swing.JPanel implements ByteArrayEditor {
         _text = textTextArea.getText();
         return _text;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#isModified()
      */
     public boolean isModified() {
         return _editable && _modified;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#getBytes()
      */
     public byte[] getBytes() {
@@ -229,13 +250,16 @@ public class TextPanel extends javax.swing.JPanel implements ByteArrayEditor {
         }
         return _bytes;
     }
-    
+
     /**
      * Do find.
      * 
-     * @param pattern the pattern
-     * @param start the start
-     * @param caseSensitive the case sensitive
+     * @param pattern
+     *            the pattern
+     * @param start
+     *            the start
+     * @param caseSensitive
+     *            the case sensitive
      * 
      * @return the int
      */
@@ -259,11 +283,12 @@ public class TextPanel extends javax.swing.JPanel implements ByteArrayEditor {
             return -1;
         }
     }
-    
+
     /**
      * Inits the components.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed"
+    // desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -325,59 +350,70 @@ public class TextPanel extends javax.swing.JPanel implements ByteArrayEditor {
         add(findPanel, java.awt.BorderLayout.SOUTH);
 
     }
+
     // </editor-fold>//GEN-END:initComponents
-    
+
     /**
      * Find case check box action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void findCaseCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findCaseCheckBoxActionPerformed
+    private void findCaseCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_findCaseCheckBoxActionPerformed
         _caseSensitive = findCaseCheckBox.isSelected();
         _start = doFind(_find, 0, _caseSensitive) + 1;
-    }//GEN-LAST:event_findCaseCheckBoxActionPerformed
-    
+    }// GEN-LAST:event_findCaseCheckBoxActionPerformed
+
     /**
      * Find next button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void findNextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findNextButtonActionPerformed
+    private void findNextButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_findNextButtonActionPerformed
         _start = doFind(_find, _start, _caseSensitive) + 1;
-    }//GEN-LAST:event_findNextButtonActionPerformed
-    
-    
+    }// GEN-LAST:event_findNextButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The find case check box. */
     private javax.swing.JCheckBox findCaseCheckBox;
-    
+
     /** The find label. */
     private javax.swing.JLabel findLabel;
-    
+
     /** The find message label. */
     private javax.swing.JLabel findMessageLabel;
-    
+
     /** The find next button. */
     private javax.swing.JButton findNextButton;
-    
+
     /** The find panel. */
     private javax.swing.JPanel findPanel;
-    
+
     /** The find text field. */
     private javax.swing.JTextField findTextField;
-    
+
     /** The text scroll pane. */
     private javax.swing.JScrollPane textScrollPane;
-    
+
     /** The text text area. */
     private javax.swing.JTextArea textTextArea;
+
     // End of variables declaration//GEN-END:variables
-    
-    
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String[] args) {
         javax.swing.JFrame top = new javax.swing.JFrame("Text Editor");
@@ -386,62 +422,77 @@ public class TextPanel extends javax.swing.JPanel implements ByteArrayEditor {
                 System.exit(0);
             }
         });
-        
+
         TextPanel tp = new TextPanel();
         top.getContentPane().add(tp);
-        top.setBounds(100,100,600,400);
+        top.setBounds(100, 100, 600, 400);
         try {
             java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
             java.io.FileInputStream fis = new java.io.FileInputStream("/etc/passwd");
             byte[] buff = new byte[1024];
             int got;
-            while ((got = fis.read(buff))>-1) baos.write(buff, 0, got);
-            fis.close(); baos.close();
+            while ((got = fis.read(buff)) > -1)
+                baos.write(buff, 0, got);
+            fis.close();
+            baos.close();
             tp.setBytes("text", baos.toByteArray());
-//            tp.setBytes("text", "ABCDEFGHIJKLMNOP\nABCDEFGHIJKLMNOP".getBytes());
+            // tp.setBytes("text",
+            // "ABCDEFGHIJKLMNOP\nABCDEFGHIJKLMNOP".getBytes());
             tp.setEditable(true);
             top.setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
-     * The listener interface for receiving documentChange events.
-     * The class that is interested in processing a documentChange
-     * event implements this interface, and the object created
-     * with that class is registered with a component using the
-     * component's <code>addDocumentChangeListener<code> method. When
+     * The listener interface for receiving documentChange events. The class
+     * that is interested in processing a documentChange event implements this
+     * interface, and the object created with that class is registered with a
+     * component using the component's
+     * <code>addDocumentChangeListener<code> method. When
      * the documentChange event occurs, that object's appropriate
      * method is invoked.
      * 
      * @see DocumentChangeEvent
      */
     private class DocumentChangeListener implements DocumentListener {
-        
-        /* (non-Javadoc)
-         * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.event.DocumentListener#changedUpdate(javax.swing.event
+         * .DocumentEvent)
          */
         public void changedUpdate(DocumentEvent evt) {
             _modified = true;
             _text = null;
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.event.DocumentListener#removeUpdate(javax.swing.event
+         * .DocumentEvent)
          */
         public void removeUpdate(DocumentEvent evt) {
             _modified = true;
             _text = null;
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.event.DocumentListener#insertUpdate(javax.swing.event
+         * .DocumentEvent)
          */
         public void insertUpdate(DocumentEvent evt) {
             _modified = true;
             _text = null;
         }
     }
-    
+
 }

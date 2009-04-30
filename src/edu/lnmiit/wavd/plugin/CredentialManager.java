@@ -32,75 +32,93 @@ import edu.lnmiit.wavd.util.Encoding;
  * The Class CredentialManager.
  */
 public class CredentialManager implements Authenticator {
-    
+
     // contains Maps per host, indexed by Realm
     /** The _basic credentials. */
     private Map _basicCredentials = new TreeMap();
-    
+
     /** The _domain credentials. */
     private Map _domainCredentials = new TreeMap();
-    
+
     /** The _ui. */
     private CredentialManagerUI _ui = null;
-    
+
     /**
      * Instantiates a new credential manager.
      */
     public CredentialManager() {
     }
-    
+
     /**
      * Sets the uI.
      * 
-     * @param ui the new uI
+     * @param ui
+     *            the new uI
      */
     public void setUI(CredentialManagerUI ui) {
         _ui = ui;
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.httpclient.Authenticator#getCredentials(edu.lnmiit.wavd.model.HttpUrl, java.lang.String[])
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.httpclient.Authenticator#getCredentials(edu.lnmiit.wavd
+     * .model.HttpUrl, java.lang.String[])
      */
     public synchronized String getCredentials(HttpUrl url, String[] challenges) {
         String creds = getPreferredCredentials(url.getHost(), challenges);
-        if (creds != null) return creds;
-        boolean prompt = Boolean.valueOf(Preferences.getPreference("WebScarab.promptForCredentials", "false")).booleanValue();
+        if (creds != null)
+            return creds;
+        boolean prompt = Boolean.valueOf(Preferences.getPreference("WebScarab.promptForCredentials", "false"))
+                .booleanValue();
         if (prompt && _ui != null && challenges != null && challenges.length > 0) {
             boolean ask = false;
-            for (int i=0; i<challenges.length; i++)
-                if (challenges[i].startsWith("Basic") || challenges[i].startsWith("NTLM") || challenges[i].startsWith("Negotiate"))
+            for (int i = 0; i < challenges.length; i++)
+                if (challenges[i].startsWith("Basic") || challenges[i].startsWith("NTLM")
+                        || challenges[i].startsWith("Negotiate"))
                     ask = true;
             if (ask)
                 _ui.requestCredentials(url.getHost(), challenges);
         }
         return getPreferredCredentials(url.getHost(), challenges);
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.httpclient.Authenticator#getProxyCredentials(java.lang.String, java.lang.String[])
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.httpclient.Authenticator#getProxyCredentials(java.lang
+     * .String, java.lang.String[])
      */
     public synchronized String getProxyCredentials(String hostname, String[] challenges) {
         String creds = getPreferredCredentials(hostname, challenges);
-        if (creds != null) return creds;
-        boolean prompt = Boolean.valueOf(Preferences.getPreference("WebScarab.promptForCredentials", "false")).booleanValue();
+        if (creds != null)
+            return creds;
+        boolean prompt = Boolean.valueOf(Preferences.getPreference("WebScarab.promptForCredentials", "false"))
+                .booleanValue();
         if (prompt && _ui != null && challenges != null && challenges.length > 0) {
             boolean ask = false;
-            for (int i=0; i<challenges.length; i++)
-                if (challenges[i].startsWith("Basic") || challenges[i].startsWith("NTLM") || challenges[i].startsWith("Negotiate"))
+            for (int i = 0; i < challenges.length; i++)
+                if (challenges[i].startsWith("Basic") || challenges[i].startsWith("NTLM")
+                        || challenges[i].startsWith("Negotiate"))
                     ask = true;
             if (ask)
                 _ui.requestCredentials(hostname, challenges);
         }
         return getPreferredCredentials(hostname, challenges);
     }
-    
+
     /**
      * Adds the basic credentials.
      * 
-     * @param cred the cred
+     * @param cred
+     *            the cred
      */
     public void addBasicCredentials(BasicCredential cred) {
-        if ((cred.getUsername() == null || cred.getUsername().equals("")) && (cred.getPassword() == null || cred.getPassword().equals(""))) return;
+        if ((cred.getUsername() == null || cred.getUsername().equals(""))
+                && (cred.getPassword() == null || cred.getPassword().equals("")))
+            return;
         Map realms = (Map) _basicCredentials.get(cred.getHost());
         if (realms == null) {
             realms = new TreeMap();
@@ -108,17 +126,20 @@ public class CredentialManager implements Authenticator {
         }
         realms.put(cred.getRealm(), cred);
     }
-    
+
     /**
      * Adds the domain credentials.
      * 
-     * @param cred the cred
+     * @param cred
+     *            the cred
      */
     public void addDomainCredentials(DomainCredential cred) {
-        if ((cred.getUsername() == null || cred.getUsername().equals("")) && (cred.getPassword() == null || cred.getPassword().equals(""))) return;
+        if ((cred.getUsername() == null || cred.getUsername().equals(""))
+                && (cred.getPassword() == null || cred.getPassword().equals("")))
+            return;
         _domainCredentials.put(cred.getHost(), cred);
     }
-    
+
     /**
      * Gets the basic credential count.
      * 
@@ -127,22 +148,24 @@ public class CredentialManager implements Authenticator {
     public int getBasicCredentialCount() {
         return getAllBasicCredentials().length;
     }
-    
+
     /**
      * Gets the basic credential at.
      * 
-     * @param index the index
+     * @param index
+     *            the index
      * 
      * @return the basic credential at
      */
     public BasicCredential getBasicCredentialAt(int index) {
         return getAllBasicCredentials()[index];
     }
-    
+
     /**
      * Delete basic credential at.
      * 
-     * @param index the index
+     * @param index
+     *            the index
      */
     public void deleteBasicCredentialAt(int index) {
         int i = -1;
@@ -158,7 +181,7 @@ public class CredentialManager implements Authenticator {
             }
         }
     }
-    
+
     /**
      * Gets the domain credential count.
      * 
@@ -167,11 +190,12 @@ public class CredentialManager implements Authenticator {
     public int getDomainCredentialCount() {
         return _domainCredentials.entrySet().size();
     }
-    
+
     /**
      * Gets the domain credential at.
      * 
-     * @param index the index
+     * @param index
+     *            the index
      * 
      * @return the domain credential at
      */
@@ -182,11 +206,12 @@ public class CredentialManager implements Authenticator {
             all.add(_domainCredentials.get(hosts.next()));
         return (DomainCredential) all.toArray(new DomainCredential[0])[index];
     }
-    
+
     /**
      * Delete domain credential at.
      * 
-     * @param index the index
+     * @param index
+     *            the index
      */
     public void deleteDomainCredentialAt(int index) {
         int i = -1;
@@ -198,7 +223,7 @@ public class CredentialManager implements Authenticator {
                 _domainCredentials.remove(key);
         }
     }
-    
+
     /**
      * Gets the all basic credentials.
      * 
@@ -215,12 +240,14 @@ public class CredentialManager implements Authenticator {
         }
         return (BasicCredential[]) all.toArray(new BasicCredential[0]);
     }
-    
+
     /**
      * Gets the preferred credentials.
      * 
-     * @param host the host
-     * @param challenges the challenges
+     * @param host
+     *            the host
+     * @param challenges
+     *            the challenges
      * 
      * @return the preferred credentials
      */
@@ -228,57 +255,66 @@ public class CredentialManager implements Authenticator {
         // we don't do pre-emptive auth at all
         if (challenges == null || challenges.length == 0)
             return null;
-        for (int i=0; i<challenges.length; i++) {
+        for (int i = 0; i < challenges.length; i++) {
             if (challenges[i].startsWith("Basic")) {
                 String creds = getBasicCredentials(host, challenges[i]);
-                if (creds != null) return "Basic " + creds;
+                if (creds != null)
+                    return "Basic " + creds;
             }
         }
-        for (int i=0; i<challenges.length; i++) {
+        for (int i = 0; i < challenges.length; i++) {
             if (challenges[i].startsWith("NTLM")) {
                 String creds = getDomainCredentials(host);
-                if (creds != null) return "NTLM " + creds;
+                if (creds != null)
+                    return "NTLM " + creds;
             }
         }
-        for (int i=0; i<challenges.length; i++) {
+        for (int i = 0; i < challenges.length; i++) {
             if (challenges[i].startsWith("Negotiate")) {
                 String creds = getDomainCredentials(host);
-                if (creds != null) return "Negotiate " + creds;
+                if (creds != null)
+                    return "Negotiate " + creds;
             }
         }
         return null;
     }
-    
+
     /**
      * Gets the basic credentials.
      * 
-     * @param host the host
-     * @param challenge the challenge
+     * @param host
+     *            the host
+     * @param challenge
+     *            the challenge
      * 
      * @return the basic credentials
      */
     private String getBasicCredentials(String host, String challenge) {
-        String realm = challenge.substring("Basic Realm=\"".length(), challenge.length()-1);
+        String realm = challenge.substring("Basic Realm=\"".length(), challenge.length() - 1);
         Map realms = (Map) _basicCredentials.get(host);
-        if (realms == null) return null;
+        if (realms == null)
+            return null;
         BasicCredential cred = (BasicCredential) realms.get(realm);
-        if (cred == null) return null;
+        if (cred == null)
+            return null;
         String encoded = cred.getUsername() + ":" + cred.getPassword();
         return Encoding.base64encode(encoded.getBytes());
     }
-    
+
     /**
      * Gets the domain credentials.
      * 
-     * @param host the host
+     * @param host
+     *            the host
      * 
      * @return the domain credentials
      */
     private String getDomainCredentials(String host) {
         DomainCredential cred = (DomainCredential) _domainCredentials.get(host);
-        if (cred == null) return null;
+        if (cred == null)
+            return null;
         String encoded = cred.getDomain() + "\\" + cred.getUsername() + ":" + cred.getPassword();
         return Encoding.base64encode(encoded.getBytes());
     }
-    
+
 }

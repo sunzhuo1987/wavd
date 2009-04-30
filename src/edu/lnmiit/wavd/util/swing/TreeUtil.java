@@ -17,7 +17,6 @@
 package edu.lnmiit.wavd.util.swing;
 
 import javax.swing.JTree;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 // TODO: Auto-generated Javadoc
@@ -25,42 +24,47 @@ import javax.swing.tree.TreePath;
  * The Class TreeUtil.
  */
 public class TreeUtil {
-    
+
     /**
      * Instantiates a new tree util.
      */
     private TreeUtil() {
     }
-    
+
     /**
      * Expand all.
      * 
-     * @param tree the tree
-     * @param expand the expand
+     * @param tree
+     *            the tree
+     * @param expand
+     *            the expand
      */
     public static void expandAll(JTree tree, boolean expand) {
-        TreeModel model = tree.getModel();
-        
+        tree.getModel();
+
         // Traverse tree from root
         expandAll(tree, new TreePath(tree.getModel().getRoot()), expand);
     }
-    
+
     /**
      * Expand all.
      * 
-     * @param tree the tree
-     * @param path the path
-     * @param expand the expand
+     * @param tree
+     *            the tree
+     * @param path
+     *            the path
+     * @param expand
+     *            the expand
      */
     private static void expandAll(JTree tree, TreePath path, boolean expand) {
         Object parent = path.getLastPathComponent();
         int childCount = tree.getModel().getChildCount(parent);
-        for (int i=0; i<childCount; i++) {
+        for (int i = 0; i < childCount; i++) {
             Object child = tree.getModel().getChild(parent, i);
             TreePath childPath = path.pathByAddingChild(child);
             expandAll(tree, childPath, expand);
         }
-        
+
         // Expansion or collapse must be done bottom-up
         if (expand) {
             tree.expandPath(path);
@@ -68,5 +72,5 @@ public class TreeUtil {
             tree.collapsePath(path);
         }
     }
-    
+
 }

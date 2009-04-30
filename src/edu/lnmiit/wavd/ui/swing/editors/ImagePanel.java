@@ -23,26 +23,27 @@
 package edu.lnmiit.wavd.ui.swing.editors;
 
 import java.awt.Image;
-import javax.swing.ImageIcon;
-
-import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ImagePanel.
  */
 public class ImagePanel extends javax.swing.JPanel implements ByteArrayEditor {
-    
-    
-    /** The _editable. */
-    private boolean _editable = false;
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5283319836792407989L;
+
     /** The _data. */
     private byte[] _data = new byte[0];
-    
+
     /**
      * Instantiates a new image panel.
      */
@@ -50,7 +51,7 @@ public class ImagePanel extends javax.swing.JPanel implements ByteArrayEditor {
         initComponents();
         setName("Image");
     }
-    
+
     /**
      * Gets the content types.
      * 
@@ -59,23 +60,31 @@ public class ImagePanel extends javax.swing.JPanel implements ByteArrayEditor {
     public String[] getContentTypes() {
         return new String[] { "image/.*" };
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setEditable(boolean)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setEditable(boolean)
      */
     public void setEditable(boolean editable) {
-        _editable = editable;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#getBytes()
      */
     public byte[] getBytes() {
         return _data;
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setBytes(java.lang.String, byte[])
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setBytes(java.lang.String
+     * , byte[])
      */
     public void setBytes(String contentType, byte[] bytes) {
         imageLabel.setIcon(null);
@@ -92,18 +101,20 @@ public class ImagePanel extends javax.swing.JPanel implements ByteArrayEditor {
             }
         }
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#isModified()
      */
     public boolean isModified() {
         return false;
     }
-    
+
     /**
      * Inits the components.
      */
-    private void initComponents() {//GEN-BEGIN:initComponents
+    private void initComponents() {// GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
         imageScrollPane = new javax.swing.JScrollPane();
@@ -120,22 +131,22 @@ public class ImagePanel extends javax.swing.JPanel implements ByteArrayEditor {
         gridBagConstraints.weighty = 1.0;
         add(imageScrollPane, gridBagConstraints);
 
-    }//GEN-END:initComponents
-    
-    
+    }// GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The image label. */
     private javax.swing.JLabel imageLabel;
-    
+
     /** The image scroll pane. */
     private javax.swing.JScrollPane imageScrollPane;
+
     // End of variables declaration//GEN-END:variables
-    
-    
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String[] args) {
         byte[] content = new byte[0];
@@ -152,17 +163,17 @@ public class ImagePanel extends javax.swing.JPanel implements ByteArrayEditor {
             e.printStackTrace();
             System.exit(0);
         }
-        
+
         javax.swing.JFrame top = new javax.swing.JFrame("Image Panel");
         top.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 System.exit(0);
             }
         });
-        
+
         ImagePanel ip = new ImagePanel();
         top.getContentPane().add(ip);
-        top.setBounds(100,100,600,400);
+        top.setBounds(100, 100, 600, 400);
         try {
             ip.setBytes(null, content);
             ip.setEditable(false);
@@ -171,5 +182,5 @@ public class ImagePanel extends javax.swing.JPanel implements ByteArrayEditor {
             e.printStackTrace();
         }
     }
-    
+
 }

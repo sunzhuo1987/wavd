@@ -30,7 +30,6 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.table.AbstractTableModel;
 
-
 import edu.lnmiit.wavd.model.NamedValue;
 import edu.lnmiit.wavd.ui.swing.ColumnWidthTracker;
 import edu.lnmiit.wavd.util.Encoding;
@@ -40,37 +39,42 @@ import edu.lnmiit.wavd.util.Encoding;
  * The Class UrlEncodedPanel.
  */
 public class UrlEncodedPanel extends JPanel implements ByteArrayEditor {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5175424404792486432L;
+
     /** The Constant _cwt. */
     private final static ColumnWidthTracker _cwt = ColumnWidthTracker.getTracker("UrlEncoded");
-    
+
     /** The _editable. */
     private boolean _editable = false;
-    
+
     /** The _modified. */
     private boolean _modified = false;
-    
+
     /** The _table model. */
     private NamedValueTableModel _tableModel;
-    
+
     /** The _data. */
     private String _data = null;
-    
+
     /** The _values. */
     private List _values = new ArrayList();
-    
+
     /**
      * Instantiates a new url encoded panel.
      */
     public UrlEncodedPanel() {
         initComponents();
         setName("URLEncoded");
-        _tableModel  = new NamedValueTableModel();
+        _tableModel = new NamedValueTableModel();
         headerTable.setModel(_tableModel);
         setEditable(_editable);
         _cwt.addTable(headerTable);
     }
-    
+
     /**
      * Gets the content types.
      * 
@@ -79,9 +83,13 @@ public class UrlEncodedPanel extends JPanel implements ByteArrayEditor {
     public String[] getContentTypes() {
         return new String[] { "application/x-www-form-urlencoded" };
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setBytes(java.lang.String, byte[])
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setBytes(java.lang.String
+     * , byte[])
      */
     public void setBytes(String contentType, byte[] bytes) {
         _values.clear();
@@ -90,10 +98,11 @@ public class UrlEncodedPanel extends JPanel implements ByteArrayEditor {
         } else {
             try {
                 _data = new String(bytes, "UTF-8");
-            } catch (UnsupportedEncodingException e) {}
+            } catch (UnsupportedEncodingException e) {
+            }
             NamedValue[] values = NamedValue.splitNamedValues(_data, "&", "=");
             String name, value;
-            for (int i=0; i<values.length; i++) {
+            for (int i = 0; i < values.length; i++) {
                 name = Encoding.urlDecode(values[i].getName());
                 value = Encoding.urlDecode(values[i].getValue());
                 values[i] = new NamedValue(name, value);
@@ -103,17 +112,21 @@ public class UrlEncodedPanel extends JPanel implements ByteArrayEditor {
         _tableModel.fireTableDataChanged();
         _modified = false;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#getBytes()
      */
     public byte[] getBytes() {
         if (_editable && isModified()) {
             StringBuffer buff = new StringBuffer();
-            for (int i=0; i<_values.size(); i++) {
+            for (int i = 0; i < _values.size(); i++) {
                 NamedValue value = (NamedValue) _values.get(i);
-                if (value.getName() == null || value.getName().equals("")) continue;
-                if (i>0) buff.append("&");
+                if (value.getName() == null || value.getName().equals(""))
+                    continue;
+                if (i > 0)
+                    buff.append("&");
                 buff.append(Encoding.urlEncode(value.getName())).append("=");
                 if (value.getValue() != null)
                     buff.append(Encoding.urlEncode(value.getValue()));
@@ -130,9 +143,12 @@ public class UrlEncodedPanel extends JPanel implements ByteArrayEditor {
             }
         }
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setEditable(boolean)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setEditable(boolean)
      */
     public void setEditable(boolean editable) {
         _editable = editable;
@@ -145,8 +161,10 @@ public class UrlEncodedPanel extends JPanel implements ByteArrayEditor {
         }
         headerTable.setBackground(color);
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#isModified()
      */
     public boolean isModified() {
@@ -155,11 +173,12 @@ public class UrlEncodedPanel extends JPanel implements ByteArrayEditor {
         }
         return _editable && _modified;
     }
-    
+
     /**
      * Inits the components.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed"
+    // desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -221,120 +240,152 @@ public class UrlEncodedPanel extends JPanel implements ByteArrayEditor {
         add(buttonPanel, gridBagConstraints);
 
     }
+
     // </editor-fold>//GEN-END:initComponents
-    
+
     /**
      * Insert row.
      * 
-     * @param row the row
+     * @param row
+     *            the row
      */
     public void insertRow(int row) {
         _values.add(row, new NamedValue("Variable", "value"));
         _modified = true;
         _tableModel.fireTableRowsInserted(row, row);
     }
-    
+
     /**
      * Removes the row.
      * 
-     * @param row the row
+     * @param row
+     *            the row
      */
     public void removeRow(int row) {
         _values.remove(row);
         _modified = true;
         _tableModel.fireTableRowsDeleted(row, row);
     }
-    
+
     /**
      * Delete button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_deleteButtonActionPerformed
         int rowIndex = headerTable.getSelectedRow();
         if (rowIndex > -1) {
             removeRow(rowIndex);
         }
-    }//GEN-LAST:event_deleteButtonActionPerformed
-    
+    }// GEN-LAST:event_deleteButtonActionPerformed
+
     /**
      * Insert button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void insertButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertButtonActionPerformed
+    private void insertButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_insertButtonActionPerformed
         int rowIndex = headerTable.getSelectedRow();
         if (rowIndex > -1) {
             insertRow(rowIndex);
         } else {
             insertRow(_tableModel.getRowCount());
         }
-    }//GEN-LAST:event_insertButtonActionPerformed
-    
+    }// GEN-LAST:event_insertButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The button panel. */
     private javax.swing.JPanel buttonPanel;
-    
+
     /** The delete button. */
     private javax.swing.JButton deleteButton;
-    
+
     /** The header table. */
     private javax.swing.JTable headerTable;
-    
+
     /** The insert button. */
     private javax.swing.JButton insertButton;
-    
+
     /** The j scroll pane1. */
     private javax.swing.JScrollPane jScrollPane1;
+
     // End of variables declaration//GEN-END:variables
-    
+
     /**
      * The Class NamedValueTableModel.
      */
     private class NamedValueTableModel extends AbstractTableModel {
-        
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = -3821657345074234841L;
         /** The _names. */
-        private String[] _names = new String[] { "Variable", "Value"};
-        
-        /* (non-Javadoc)
+        private String[] _names = new String[] { "Variable", "Value" };
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.AbstractTableModel#getColumnName(int)
          */
         public String getColumnName(int column) {
             return _names[column];
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getColumnCount()
          */
         public int getColumnCount() {
             return 2;
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getRowCount()
          */
         public int getRowCount() {
             return _values.size();
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getValueAt(int, int)
          */
         public Object getValueAt(int row, int column) {
-            if (row > _values.size()-1) return "ERROR";
+            if (row > _values.size() - 1)
+                return "ERROR";
             NamedValue nv = (NamedValue) _values.get(row);
-            if (column == 0) return nv.getName();
+            if (column == 0)
+                return nv.getName();
             return nv.getValue();
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.table.AbstractTableModel#setValueAt(java.lang.Object, int, int)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.table.AbstractTableModel#setValueAt(java.lang.Object,
+         * int, int)
          */
         public void setValueAt(Object aValue, int row, int col) {
             if (_editable && aValue instanceof String) {
                 NamedValue nv = (NamedValue) _values.get(row);
                 if (col == 0) {
-                    _values.set(row, new NamedValue((String)aValue, nv.getValue()));
+                    _values.set(row, new NamedValue((String) aValue, nv.getValue()));
                 } else {
                     _values.set(row, new NamedValue(nv.getName(), (String) aValue));
                 }
@@ -342,14 +393,16 @@ public class UrlEncodedPanel extends JPanel implements ByteArrayEditor {
                 fireTableCellUpdated(row, col);
             }
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
          */
         public boolean isCellEditable(int row, int column) {
             return _editable;
         }
-        
+
     }
-    
+
 }

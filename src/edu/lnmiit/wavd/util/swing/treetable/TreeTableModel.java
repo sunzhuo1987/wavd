@@ -22,9 +22,8 @@ import javax.swing.tree.TreeModel;
 /**
  * The Interface TreeTableModel.
  */
-public interface TreeTableModel extends TreeModel
-{
-    
+public interface TreeTableModel extends TreeModel {
+
     /**
      * Gets the column count.
      * 
@@ -35,7 +34,8 @@ public interface TreeTableModel extends TreeModel
     /**
      * Gets the column name.
      * 
-     * @param column the column
+     * @param column
+     *            the column
      * 
      * @return the column name
      */
@@ -44,7 +44,8 @@ public interface TreeTableModel extends TreeModel
     /**
      * Gets the column class.
      * 
-     * @param column the column
+     * @param column
+     *            the column
      * 
      * @return the column class
      */
@@ -53,8 +54,10 @@ public interface TreeTableModel extends TreeModel
     /**
      * Gets the value at.
      * 
-     * @param node the node
-     * @param column the column
+     * @param node
+     *            the node
+     * @param column
+     *            the column
      * 
      * @return the value at
      */
@@ -63,8 +66,10 @@ public interface TreeTableModel extends TreeModel
     /**
      * Checks if is cell editable.
      * 
-     * @param node the node
-     * @param column the column
+     * @param node
+     *            the node
+     * @param column
+     *            the column
      * 
      * @return true, if is cell editable
      */
@@ -73,10 +78,12 @@ public interface TreeTableModel extends TreeModel
     /**
      * Sets the value at.
      * 
-     * @param aValue the a value
-     * @param node the node
-     * @param column the column
+     * @param aValue
+     *            the a value
+     * @param node
+     *            the node
+     * @param column
+     *            the column
      */
     void setValueAt(Object aValue, Object node, int column);
 }
-

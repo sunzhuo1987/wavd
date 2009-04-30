@@ -34,40 +34,42 @@ public class LogStream extends PrintStream {
     /**
      * Instantiates a new log stream.
      * 
-     * @param stream the stream
+     * @param stream
+     *            the stream
      */
-    public LogStream( PrintStream stream ) {
-        super( stream );
+    public LogStream(PrintStream stream) {
+        super(stream);
     }
 
     /**
      * Sets the level.
      * 
-     * @param level the new level
+     * @param level
+     *            the new level
      */
-    public static void setLevel( int level ) {
+    public static void setLevel(int level) {
         LogStream.level = level;
     }
-    
+
     /**
      * Sets the instance.
      * 
-     * @param stream the new instance
+     * @param stream
+     *            the new instance
      */
-    public static void setInstance( PrintStream stream ) {
-        inst = new LogStream( stream );
+    public static void setInstance(PrintStream stream) {
+        inst = new LogStream(stream);
     }
-    
+
     /**
      * Gets the single instance of LogStream.
      * 
      * @return single instance of LogStream
      */
     public static LogStream getInstance() {
-        if( inst == null ) {
-            setInstance( System.err );
+        if (inst == null) {
+            setInstance(System.err);
         }
         return inst;
     }
 }
-

@@ -22,28 +22,30 @@
 
 package edu.lnmiit.wavd.httpclient;
 
-import java.io.OutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ChunkedOutputStream.
  */
 public class ChunkedOutputStream extends FilterOutputStream {
-    
+
     /** The _trailer. */
     String[][] _trailer = null;
-    
+
     /** The _write trailer. */
     boolean _writeTrailer = true;
-    
+
     /**
      * Instantiates a new chunked output stream.
      * 
-     * @param out the out
+     * @param out
+     *            the out
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public ChunkedOutputStream(OutputStream out) throws IOException {
         super(out);
@@ -52,22 +54,25 @@ public class ChunkedOutputStream extends FilterOutputStream {
     /**
      * Sets the trailer.
      * 
-     * @param trailer the new trailer
+     * @param trailer
+     *            the new trailer
      */
     public void setTrailer(String[][] trailer) {
         _trailer = trailer;
     }
-    
+
     /**
      * Write trailer.
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public void writeTrailer() throws IOException {
-        if (!_writeTrailer) return; // we've already written it
+        if (!_writeTrailer)
+            return; // we've already written it
         out.write("0\r\n".getBytes());
         if (_trailer != null) {
-            for (int i=0; i<_trailer.length; i++) {
+            for (int i = 0; i < _trailer.length; i++) {
                 if (_trailer[i].length == 2) {
                     out.write((_trailer[i][0] + ": " + _trailer[i][1] + "\r\n").getBytes());
                 }
@@ -76,8 +81,10 @@ public class ChunkedOutputStream extends FilterOutputStream {
         out.write("\r\n".getBytes());
         _writeTrailer = false;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterOutputStream#write(int)
      */
     public void write(int b) throws IOException {
@@ -85,15 +92,19 @@ public class ChunkedOutputStream extends FilterOutputStream {
         out.write(b);
         out.write("\r\n".getBytes());
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterOutputStream#write(byte[])
      */
     public void write(byte[] b) throws IOException {
         write(b, 0, b.length);
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.FilterOutputStream#write(byte[], int, int)
      */
     public void write(byte[] b, int off, int len) throws IOException {
@@ -101,5 +112,5 @@ public class ChunkedOutputStream extends FilterOutputStream {
         out.write(b, off, len);
         out.write("\r\n".getBytes());
     }
-    
+
 }

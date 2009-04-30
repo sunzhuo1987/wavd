@@ -32,94 +32,105 @@ import edu.lnmiit.wavd.model.StoreException;
  * The Interface Plugin.
  */
 public interface Plugin extends Runnable {
-    
+
     /**
      * Gets the plugin name.
      * 
      * @return the plugin name
-     */    
+     */
     String getPluginName();
-    
+
     /**
      * Sets the session.
      * 
-     * @param type the type
-     * @param store the store
-     * @param session the session
+     * @param type
+     *            the type
+     * @param store
+     *            the store
+     * @param session
+     *            the session
      * 
-     * @throws StoreException the store exception
-     */    
+     * @throws StoreException
+     *             the store exception
+     */
     void setSession(String type, Object store, String session) throws StoreException;
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Runnable#run()
      */
     void run();
-    
+
     /**
      * Checks if is running.
      * 
      * @return true, if is running
      */
     boolean isRunning();
-    
+
     /**
      * Checks if is busy.
      * 
      * @return true, if is busy
      */
     boolean isBusy();
-    
+
     /**
      * Gets the status.
      * 
      * @return the status
      */
     String getStatus();
-    
+
     /**
      * Stop.
      * 
      * @return true, if successful
      */
     boolean stop();
-    
+
     /**
      * Checks if is modified.
      * 
      * @return true, if is modified
      */
     boolean isModified();
-    
+
     /**
      * Flush.
      * 
-     * @throws StoreException the store exception
-     */    
+     * @throws StoreException
+     *             the store exception
+     */
     void flush() throws StoreException;
-    
+
     /**
      * Analyse.
      * 
-     * @param id the id
-     * @param request the request
-     * @param response the response
-     * @param origin the origin
+     * @param id
+     *            the id
+     * @param request
+     *            the request
+     * @param response
+     *            the response
+     * @param origin
+     *            the origin
      */
     void analyse(ConversationID id, Request request, Response response, String origin);
-    
+
     /**
      * Gets the scripting hooks.
      * 
      * @return the scripting hooks
      */
     Hook[] getScriptingHooks();
-    
+
     /**
      * Gets the scriptable object.
      * 
      * @return the scriptable object
      */
     Object getScriptableObject();
-    
+
 }

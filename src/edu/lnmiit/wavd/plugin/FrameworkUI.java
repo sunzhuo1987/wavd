@@ -26,6 +26,5 @@ package edu.lnmiit.wavd.plugin;
  * The Interface FrameworkUI.
  */
 public interface FrameworkUI {
-    
-    
+
 }

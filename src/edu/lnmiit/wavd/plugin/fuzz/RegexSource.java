@@ -25,66 +25,80 @@ import edu.lnmiit.wavd.util.RegexExpansion;
  * The Class RegexSource.
  */
 public class RegexSource extends RegexExpansion implements FuzzSource {
-    
+
     /** The description. */
     private String description;
-    
+
     /**
      * Instantiates a new regex source.
      * 
-     * @param description the description
-     * @param regex the regex
+     * @param description
+     *            the description
+     * @param regex
+     *            the regex
      * 
-     * @throws PatternSyntaxException the pattern syntax exception
+     * @throws PatternSyntaxException
+     *             the pattern syntax exception
      */
     public RegexSource(String description, String regex) throws PatternSyntaxException {
         super(regex);
         this.description = description;
     }
-    
+
     /**
      * Instantiates a new regex source.
      * 
-     * @param rs the rs
+     * @param rs
+     *            the rs
      */
     protected RegexSource(RegexSource rs) {
         super(rs);
         this.description = rs.description;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#current()
      */
     public Object current() {
         return super.get(super.getIndex());
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#getDescription()
      */
     public String getDescription() {
         return this.description;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#increment()
      */
     public void increment() {
         super.next();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#newInstance()
      */
     public FuzzSource newInstance() {
         return new RegexSource(this);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.plugin.fuzz.FuzzSource#reset()
      */
     public void reset() {
         super.setIndex(0);
     }
-    
+
 }

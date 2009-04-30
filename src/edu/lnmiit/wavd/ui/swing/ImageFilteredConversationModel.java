@@ -32,18 +32,20 @@ public class ImageFilteredConversationModel extends FilteredConversationModel {
 
     /** The _model. */
     private ConversationModel _model;
-    
+
     /** The pattern. */
     private Pattern pattern = Pattern.compile("^.*\\.(gif|jpg|png|axd\\?.*|style)$");
-    
+
     /** The filter images. */
     private boolean filterImages = true;
 
     /**
      * Instantiates a new image filtered conversation model.
      * 
-     * @param model the model
-     * @param cmodel the cmodel
+     * @param model
+     *            the model
+     * @param cmodel
+     *            the cmodel
      */
     public ImageFilteredConversationModel(FrameworkModel model, ConversationModel cmodel) {
         super(model, cmodel);
@@ -53,10 +55,11 @@ public class ImageFilteredConversationModel extends FilteredConversationModel {
     /**
      * Sets the filter images.
      * 
-     * @param filter the new filter images
+     * @param filter
+     *            the new filter images
      */
     public void setFilterImages(boolean filter) {
-        if ( filter != filterImages) {
+        if (filter != filterImages) {
             filterImages = filter;
             updateConversations();
         }
@@ -71,11 +74,15 @@ public class ImageFilteredConversationModel extends FilteredConversationModel {
         return filterImages;
     }
 
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.model.FilteredConversationModel#shouldFilter(edu.lnmiit.wavd.model.ConversationID)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.model.FilteredConversationModel#shouldFilter(edu.lnmiit
+     * .wavd.model.ConversationID)
      */
     public boolean shouldFilter(ConversationID id) {
-        if (! filterImages) {
+        if (!filterImages) {
             return false;
         } else {
             HttpUrl url = _model.getRequestUrl(id);

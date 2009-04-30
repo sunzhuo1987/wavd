@@ -18,6 +18,7 @@ package edu.lnmiit.wavd.ui.swing;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+
 import javax.swing.table.AbstractTableModel;
 
 import edu.lnmiit.wavd.model.Preferences;
@@ -30,24 +31,31 @@ import edu.lnmiit.wavd.plugin.DomainCredential;
  * The Class CredentialManagerFrame.
  */
 public class CredentialManagerFrame extends javax.swing.JFrame {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4145587250305006300L;
+
     /** The _manager. */
     private CredentialManager _manager;
-    
+
     /** The _btm. */
     private BasicTableModel _btm;
-    
+
     /** The _dtm. */
     private DomainTableModel _dtm;
-    
+
     /**
      * Instantiates a new credential manager frame.
      * 
-     * @param manager the manager
+     * @param manager
+     *            the manager
      */
     public CredentialManagerFrame(CredentialManager manager) {
         initComponents();
-        boolean prompt = Boolean.valueOf(Preferences.getPreference("WebScarab.promptForCredentials", "false")).booleanValue();
+        boolean prompt = Boolean.valueOf(Preferences.getPreference("WebScarab.promptForCredentials", "false"))
+                .booleanValue();
         promptCheckBox.setSelected(prompt);
         addComponentListener(new Updater());
         _manager = manager;
@@ -56,7 +64,7 @@ public class CredentialManagerFrame extends javax.swing.JFrame {
         basicTable.setModel(_btm);
         domainTable.setModel(_dtm);
     }
-    
+
     /**
      * Update credentials.
      */
@@ -64,11 +72,12 @@ public class CredentialManagerFrame extends javax.swing.JFrame {
         _btm.fireTableDataChanged();
         _dtm.fireTableDataChanged();
     }
-    
+
     /**
      * Inits the components.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed"
+    // desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -95,17 +104,9 @@ public class CredentialManagerFrame extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(jLabel1, gridBagConstraints);
 
-        basicTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+        basicTable.setModel(new javax.swing.table.DefaultTableModel(new Object[][] { { null, null, null, null },
+                { null, null, null, null }, { null, null, null, null }, { null, null, null, null } }, new String[] {
+                "Title 1", "Title 2", "Title 3", "Title 4" }));
         jScrollPane1.setViewportView(basicTable);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -123,17 +124,9 @@ public class CredentialManagerFrame extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(jLabel2, gridBagConstraints);
 
-        domainTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+        domainTable.setModel(new javax.swing.table.DefaultTableModel(new Object[][] { { null, null, null, null },
+                { null, null, null, null }, { null, null, null, null }, { null, null, null, null } }, new String[] {
+                "Title 1", "Title 2", "Title 3", "Title 4" }));
         jScrollPane2.setViewportView(domainTable);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -202,206 +195,264 @@ public class CredentialManagerFrame extends javax.swing.JFrame {
         getContentPane().add(promptCheckBox, gridBagConstraints);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-400)/2, (screenSize.height-300)/2, 400, 300);
+        setBounds((screenSize.width - 400) / 2, (screenSize.height - 300) / 2, 400, 300);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
      * Prompt check box action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void promptCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_promptCheckBoxActionPerformed
+    private void promptCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_promptCheckBoxActionPerformed
         Preferences.setPreference("WebScarab.promptForCredentials", Boolean.toString(promptCheckBox.isSelected()));
-    }//GEN-LAST:event_promptCheckBoxActionPerformed
+    }// GEN-LAST:event_promptCheckBoxActionPerformed
 
     /**
      * Clear button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
-        for (int i=_manager.getBasicCredentialCount()-1; i>=0; i--) {
+    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_clearButtonActionPerformed
+        for (int i = _manager.getBasicCredentialCount() - 1; i >= 0; i--) {
             _manager.deleteBasicCredentialAt(i);
         }
-        for (int i=_manager.getDomainCredentialCount()-1; i>=0; i--) {
+        for (int i = _manager.getDomainCredentialCount() - 1; i >= 0; i--) {
             _manager.deleteDomainCredentialAt(i);
         }
         updateCredentials();
-    }//GEN-LAST:event_clearButtonActionPerformed
+    }// GEN-LAST:event_clearButtonActionPerformed
 
     /**
      * Close button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_closeButtonActionPerformed
         setVisible(false);
-    }//GEN-LAST:event_closeButtonActionPerformed
+    }// GEN-LAST:event_closeButtonActionPerformed
 
     /**
      * Delete button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_deleteButtonActionPerformed
         int basicSelection = basicTable.getSelectedRow();
         int domainSelection = domainTable.getSelectedRow();
         if (basicSelection > -1 && domainSelection > -1)
             return;
         if (basicSelection > -1)
             _manager.deleteBasicCredentialAt(basicSelection);
-        if (domainSelection> -1)
+        if (domainSelection > -1)
             _manager.deleteDomainCredentialAt(domainSelection);
         updateCredentials();
-    }//GEN-LAST:event_deleteButtonActionPerformed
+    }// GEN-LAST:event_deleteButtonActionPerformed
 
     /**
      * Adds the button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
+        // FIRST
+        // :
+        // event_addButtonActionPerformed
         new CredentialRequestDialog(this, true, _manager).requestCredentials(null, null);
         updateCredentials();
-    }//GEN-LAST:event_addButtonActionPerformed
-    
+    }// GEN-LAST:event_addButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The add button. */
     private javax.swing.JButton addButton;
-    
+
     /** The basic table. */
     private javax.swing.JTable basicTable;
-    
+
     /** The clear button. */
     private javax.swing.JButton clearButton;
-    
+
     /** The close button. */
     private javax.swing.JButton closeButton;
-    
+
     /** The delete button. */
     private javax.swing.JButton deleteButton;
-    
+
     /** The domain table. */
     private javax.swing.JTable domainTable;
-    
+
     /** The j label1. */
     private javax.swing.JLabel jLabel1;
-    
+
     /** The j label2. */
     private javax.swing.JLabel jLabel2;
-    
+
     /** The j panel1. */
     private javax.swing.JPanel jPanel1;
-    
+
     /** The j scroll pane1. */
     private javax.swing.JScrollPane jScrollPane1;
-    
+
     /** The j scroll pane2. */
     private javax.swing.JScrollPane jScrollPane2;
-    
+
     /** The prompt check box. */
     private javax.swing.JCheckBox promptCheckBox;
+
     // End of variables declaration//GEN-END:variables
-    
+
     /**
      * The Class BasicTableModel.
      */
     private class BasicTableModel extends AbstractTableModel {
-        
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = -1371252550390862859L;
         /** The _column names. */
-        private String[] _columnNames = { "Host", "Realm", "Username"};
-        
-        /* (non-Javadoc)
+        private String[] _columnNames = { "Host", "Realm", "Username" };
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.AbstractTableModel#getColumnName(int)
          */
         public String getColumnName(int column) {
             return _columnNames[column];
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getColumnCount()
          */
         public int getColumnCount() {
             return 3;
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getRowCount()
          */
         public int getRowCount() {
             return _manager.getBasicCredentialCount();
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getValueAt(int, int)
          */
         public Object getValueAt(int row, int column) {
             BasicCredential bc = _manager.getBasicCredentialAt(row);
             switch (column) {
-                case 0: return bc.getHost();
-                case 1: return bc.getRealm();
-                case 2: return bc.getUsername();
+            case 0:
+                return bc.getHost();
+            case 1:
+                return bc.getRealm();
+            case 2:
+                return bc.getUsername();
             }
             return null;
         }
-        
+
     }
-    
+
     /**
      * The Class DomainTableModel.
      */
     private class DomainTableModel extends AbstractTableModel {
-        
+
+        /**
+	 * 
+	 */
+        private static final long serialVersionUID = 2566332489156466203L;
         /** The _column names. */
-        private String[] _columnNames = { "Host", "Domain", "Username"};
-        
-        /* (non-Javadoc)
+        private String[] _columnNames = { "Host", "Domain", "Username" };
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.AbstractTableModel#getColumnName(int)
          */
         public String getColumnName(int column) {
             return _columnNames[column];
         }
-        
-        /* (non-Javadoc)
+
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getColumnCount()
          */
         public int getColumnCount() {
             return 3;
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getRowCount()
          */
         public int getRowCount() {
             return _manager.getDomainCredentialCount();
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see javax.swing.table.TableModel#getValueAt(int, int)
          */
         public Object getValueAt(int row, int column) {
             DomainCredential dc = _manager.getDomainCredentialAt(row);
             switch (column) {
-                case 0: return dc.getHost();
-                case 1: return dc.getDomain();
-                case 2: return dc.getUsername();
+            case 0:
+                return dc.getHost();
+            case 1:
+                return dc.getDomain();
+            case 2:
+                return dc.getUsername();
             }
             return null;
         }
-        
+
     }
-    
+
     /**
      * The Class Updater.
      */
     private class Updater extends ComponentAdapter {
-        
-        /* (non-Javadoc)
-         * @see java.awt.event.ComponentAdapter#componentShown(java.awt.event.ComponentEvent)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @seejava.awt.event.ComponentAdapter#componentShown(java.awt.event.
+         * ComponentEvent)
          */
         public void componentShown(ComponentEvent e) {
             updateCredentials();
         }
     }
-    
+
 }

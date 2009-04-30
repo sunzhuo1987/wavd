@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package javax.xml.namespace;
 
 import java.io.Serializable;
@@ -26,41 +25,46 @@ import javax.xml.XMLConstants;
  * The Class QName.
  */
 public class QName implements Serializable {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 4418622981026545151L;
-    
+
     /** The namespace uri. */
     private final String namespaceURI;
-    
+
     /** The local part. */
     private final String localPart;
-    
+
     /** The prefix. */
     private final String prefix;
-    
+
     /** The q name. */
     private transient String qName;
-    
+
     /** The hash code. */
     transient int hashCode = -1;
-    
+
     /**
      * Instantiates a new q name.
      * 
-     * @param namespaceURI the namespace uri
-     * @param localPart the local part
+     * @param namespaceURI
+     *            the namespace uri
+     * @param localPart
+     *            the local part
      */
     public QName(String namespaceURI, String localPart) {
         this(namespaceURI, localPart, null);
     }
-    
+
     /**
      * Instantiates a new q name.
      * 
-     * @param namespaceURI the namespace uri
-     * @param localPart the local part
-     * @param prefix the prefix
+     * @param namespaceURI
+     *            the namespace uri
+     * @param localPart
+     *            the local part
+     * @param prefix
+     *            the prefix
      */
     public QName(String namespaceURI, String localPart, String prefix) {
         if (namespaceURI == null)
@@ -79,16 +83,17 @@ public class QName implements Serializable {
         this.localPart = localPart;
         this.prefix = prefix;
     }
-    
+
     /**
      * Instantiates a new q name.
      * 
-     * @param localPart the local part
+     * @param localPart
+     *            the local part
      */
     public QName(String localPart) {
         this(null, localPart, null);
     }
-    
+
     /**
      * Gets the namespace uri.
      * 
@@ -97,7 +102,7 @@ public class QName implements Serializable {
     public String getNamespaceURI() {
         return namespaceURI;
     }
-    
+
     /**
      * Gets the local part.
      * 
@@ -106,7 +111,7 @@ public class QName implements Serializable {
     public String getLocalPart() {
         return localPart;
     }
-    
+
     /**
      * Gets the prefix.
      * 
@@ -115,20 +120,23 @@ public class QName implements Serializable {
     public String getPrefix() {
         return prefix;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public final boolean equals(Object obj) {
         if (obj instanceof QName) {
             QName qname = (QName) obj;
-            return qname.getLocalPart().equals(localPart) &&
-                    qname.getNamespaceURI().equals(namespaceURI);
+            return qname.getLocalPart().equals(localPart) && qname.getNamespaceURI().equals(namespaceURI);
         }
         return false;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     public final int hashCode() {
@@ -136,8 +144,10 @@ public class QName implements Serializable {
             hashCode = localPart.hashCode() ^ namespaceURI.hashCode();
         return hashCode;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     public synchronized String toString() {
@@ -157,11 +167,12 @@ public class QName implements Serializable {
         }
         return qName;
     }
-    
+
     /**
      * Value of.
      * 
-     * @param qNameAsString the q name as string
+     * @param qNameAsString
+     *            the q name as string
      * 
      * @return the q name
      */
@@ -182,5 +193,5 @@ public class QName implements Serializable {
         }
         return new QName(namespaceUri, qNameAsString, prefix);
     }
-    
+
 }

@@ -24,33 +24,30 @@ package edu.lnmiit.wavd.ui.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Rectangle;
-
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JFrame;
-import javax.swing.JButton;
+import javax.help.CSH;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
+import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import javax.swing.AbstractAction;
-import java.awt.event.ActionEvent;
-
 import javax.swing.plaf.TextUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.Position.Bias;
-
 
 import edu.lnmiit.wavd.model.FileSystemStore;
 import edu.lnmiit.wavd.model.FrameworkModel;
@@ -65,131 +62,136 @@ import edu.lnmiit.wavd.util.swing.DocumentHandler;
 import edu.lnmiit.wavd.util.swing.HeapMonitor;
 import edu.lnmiit.wavd.util.swing.SwingWorker;
 
-import javax.help.HelpSet;
-import javax.help.HelpBroker;
-import javax.help.CSH;
-import java.net.URL;
-import java.net.MalformedURLException;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class UIFramework.
  */
 public class UIFramework extends JFrame implements FrameworkUI {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3084886260899158562L;
+
     /** The _framework. */
     private Framework _framework;
-    
+
     /** The _model. */
     private FrameworkModel _model;
-    
-    /** The _plugins. */
-    private ArrayList _plugins;
-    
+
     /** The _cookie jar viewer. */
     private CookieJarViewer _cookieJarViewer;
-    
+
     /** The _certificate manager. */
     private CertificateManager _certificateManager;
-    
+
     /** The _summary panel. */
     private SummaryPanel _summaryPanel;
-    
+
     /** The _transcoder. */
     private TranscoderFrame _transcoder = null;
-    
+
     /** The _script manager frame. */
     private ScriptManagerFrame _scriptManagerFrame = null;
-    
+
     /** The _credential manager frame. */
     private CredentialManagerFrame _credentialManagerFrame = null;
-    
+
     /** The _credential request dialog. */
     private CredentialRequestDialog _credentialRequestDialog = null;
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger("org.owasp.webscarab");
-    
+
     /** The _dh. */
     private DocumentHandler _dh;
-    
+
     // we use this to wait on the exit of the UI
     /** The _exit. */
     private Object _exit = new Object();
-    
+
     /** The _temp dir. */
     private File _tempDir = null;
-    
+
     /**
      * Instantiates a new uI framework.
      * 
-     * @param framework the framework
+     * @param framework
+     *            the framework
      */
     public UIFramework(Framework framework) {
         _framework = framework;
         _model = framework.getModel();
-        
+
         initComponents();
         getContentPane().add(new HeapMonitor(), BorderLayout.SOUTH);
         setPreferredSize();
-        
+
         framework.setUI(this);
-        
+
         _summaryPanel = new SummaryPanel(_model);
         tabbedPane.addTab("Summary", _summaryPanel);
         tabbedPane.addTab("Messages", new JScrollPane(logTextArea));
-        
+
         _cookieJarViewer = new CookieJarViewer(_model);
         _certificateManager = new CertificateManager();
-        
+
         CredentialManager cm = _framework.getCredentialManager();
         _credentialManagerFrame = new CredentialManagerFrame(cm);
         _credentialRequestDialog = new CredentialRequestDialog(this, true, cm);
         cm.setUI(_credentialRequestDialog);
-        
+
         initLogging();
         initEditorViews();
         initHelp();
-        
+
     }
-    
+
     /**
      * Inits the help.
      */
     private void initHelp() {
         try {
             URL url = getClass().getResource("/help/jhelpset.hs");
-            if (url == null) throw new NullPointerException("The help set could not be found");
+            if (url == null)
+                throw new NullPointerException("The help set could not be found");
             HelpSet helpSet = new HelpSet(null, url);
             HelpBroker helpBroker = helpSet.createHelpBroker();
             contentsMenuItem.addActionListener(new CSH.DisplayHelpFromSource(helpBroker));
-            helpBroker.enableHelpKey(getRootPane(), "about", helpSet);        // for F1
+            helpBroker.enableHelpKey(getRootPane(), "about", helpSet); // for F1
         } catch (Throwable e) {
             final String[] message;
             if (e instanceof NullPointerException) {
                 message = new String[] { "Help set not found" };
             } else if (e instanceof NoClassDefFoundError) {
-                message = new String[] {"The JavaHelp libraries could not be found", "Please add jhall.jar to the extension directory of your Java Runtime environment"};
+                message = new String[] { "The JavaHelp libraries could not be found",
+                        "Please add jhall.jar to the extension directory of your Java Runtime environment" };
             } else {
-                message = new String[] { "Unknown error: ",e.getClass().getName(), e.getMessage()};
+                message = new String[] { "Unknown error: ", e.getClass().getName(), e.getMessage() };
             }
-            for (int i=0; i<message.length; i++) {
+            for (int i = 0; i < message.length; i++) {
                 System.err.println(message[i]);
             }
             contentsMenuItem.addActionListener(new AbstractAction() {
+                /**
+		 * 
+		 */
+                private static final long serialVersionUID = 3025373662348270005L;
+
                 public void actionPerformed(ActionEvent evt) {
-                    JOptionPane.showMessageDialog(UIFramework.this, message, "Help is not available", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(UIFramework.this, message, "Help is not available",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             });
         }
     }
-    
+
     /**
      * Run.
      */
     public void run() {
         createTemporarySession();
-        synchronized(_exit) {
+        synchronized (_exit) {
             try {
                 _exit.wait();
             } catch (InterruptedException ie) {
@@ -197,25 +199,24 @@ public class UIFramework extends JFrame implements FrameworkUI {
             }
         }
     }
-    
+
     /**
      * Delete tempdir.
      */
-    private void deleteTempdir() {
-        if (_tempDir != null) {
-            TempDir.recursiveDelete(_tempDir);
-            _tempDir = null;
-        }
-    }
-    
+    /*
+     * private void deleteTempdir() { if (_tempDir != null) {
+     * TempDir.recursiveDelete(_tempDir); _tempDir = null; } }
+     */
+
     /**
      * Inits the editor views.
      */
     public void initEditorViews() {
         String wrap = Preferences.getPreference("TextPanel.wrap", "false");
-        if (wrap != null && wrap.equals("true")) wrapTextCheckBoxMenuItem.setSelected(true);
+        if (wrap != null && wrap.equals("true"))
+            wrapTextCheckBoxMenuItem.setSelected(true);
     }
-    
+
     /**
      * Inits the logging.
      */
@@ -223,12 +224,12 @@ public class UIFramework extends JFrame implements FrameworkUI {
         _dh = new DocumentHandler(20480); // limit it to 20kB
         _dh.setFormatter(new TextFormatter());
         _logger.addHandler(_dh);
-        
+
         final Document doc = _dh.getDocument();
         logTextArea.setDocument(doc);
         doc.addDocumentListener(new TextScroller(logTextArea));
-        
-        String level = Preferences.getPreference("UI.logLevel","INFO");
+
+        String level = Preferences.getPreference("UI.logLevel", "INFO");
         if (level.equals("SEVERE")) {
             severeLogRadioButtonMenuItem.setSelected(true);
         } else if (level.equals("INFO")) {
@@ -241,7 +242,7 @@ public class UIFramework extends JFrame implements FrameworkUI {
             finestLogRadioButtonMenuItem.setSelected(true);
         }
     }
-    
+
     /**
      * Sets the preferred size.
      */
@@ -251,20 +252,21 @@ public class UIFramework extends JFrame implements FrameworkUI {
             int ypos = Integer.parseInt(Preferences.getPreference("WebScarab.position.y").trim());
             int width = Integer.parseInt(Preferences.getPreference("WebScarab.size.x").trim());
             int height = Integer.parseInt(Preferences.getPreference("WebScarab.size.y").trim());
-            setBounds(xpos,ypos,width,height);
+            setBounds(xpos, ypos, width, height);
         } catch (NumberFormatException nfe) {
-            setSize(800,600);
+            setSize(800, 600);
             setExtendedState(MAXIMIZED_BOTH);
         } catch (NullPointerException npe) {
-            setSize(800,600);
+            setSize(800, 600);
             setExtendedState(MAXIMIZED_BOTH);
         }
     }
-    
+
     /**
      * Adds the plugin.
      * 
-     * @param plugin the plugin
+     * @param plugin
+     *            the plugin
      */
     public void addPlugin(final SwingPluginUI plugin) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -280,11 +282,12 @@ public class UIFramework extends JFrame implements FrameworkUI {
             }
         });
     }
-    
+
     /**
      * Inits the components.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed"
+    // desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         logLevelButtonGroup = new javax.swing.ButtonGroup();
         logTextArea = new javax.swing.JTextArea();
@@ -327,6 +330,7 @@ public class UIFramework extends JFrame implements FrameworkUI {
             public void componentMoved(java.awt.event.ComponentEvent evt) {
                 formComponentMoved(evt);
             }
+
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 formComponentResized(evt);
             }
@@ -561,44 +565,66 @@ public class UIFramework extends JFrame implements FrameworkUI {
     /**
      * Lite menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void liteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_liteMenuItemActionPerformed
+    private void liteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_liteMenuItemActionPerformed
         Preferences.setPreference("WebScarab.lite", Boolean.toString(liteMenuItem.isSelected()));
         if (liteMenuItem.isSelected()) {
-            JOptionPane.showMessageDialog(this, "Restart WebScarab in order to switch interfaces", "Restart required", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Restart WebScarab in order to switch interfaces", "Restart required",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
-    }//GEN-LAST:event_liteMenuItemActionPerformed
+    }// GEN-LAST:event_liteMenuItemActionPerformed
 
     /**
      * Credentials menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void credentialsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_credentialsMenuItemActionPerformed
+    private void credentialsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+                                                                                     // -
+                                                                                     // FIRST
+                                                                                     // :
+        // event_credentialsMenuItemActionPerformed
         _credentialManagerFrame.setVisible(true);
-    }//GEN-LAST:event_credentialsMenuItemActionPerformed
-    
+    }// GEN-LAST:event_credentialsMenuItemActionPerformed
+
     /**
      * Restart menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void restartMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartMenuItemActionPerformed
-        if (!_framework.isRunning()) return;
+    private void restartMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_restartMenuItemActionPerformed
+        if (!_framework.isRunning())
+            return;
         if (!_framework.stopPlugins()) {
             String[] status = _framework.getStatus();
             JOptionPane.showMessageDialog(this, status, "Error - Plugins are busy", JOptionPane.ERROR_MESSAGE);
         }
         _framework.startPlugins();
-    }//GEN-LAST:event_restartMenuItemActionPerformed
-    
+    }// GEN-LAST:event_restartMenuItemActionPerformed
+
     /**
      * Save menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
+    private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_saveMenuItemActionPerformed
         if (_tempDir != null) {
             JFileChooser jfc = new JFileChooser(Preferences.getPreference("WebScarab.DefaultDir"));
             jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -607,7 +633,8 @@ public class UIFramework extends JFrame implements FrameworkUI {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 final File dir = jfc.getSelectedFile();
                 if (FileSystemStore.isExistingSession(dir)) {
-                    JOptionPane.showMessageDialog(null, new String[] {dir + " already contains a session ", }, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, new String[] { dir + " already contains a session ", },
+                            "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 } else {
                     new SwingWorker() {
@@ -626,13 +653,15 @@ public class UIFramework extends JFrame implements FrameworkUI {
                                 return ioe;
                             }
                         }
-                        
+
                         public void finished() {
                             Object result = getValue();
-                            if (result == null) return;
+                            if (result == null)
+                                return;
                             if (result instanceof Exception) {
                                 Exception e = (Exception) result;
-                                JOptionPane.showMessageDialog(null, new String[] {"Error saving Session : ", e.toString()}, "Error", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(null, new String[] { "Error saving Session : ",
+                                        e.toString() }, "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         }
                     }.start();
@@ -650,34 +679,47 @@ public class UIFramework extends JFrame implements FrameworkUI {
                         _framework.startPlugins();
                 }
             } catch (StoreException se) {
-                JOptionPane.showMessageDialog(null, new String[] {"Error saving Session : ", se.toString()}, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, new String[] { "Error saving Session : ", se.toString() }, "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
-    }//GEN-LAST:event_saveMenuItemActionPerformed
-    
+    }// GEN-LAST:event_saveMenuItemActionPerformed
+
     /**
      * Script menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void scriptMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scriptMenuItemActionPerformed
-        if (_scriptManagerFrame == null) _scriptManagerFrame = new ScriptManagerFrame(_framework.getScriptManager());
+    private void scriptMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_scriptMenuItemActionPerformed
+        if (_scriptManagerFrame == null)
+            _scriptManagerFrame = new ScriptManagerFrame(_framework.getScriptManager());
         _scriptManagerFrame.setVisible(true);
-    }//GEN-LAST:event_scriptMenuItemActionPerformed
-    
+    }// GEN-LAST:event_scriptMenuItemActionPerformed
+
     /**
      * Wrap text check box menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void wrapTextCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wrapTextCheckBoxMenuItemActionPerformed
+    private void wrapTextCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+                                                                                          // -
+                                                                                          // FIRST
+                                                                                          // :
+        // event_wrapTextCheckBoxMenuItemActionPerformed
         Preferences.setPreference("TextPanel.wrap", Boolean.toString(wrapTextCheckBoxMenuItem.isSelected()));
-    }//GEN-LAST:event_wrapTextCheckBoxMenuItemActionPerformed
-    
+    }// GEN-LAST:event_wrapTextCheckBoxMenuItemActionPerformed
+
     /**
      * Load session.
      * 
-     * @param sessionDir the session dir
+     * @param sessionDir
+     *            the session dir
      */
     private void loadSession(final File sessionDir) {
         new SwingWorker() {
@@ -691,17 +733,20 @@ public class UIFramework extends JFrame implements FrameworkUI {
                     return se;
                 }
             }
+
             public void finished() {
                 Object result = getValue();
-                if (result == null) return;
+                if (result == null)
+                    return;
                 if (result instanceof StoreException) {
                     StoreException se = (StoreException) result;
-                    JOptionPane.showMessageDialog(null, new String[] {"Error loading Session : ", se.toString()}, "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, new String[] { "Error loading Session : ", se.toString() },
+                            "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }.start();
     }
-    
+
     /**
      * Creates the temporary session.
      */
@@ -710,14 +755,15 @@ public class UIFramework extends JFrame implements FrameworkUI {
             _tempDir = TempDir.createTempDir("webscarab", ".tmp", null);
         } catch (IOException ioe) {
             _tempDir = null;
-            JOptionPane.showMessageDialog(null, new String[] {"Error creating a temporary session : ", ioe.getMessage()}, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, new String[] { "Error creating a temporary session : ",
+                    ioe.getMessage() }, "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (_tempDir != null) {
             loadSession(_tempDir);
         }
     }
-    
+
     /**
      * Open existing session.
      */
@@ -729,28 +775,36 @@ public class UIFramework extends JFrame implements FrameworkUI {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             final File dir = jfc.getSelectedFile();
             if (!FileSystemStore.isExistingSession(dir)) {
-                // FIXME to change this to prompt to create it if it does not already exist
-                JOptionPane.showMessageDialog(null, new String[] {dir + " does not contain a session ", }, "Error", JOptionPane.ERROR_MESSAGE);
+                // FIXME to change this to prompt to create it if it does not
+                // already exist
+                JOptionPane.showMessageDialog(null, new String[] { dir + " does not contain a session ", }, "Error",
+                        JOptionPane.ERROR_MESSAGE);
             } else {
                 loadSession(dir);
             }
             Preferences.setPreference("WebScarab.DefaultDir", jfc.getCurrentDirectory().getAbsolutePath());
         }
     }
-    
+
     /**
      * Open menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
+    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_openMenuItemActionPerformed
         openExistingSession();
-    }//GEN-LAST:event_openMenuItemActionPerformed
-    
+    }// GEN-LAST:event_openMenuItemActionPerformed
+
     /**
      * Close session.
      * 
-     * @throws StoreException the store exception
+     * @throws StoreException
+     *             the store exception
      */
     private void closeSession() throws StoreException {
         if (_framework.isRunning()) {
@@ -760,7 +814,7 @@ public class UIFramework extends JFrame implements FrameworkUI {
             _framework.saveSessionData();
         }
     }
-    
+
     /**
      * Creates the new session.
      */
@@ -772,52 +826,73 @@ public class UIFramework extends JFrame implements FrameworkUI {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             final File dir = jfc.getSelectedFile();
             if (FileSystemStore.isExistingSession(dir)) {
-                // FIXME to change this to prompt to open it if it already exists
-                JOptionPane.showMessageDialog(null, new String[] {dir + " already contains a session ", }, "Error", JOptionPane.ERROR_MESSAGE);
+                // FIXME to change this to prompt to open it if it already
+                // exists
+                JOptionPane.showMessageDialog(null, new String[] { dir + " already contains a session ", }, "Error",
+                        JOptionPane.ERROR_MESSAGE);
             } else {
                 loadSession(dir);
             }
             Preferences.setPreference("WebScarab.defaultDirectory", jfc.getCurrentDirectory().getAbsolutePath());
         }
     }
-    
+
     /**
      * New menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void newMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMenuItemActionPerformed
+    private void newMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_newMenuItemActionPerformed
         createNewSession();
-    }//GEN-LAST:event_newMenuItemActionPerformed
-    
+    }// GEN-LAST:event_newMenuItemActionPerformed
+
     /**
      * Form component resized.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
-        if (! isShowing()) return;
-        Preferences.getPreferences().setProperty("WebScarab.size.x",Integer.toString(getWidth()));
-        Preferences.getPreferences().setProperty("WebScarab.size.y",Integer.toString(getHeight()));
-    }//GEN-LAST:event_formComponentResized
-    
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-
+        // FIRST
+        // :
+        // event_formComponentResized
+        if (!isShowing())
+            return;
+        Preferences.getPreferences().setProperty("WebScarab.size.x", Integer.toString(getWidth()));
+        Preferences.getPreferences().setProperty("WebScarab.size.y", Integer.toString(getHeight()));
+    }// GEN-LAST:event_formComponentResized
+
     /**
      * Form component moved.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
-        if (! isShowing()) return;
-        Preferences.getPreferences().setProperty("WebScarab.position.x",Integer.toString(getX()));
-        Preferences.getPreferences().setProperty("WebScarab.position.y",Integer.toString(getY()));
-    }//GEN-LAST:event_formComponentMoved
-    
+    private void formComponentMoved(java.awt.event.ComponentEvent evt) {// GEN-
+        // FIRST
+        // :
+        // event_formComponentMoved
+        if (!isShowing())
+            return;
+        Preferences.getPreferences().setProperty("WebScarab.position.x", Integer.toString(getX()));
+        Preferences.getPreferences().setProperty("WebScarab.position.y", Integer.toString(getY()));
+    }// GEN-LAST:event_formComponentMoved
+
     /**
      * Log level action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void logLevelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logLevelActionPerformed
+    private void logLevelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
+        // FIRST
+        // :
+        // event_logLevelActionPerformed
         String cmd = evt.getActionCommand().toUpperCase();
         if (cmd.equals("SEVERE")) {
             _dh.setLevel(Level.SEVERE);
@@ -834,84 +909,112 @@ public class UIFramework extends JFrame implements FrameworkUI {
             return;
         }
         Preferences.setPreference("UI.logLevel", cmd);
-    }//GEN-LAST:event_logLevelActionPerformed
-    
+    }// GEN-LAST:event_logLevelActionPerformed
+
     /**
      * Certs menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void certsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_certsMenuItemActionPerformed
+    private void certsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_certsMenuItemActionPerformed
         _certificateManager.setVisible(true);
-    }//GEN-LAST:event_certsMenuItemActionPerformed
-    
+    }// GEN-LAST:event_certsMenuItemActionPerformed
+
     /**
      * Transcoder menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void transcoderMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transcoderMenuItemActionPerformed
+    private void transcoderMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+                                                                                    // -
+                                                                                    // FIRST
+                                                                                    // :
+        // event_transcoderMenuItemActionPerformed
         if (_transcoder == null) {
             _transcoder = new TranscoderFrame();
         }
         _transcoder.setVisible(true);
-    }//GEN-LAST:event_transcoderMenuItemActionPerformed
-    
+    }// GEN-LAST:event_transcoderMenuItemActionPerformed
+
     /**
      * Cookie jar menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void cookieJarMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cookieJarMenuItemActionPerformed
+    private void cookieJarMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_cookieJarMenuItemActionPerformed
         _cookieJarViewer.setVisible(true);
         _cookieJarViewer.toFront();
         _cookieJarViewer.requestFocus();
-    }//GEN-LAST:event_cookieJarMenuItemActionPerformed
-    
+    }// GEN-LAST:event_cookieJarMenuItemActionPerformed
+
     /**
      * Proxy menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void proxyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proxyMenuItemActionPerformed
+    private void proxyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_proxyMenuItemActionPerformed
         new ProxyConfig(this, _framework).setVisible(true);
-    }//GEN-LAST:event_proxyMenuItemActionPerformed
-    
+    }// GEN-LAST:event_proxyMenuItemActionPerformed
+
     /**
      * Exit menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_exitMenuItemActionPerformed
         exit();
-    }//GEN-LAST:event_exitMenuItemActionPerformed
-    
+    }// GEN-LAST:event_exitMenuItemActionPerformed
+
     /**
      * About menu item action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        String[] message = new String[] {
-            "WAAT:Dynamic Analyzer - version 0.0.1,",
-                    " - part of Web Application Audit Tool project",
-                    "See http://code.google.com/p/wavd",
-                    "", "Developers : ",
-                    "         Udai Gupta (mailtoud@gmail.com)",
-                    "         Hemant Purohit (hementp.87d@gmail.com)"
-        };
+    private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_aboutMenuItemActionPerformed
+        String[] message = new String[] { "WAAT:Dynamic Analyzer - version 0.0.1,",
+                " - part of Web Application Audit Tool project", "See http://code.google.com/p/wavd", "",
+                "Developers : ", "         Udai Gupta (mailtoud@gmail.com)",
+                "         Hemant Purohit (hementp.87d@gmail.com)" };
         JOptionPane.showMessageDialog(this, message, "About WAAT", JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_aboutMenuItemActionPerformed
-    
+    }// GEN-LAST:event_aboutMenuItemActionPerformed
+
     /**
      * Window closing.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void windowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_windowClosing
+    private void windowClosing(java.awt.event.WindowEvent evt) {// GEN-FIRST:
+        // event_windowClosing
         exit();
-    }//GEN-LAST:event_windowClosing
-    
+    }// GEN-LAST:event_windowClosing
+
     /**
      * Exit.
      */
@@ -920,152 +1023,173 @@ public class UIFramework extends JFrame implements FrameworkUI {
             if (_framework.isModified()) {
                 String[] status = _framework.getStatus();
                 int count = status.length;
-                String[] message = new String[count+2];
+                String[] message = new String[count + 2];
                 System.arraycopy(status, 0, message, 0, count);
                 message[count] = "";
-                message[count+1] = "Force data save anyway?";
-                int choice = JOptionPane.showOptionDialog(this, message, "Error - Plugins are busy", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null);
-                if (choice != JOptionPane.YES_OPTION) return;
+                message[count + 1] = "Force data save anyway?";
+                int choice = JOptionPane.showOptionDialog(this, message, "Error - Plugins are busy",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null);
+                if (choice != JOptionPane.YES_OPTION)
+                    return;
             }
         }
         if (_framework.isModified()) {
             try {
                 _framework.saveSessionData();
             } catch (Exception e) {
-                int choice = JOptionPane.showOptionDialog(this, new String[] {"Error saving session!", e.toString(), "Quit anyway?"}, "Error!", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null);
-                if (choice != JOptionPane.YES_OPTION) return;
+                int choice = JOptionPane.showOptionDialog(this, new String[] { "Error saving session!", e.toString(),
+                        "Quit anyway?" }, "Error!", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, null,
+                        null);
+                if (choice != JOptionPane.YES_OPTION)
+                    return;
             }
         }
-        synchronized(_exit) {
+        synchronized (_exit) {
             _exit.notify();
         }
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The about menu item. */
     private javax.swing.JMenuItem aboutMenuItem;
-    
+
     /** The certs menu item. */
     private javax.swing.JMenuItem certsMenuItem;
-    
+
     /** The contents menu item. */
     private javax.swing.JMenuItem contentsMenuItem;
-    
+
     /** The cookie jar menu item. */
     private javax.swing.JMenuItem cookieJarMenuItem;
-    
+
     /** The credentials menu item. */
     private javax.swing.JMenuItem credentialsMenuItem;
-    
+
     /** The editor menu. */
     private javax.swing.JMenu editorMenu;
-    
+
     /** The exit menu item. */
     private javax.swing.JMenuItem exitMenuItem;
-    
+
     /** The file menu. */
     private javax.swing.JMenu fileMenu;
-    
+
     /** The fine log radio button menu item. */
     private javax.swing.JRadioButtonMenuItem fineLogRadioButtonMenuItem;
-    
+
     /** The finer log radio button menu item. */
     private javax.swing.JRadioButtonMenuItem finerLogRadioButtonMenuItem;
-    
+
     /** The finest log radio button menu item. */
     private javax.swing.JRadioButtonMenuItem finestLogRadioButtonMenuItem;
-    
+
     /** The help menu. */
     private javax.swing.JMenu helpMenu;
-    
+
     /** The info log radio button menu item. */
     private javax.swing.JRadioButtonMenuItem infoLogRadioButtonMenuItem;
-    
+
     /** The lite menu item. */
     private javax.swing.JCheckBoxMenuItem liteMenuItem;
-    
+
     /** The log level button group. */
     private javax.swing.ButtonGroup logLevelButtonGroup;
-    
+
     /** The log menu. */
     private javax.swing.JMenu logMenu;
-    
+
     /** The log text area. */
     private javax.swing.JTextArea logTextArea;
-    
+
     /** The main menu bar. */
     private javax.swing.JMenuBar mainMenuBar;
-    
+
     /** The new menu item. */
     private javax.swing.JMenuItem newMenuItem;
-    
+
     /** The open menu item. */
     private javax.swing.JMenuItem openMenuItem;
-    
+
     /** The proxy menu item. */
     private javax.swing.JMenuItem proxyMenuItem;
-    
+
     /** The restart menu item. */
     private javax.swing.JMenuItem restartMenuItem;
-    
+
     /** The save menu item. */
     private javax.swing.JMenuItem saveMenuItem;
-    
+
     /** The script menu item. */
     private javax.swing.JMenuItem scriptMenuItem;
-    
+
     /** The severe log radio button menu item. */
     private javax.swing.JRadioButtonMenuItem severeLogRadioButtonMenuItem;
-    
+
     /** The tabbed pane. */
     private javax.swing.JTabbedPane tabbedPane;
-    
+
     /** The tools menu. */
     private javax.swing.JMenu toolsMenu;
-    
+
     /** The transcoder menu item. */
     private javax.swing.JMenuItem transcoderMenuItem;
-    
+
     /** The view menu. */
     private javax.swing.JMenu viewMenu;
-    
+
     /** The wrap text check box menu item. */
     private javax.swing.JCheckBoxMenuItem wrapTextCheckBoxMenuItem;
+
     // End of variables declaration//GEN-END:variables
-    
+
     /**
      * The Class TextScroller.
      */
     private class TextScroller implements DocumentListener {
-        
+
         /** The _component. */
         private JTextComponent _component;
-        
+
         /** The _mapper. */
         private TextUI _mapper;
-        
+
         /**
          * Instantiates a new text scroller.
          * 
-         * @param component the component
+         * @param component
+         *            the component
          */
         public TextScroller(JTextComponent component) {
             _component = component;
             _mapper = _component.getUI();
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.event.DocumentListener#removeUpdate(javax.swing.event
+         * .DocumentEvent)
          */
-        public void removeUpdate(DocumentEvent e) {}
-        
-        /* (non-Javadoc)
-         * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
+        public void removeUpdate(DocumentEvent e) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.event.DocumentListener#changedUpdate(javax.swing.event
+         * .DocumentEvent)
          */
-        public void changedUpdate(DocumentEvent e) {}
-        
-        /* (non-Javadoc)
-         * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
+        public void changedUpdate(DocumentEvent e) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.event.DocumentListener#insertUpdate(javax.swing.event
+         * .DocumentEvent)
          */
         public void insertUpdate(DocumentEvent e) {
             if (_mapper != null) {
@@ -1076,11 +1200,12 @@ public class UIFramework extends JFrame implements FrameworkUI {
                 }
             }
         }
-        
+
         /**
          * Adjust visibility.
          * 
-         * @param location the location
+         * @param location
+         *            the location
          */
         private void adjustVisibility(final Rectangle location) {
             if (location != null) {
@@ -1095,7 +1220,7 @@ public class UIFramework extends JFrame implements FrameworkUI {
                 }
             }
         }
-        
+
     }
-    
+
 }

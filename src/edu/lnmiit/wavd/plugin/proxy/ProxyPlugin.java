@@ -22,7 +22,6 @@
 
 package edu.lnmiit.wavd.plugin.proxy;
 
-
 import edu.lnmiit.wavd.httpclient.HTTPClient;
 import edu.lnmiit.wavd.model.StoreException;
 
@@ -31,39 +30,44 @@ import edu.lnmiit.wavd.model.StoreException;
  * The Class ProxyPlugin.
  */
 public abstract class ProxyPlugin {
-    
+
     /**
      * Sets the session.
      * 
-     * @param type the type
-     * @param store the store
-     * @param session the session
+     * @param type
+     *            the type
+     * @param store
+     *            the store
+     * @param session
+     *            the session
      */
-    public void setSession(String type, Object store, String session)  {
+    public void setSession(String type, Object store, String session) {
     }
-    
+
     /**
      * Flush.
      * 
-     * @throws StoreException the store exception
+     * @throws StoreException
+     *             the store exception
      */
     public void flush() throws StoreException {
     }
-    
+
     /**
      * Gets the plugin name.
      * 
      * @return the plugin name
      */
     public abstract String getPluginName();
-    
+
     /**
      * Gets the proxy plugin.
      * 
-     * @param in the in
+     * @param in
+     *            the in
      * 
      * @return the proxy plugin
      */
     public abstract HTTPClient getProxyPlugin(HTTPClient in);
-    
+
 }

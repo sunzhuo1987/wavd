@@ -22,8 +22,6 @@
 
 package edu.lnmiit.wavd.plugin.proxy;
 
-
-
 import edu.lnmiit.wavd.model.ConversationID;
 import edu.lnmiit.wavd.model.HttpUrl;
 import edu.lnmiit.wavd.plugin.PluginUI;
@@ -33,58 +31,69 @@ import edu.lnmiit.wavd.plugin.PluginUI;
  * The Interface ProxyUI.
  */
 public interface ProxyUI extends PluginUI {
-    
+
     /**
      * Proxy added.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      */
     void proxyAdded(String key);
-    
+
     /**
      * Proxy started.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      */
     void proxyStarted(String key);
-    
+
     /**
      * Proxy stopped.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      */
     void proxyStopped(String key);
-    
+
     /**
      * Proxy removed.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      */
     void proxyRemoved(String key);
-    
+
     /**
      * Requested.
      * 
-     * @param id the id
-     * @param method the method
-     * @param url the url
+     * @param id
+     *            the id
+     * @param method
+     *            the method
+     * @param url
+     *            the url
      */
     void requested(ConversationID id, String method, HttpUrl url);
-    
+
     /**
      * Received.
      * 
-     * @param id the id
-     * @param status the status
+     * @param id
+     *            the id
+     * @param status
+     *            the status
      */
     void received(ConversationID id, String status);
-    
+
     /**
      * Aborted.
      * 
-     * @param id the id
-     * @param reason the reason
+     * @param id
+     *            the id
+     * @param reason
+     *            the reason
      */
     void aborted(ConversationID id, String reason);
-    
+
 }

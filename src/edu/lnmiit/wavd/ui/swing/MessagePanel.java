@@ -22,50 +22,43 @@
 
 package edu.lnmiit.wavd.ui.swing;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import edu.lnmiit.wavd.model.Message;
 import edu.lnmiit.wavd.model.NamedValue;
 import edu.lnmiit.wavd.model.Preferences;
-
-import javax.swing.event.TableModelListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.AbstractTableModel;
-
-import java.util.Vector;
-
-import java.awt.Component;
-import javax.swing.table.TableCellEditor;
-
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class MessagePanel.
  */
 public class MessagePanel extends javax.swing.JPanel {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7438730900530046567L;
+
     /** The _cp. */
     private ContentPanel _cp;
-    
+
     /** The _hp. */
     private HeaderPanel _hp;
-    
+
     /** The _message. */
     private Message _message = null;
-    
+
     /** The _editable. */
     private boolean _editable = false;
-    
-    /** The _modified. */
-    private boolean _modified = false;
-    
+
     /**
      * Instantiates a new message panel.
      */
     public MessagePanel() {
         initComponents();
         setName("Message");
-        
+
         _hp = new HeaderPanel();
         messageSplitPane.setTopComponent(_hp);
         _cp = new ContentPanel();
@@ -74,7 +67,8 @@ public class MessagePanel extends javax.swing.JPanel {
         if (dividerLocation != null) {
             try {
                 messageSplitPane.setDividerLocation(Integer.parseInt(dividerLocation));
-            } catch (NumberFormatException nfe) {}
+            } catch (NumberFormatException nfe) {
+            }
         }
         messageSplitPane.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent e) {
@@ -86,37 +80,39 @@ public class MessagePanel extends javax.swing.JPanel {
         setEditable(false);
         setMessage(null);
     }
-    
+
     /**
      * Instantiates a new message panel.
      * 
-     * @param orientation the orientation
+     * @param orientation
+     *            the orientation
      */
     public MessagePanel(int orientation) {
         this();
         messageSplitPane.setOrientation(orientation);
     }
-    
+
     /**
      * Sets the editable.
      * 
-     * @param editable the new editable
+     * @param editable
+     *            the new editable
      */
     public void setEditable(boolean editable) {
         _editable = editable;
         _hp.setEditable(editable);
         _cp.setEditable(editable);
     }
-    
+
     /**
      * Sets the message.
      * 
-     * @param message the new message
+     * @param message
+     *            the new message
      */
     public void setMessage(Message message) {
-        _modified = false;
         _message = message;
-        
+
         if (message != null) {
             _hp.setHeaders(_message.getHeaders());
             byte[] content = message.getContent();
@@ -129,7 +125,7 @@ public class MessagePanel extends javax.swing.JPanel {
         }
         revalidate();
     }
-    
+
     /**
      * Gets the message.
      * 
@@ -143,13 +139,14 @@ public class MessagePanel extends javax.swing.JPanel {
             if (_cp.isModified()) {
                 _message.setContent(_cp.getContent());
                 if (_message.getHeader("Content-Length") != null) {
-                    _message.setHeader(new NamedValue("Content-Length", Integer.toString(_message.getContent().length)));
+                    _message
+                            .setHeader(new NamedValue("Content-Length", Integer.toString(_message.getContent().length)));
                 }
             }
         }
         return _message;
     }
-    
+
     /**
      * Checks if is modified.
      * 
@@ -158,13 +155,11 @@ public class MessagePanel extends javax.swing.JPanel {
     public boolean isModified() {
         return _editable && (_hp.isModified() || _cp.isModified());
     }
-    
+
     /**
      * Inits the components.
      */
-    private void initComponents() {//GEN-BEGIN:initComponents
-        java.awt.GridBagConstraints gridBagConstraints;
-
+    private void initComponents() {// GEN-BEGIN:initComponents
         messageSplitPane = new javax.swing.JSplitPane();
 
         setLayout(new java.awt.BorderLayout());
@@ -177,15 +172,15 @@ public class MessagePanel extends javax.swing.JPanel {
         messageSplitPane.setOneTouchExpandable(true);
         add(messageSplitPane, java.awt.BorderLayout.CENTER);
 
-    }//GEN-END:initComponents
-            
+    }// GEN-END:initComponents
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String[] args) {
-        byte[] content = new byte[0];
         edu.lnmiit.wavd.model.Response response = new edu.lnmiit.wavd.model.Response();
         try {
             String resp = "/home/rogan/workspace/webscarab/test/data/index-resp";
@@ -198,7 +193,7 @@ public class MessagePanel extends javax.swing.JPanel {
             e.printStackTrace();
             System.exit(0);
         }
-        
+
         javax.swing.JFrame top = new javax.swing.JFrame("Message Pane");
         top.getContentPane().setLayout(new java.awt.BorderLayout());
         top.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -206,7 +201,7 @@ public class MessagePanel extends javax.swing.JPanel {
                 System.exit(0);
             }
         });
-        
+
         javax.swing.JButton button = new javax.swing.JButton("GET");
         final MessagePanel mp = new MessagePanel();
         top.getContentPane().add(mp);
@@ -226,10 +221,10 @@ public class MessagePanel extends javax.swing.JPanel {
             e.printStackTrace();
         }
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The message split pane. */
     private javax.swing.JSplitPane messageSplitPane;
     // End of variables declaration//GEN-END:variables
-    
+
 }

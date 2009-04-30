@@ -23,22 +23,29 @@ import java.util.Comparator;
  * The Class NullComparator.
  */
 public class NullComparator implements Comparator {
-    
+
     /**
      * Instantiates a new null comparator.
      */
     public NullComparator() {
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.util.Comparator#compare(T, T)
      */
     public int compare(Object o1, Object o2) {
-        if (o1 == null && o2 == null) return 0;
-        if (o1 == null && o2 != null) return 1;
-        if (o1 != null && o2 == null) return -1;
-        if (o1 instanceof Comparable) return ((Comparable)o1).compareTo(o2);
-        throw new ClassCastException("Incomparable objects " + o1.getClass().getName() + " and " + o2.getClass().getName());
+        if (o1 == null && o2 == null)
+            return 0;
+        if (o1 == null && o2 != null)
+            return 1;
+        if (o1 != null && o2 == null)
+            return -1;
+        if (o1 instanceof Comparable)
+            return ((Comparable) o1).compareTo(o2);
+        throw new ClassCastException("Incomparable objects " + o1.getClass().getName() + " and "
+                + o2.getClass().getName());
     }
-    
+
 }

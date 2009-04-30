@@ -20,10 +20,9 @@ import java.util.EventListener;
 
 // TODO: Auto-generated Javadoc
 /**
- * The listener interface for receiving script events.
- * The class that is interested in processing a script
- * event implements this interface, and the object created
- * with that class is registered with a component using the
+ * The listener interface for receiving script events. The class that is
+ * interested in processing a script event implements this interface, and the
+ * object created with that class is registered with a component using the
  * component's <code>addScriptListener<code> method. When
  * the script event occurs, that object's appropriate
  * method is invoked.
@@ -31,81 +30,104 @@ import java.util.EventListener;
  * @see ScriptEvent
  */
 public interface ScriptListener extends EventListener {
-    
+
     /**
      * Hooks changed.
      */
     void hooksChanged();
-    
+
     /**
      * Hook started.
      * 
-     * @param plugin the plugin
-     * @param hook the hook
+     * @param plugin
+     *            the plugin
+     * @param hook
+     *            the hook
      */
     void hookStarted(String plugin, Hook hook);
-    
+
     /**
      * Hook ended.
      * 
-     * @param plugin the plugin
-     * @param hook the hook
+     * @param plugin
+     *            the plugin
+     * @param hook
+     *            the hook
      */
     void hookEnded(String plugin, Hook hook);
-    
+
     /**
      * Script added.
      * 
-     * @param plugin the plugin
-     * @param hook the hook
-     * @param script the script
+     * @param plugin
+     *            the plugin
+     * @param hook
+     *            the hook
+     * @param script
+     *            the script
      */
     void scriptAdded(String plugin, Hook hook, Script script);
-    
+
     /**
      * Script removed.
      * 
-     * @param plugin the plugin
-     * @param hook the hook
-     * @param script the script
+     * @param plugin
+     *            the plugin
+     * @param hook
+     *            the hook
+     * @param script
+     *            the script
      */
     void scriptRemoved(String plugin, Hook hook, Script script);
-    
+
     /**
      * Script started.
      * 
-     * @param plugin the plugin
-     * @param hook the hook
-     * @param script the script
+     * @param plugin
+     *            the plugin
+     * @param hook
+     *            the hook
+     * @param script
+     *            the script
      */
     void scriptStarted(String plugin, Hook hook, Script script);
-    
+
     /**
      * Script ended.
      * 
-     * @param plugin the plugin
-     * @param hook the hook
-     * @param script the script
+     * @param plugin
+     *            the plugin
+     * @param hook
+     *            the hook
+     * @param script
+     *            the script
      */
     void scriptEnded(String plugin, Hook hook, Script script);
-    
+
     /**
      * Script changed.
      * 
-     * @param plugin the plugin
-     * @param hook the hook
-     * @param script the script
+     * @param plugin
+     *            the plugin
+     * @param hook
+     *            the hook
+     * @param script
+     *            the script
      */
     void scriptChanged(String plugin, Hook hook, Script script);
-    
+
     /**
      * Script error.
      * 
-     * @param plugin the plugin
-     * @param hook the hook
-     * @param script the script
-     * @param error the error
+     * @param plugin
+     *            the plugin
+     * @param hook
+     *            the hook
+     * @param script
+     *            the script
+     * @param error
+     *            the error
      */
     void scriptError(String plugin, Hook hook, Script script, Throwable error);
-    
+
 }

@@ -16,20 +16,20 @@
 
 package edu.lnmiit.wavd.plugin;
 
-import edu.lnmiit.wavd.model.HttpUrl;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Interface CredentialManagerUI.
  */
 public interface CredentialManagerUI {
-    
+
     /**
      * Request credentials.
      * 
-     * @param host the host
-     * @param challenges the challenges
+     * @param host
+     *            the host
+     * @param challenges
+     *            the challenges
      */
     void requestCredentials(String host, String[] challenges);
-    
+
 }

@@ -18,14 +18,11 @@ package edu.lnmiit.wavd.plugin.fuzz;
 
 import java.util.EventListener;
 
-import edu.lnmiit.wavd.model.HttpUrl;
-
 // TODO: Auto-generated Javadoc
 /**
- * The listener interface for receiving fuzzer events.
- * The class that is interested in processing a fuzzer
- * event implements this interface, and the object created
- * with that class is registered with a component using the
+ * The listener interface for receiving fuzzer events. The class that is
+ * interested in processing a fuzzer event implements this interface, and the
+ * object created with that class is registered with a component using the
  * component's <code>addFuzzerListener<code> method. When
  * the fuzzer event occurs, that object's appropriate
  * method is invoked.
@@ -33,47 +30,53 @@ import edu.lnmiit.wavd.model.HttpUrl;
  * @see FuzzerEvent
  */
 public interface FuzzerListener extends EventListener {
-    
+
     /**
      * Fuzz header added.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void fuzzHeaderAdded(FuzzerEvent evt);
-    
+
     /**
      * Fuzz header changed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void fuzzHeaderChanged(FuzzerEvent evt);
-    
+
     /**
      * Fuzz header removed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void fuzzHeaderRemoved(FuzzerEvent evt);
-    
+
     /**
      * Fuzz parameter added.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void fuzzParameterAdded(FuzzerEvent evt);
-    
+
     /**
      * Fuzz parameter changed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void fuzzParameterChanged(FuzzerEvent evt);
-    
+
     /**
      * Fuzz parameter removed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
     void fuzzParameterRemoved(FuzzerEvent evt);
-    
+
 }

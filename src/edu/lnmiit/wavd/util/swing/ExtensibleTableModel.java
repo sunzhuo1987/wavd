@@ -22,23 +22,28 @@
 
 package edu.lnmiit.wavd.util.swing;
 
-import javax.swing.table.AbstractTableModel;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.table.AbstractTableModel;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ExtensibleTableModel.
  */
 public abstract class ExtensibleTableModel extends AbstractTableModel {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8027034136251852668L;
+
     /** The _columns. */
     private List _columns = new ArrayList();
-    
+
     /** The _column listener. */
     private ColumnDataListener _columnListener;
-    
+
     /**
      * Instantiates a new extensible table model.
      */
@@ -47,7 +52,8 @@ public abstract class ExtensibleTableModel extends AbstractTableModel {
             public void dataChanged(ColumnDataEvent cde) {
                 Object column = cde.getSource();
                 int col = _columns.indexOf(column);
-                if (col < 0) return;
+                if (col < 0)
+                    return;
                 Object key = cde.getKey();
                 if (key == null) {
                     fireTableStructureChanged();
@@ -60,93 +66,110 @@ public abstract class ExtensibleTableModel extends AbstractTableModel {
             }
         };
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.table.TableModel#getRowCount()
      */
     public abstract int getRowCount();
-    
+
     /**
      * Gets the key at.
      * 
-     * @param row the row
+     * @param row
+     *            the row
      * 
      * @return the key at
      */
     public abstract Object getKeyAt(int row);
-    
+
     /**
      * Index of key.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      * 
      * @return the int
      */
     public abstract int indexOfKey(Object key);
-    
+
     /**
      * Adds the column.
      * 
-     * @param column the column
+     * @param column
+     *            the column
      */
     public void addColumn(ColumnDataModel column) {
         _columns.add(column);
         column.addColumnDataListener(_columnListener);
         fireTableStructureChanged();
     }
-    
+
     /**
      * Removes the column.
      * 
-     * @param column the column
+     * @param column
+     *            the column
      */
     public void removeColumn(ColumnDataModel column) {
         int index = _columns.indexOf(column);
-        if (index < 0) return;
+        if (index < 0)
+            return;
         column.removeColumnDataListener(_columnListener);
         _columns.remove(index);
         fireTableStructureChanged();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.table.TableModel#getColumnCount()
      */
     public int getColumnCount() {
         return _columns.size();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.table.AbstractTableModel#getColumnName(int)
      */
     public String getColumnName(int column) {
         return ((ColumnDataModel) _columns.get(column)).getColumnName();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
      */
     public Class getColumnClass(int column) {
         return ((ColumnDataModel) _columns.get(column)).getColumnClass();
     }
-    
+
     /**
      * Gets the value at.
      * 
-     * @param key the key
-     * @param column the column
+     * @param key
+     *            the key
+     * @param column
+     *            the column
      * 
      * @return the value at
      */
     protected Object getValueAt(Object key, int column) {
         return ((ColumnDataModel) _columns.get(column)).getValue(key);
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.table.TableModel#getValueAt(int, int)
      */
     public Object getValueAt(int row, int column) {
         Object key = getKeyAt(row);
         return getValueAt(key, column);
     }
-    
+
 }

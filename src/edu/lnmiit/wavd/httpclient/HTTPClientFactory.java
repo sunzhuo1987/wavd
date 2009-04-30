@@ -22,28 +22,11 @@
 
 package edu.lnmiit.wavd.httpclient;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.net.ssl.SSLContext;
-
 import java.util.logging.Logger;
 
-import edu.lnmiit.wavd.model.HttpUrl;
-import edu.lnmiit.wavd.model.Preferences;
 import edu.lnmiit.wavd.model.Request;
 import edu.lnmiit.wavd.model.Response;
 
@@ -52,79 +35,53 @@ import edu.lnmiit.wavd.model.Response;
  * A factory for creating HTTPClient objects.
  */
 public class HTTPClientFactory {
-    
+
     /** The _instance. */
     private static HTTPClientFactory _instance = new HTTPClientFactory();
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger(getClass().getName());
-    
+
     /** The _http proxy. */
     private String _httpProxy = "";
-    
+
     /** The _http proxy port. */
     private int _httpProxyPort = 80;
-    
+
     /** The _https proxy. */
     private String _httpsProxy = "";
-    
+
     /** The _https proxy port. */
     private int _httpsProxyPort = 80;
-    
+
     /** The _no proxy. */
     private String[] _noProxy = new String[0];
-    
+
     /** The _connect timeout. */
     private int _connectTimeout = 30000;
-    
+
     /** The _read timeout. */
     private int _readTimeout = 0;
-    
+
     /** The _ssl context manager. */
     private SSLContextManager _sslContextManager = null;
-    
-    /** The _cert file. */
-    private String _certFile = "";
-    
-    /** The _keystore password. */
-    private String _keystorePassword = "";
-    
-    /** The _key password. */
-    private String _keyPassword = "";
-    
+
     /** The _authenticator. */
     private Authenticator _authenticator = null;
-    
-    /** The _key managers. */
-    private KeyManager[] _keyManagers = null;
-    
+
     /** The _client list. */
     private List _clientList = new ArrayList();
-    
+
     /** The _available clients. */
     private List _availableClients = new ArrayList();
-    
-    // Create a trust manager that does not validate certificate chains
-    /** The _trust all certs. */
-    private static TrustManager[] _trustAllCerts = new TrustManager[]{
-        new X509TrustManager() {
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-            public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-            }
-            public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-            }
-        }
-    };
-    
+
     /**
      * Instantiates a new hTTP client factory.
      */
     protected HTTPClientFactory() {
         _sslContextManager = new SSLContextManager();
     }
-    
+
     /**
      * Gets the single instance of HTTPClientFactory.
      * 
@@ -133,7 +90,7 @@ public class HTTPClientFactory {
     public static HTTPClientFactory getInstance() {
         return _instance;
     }
-    
+
     /**
      * Gets the sSL context manager.
      * 
@@ -142,20 +99,24 @@ public class HTTPClientFactory {
     public SSLContextManager getSSLContextManager() {
         return _sslContextManager;
     }
-    
+
     /**
      * Sets the http proxy.
      * 
-     * @param proxy the proxy
-     * @param port the port
+     * @param proxy
+     *            the proxy
+     * @param port
+     *            the port
      */
     public void setHttpProxy(String proxy, int port) {
-        if (proxy == null) proxy = "";
+        if (proxy == null)
+            proxy = "";
         _httpProxy = proxy;
-        if (port<1 || port > 65535) throw new IllegalArgumentException("Port is out of range: " + port);
+        if (port < 1 || port > 65535)
+            throw new IllegalArgumentException("Port is out of range: " + port);
         _httpProxyPort = port;
     }
-    
+
     /**
      * Gets the http proxy.
      * 
@@ -164,7 +125,7 @@ public class HTTPClientFactory {
     public String getHttpProxy() {
         return _httpProxy;
     }
-    
+
     /**
      * Gets the http proxy port.
      * 
@@ -173,20 +134,24 @@ public class HTTPClientFactory {
     public int getHttpProxyPort() {
         return _httpProxyPort;
     }
-    
+
     /**
      * Sets the https proxy.
      * 
-     * @param proxy the proxy
-     * @param port the port
+     * @param proxy
+     *            the proxy
+     * @param port
+     *            the port
      */
     public void setHttpsProxy(String proxy, int port) {
-        if (proxy == null) proxy = "";
+        if (proxy == null)
+            proxy = "";
         _httpsProxy = proxy;
-        if (port<1 || port > 65535) throw new IllegalArgumentException("Port is out of range: " + port);
+        if (port < 1 || port > 65535)
+            throw new IllegalArgumentException("Port is out of range: " + port);
         _httpsProxyPort = port;
     }
-    
+
     /**
      * Gets the https proxy.
      * 
@@ -195,7 +160,7 @@ public class HTTPClientFactory {
     public String getHttpsProxy() {
         return _httpsProxy;
     }
-    
+
     /**
      * Gets the https proxy port.
      * 
@@ -204,17 +169,19 @@ public class HTTPClientFactory {
     public int getHttpsProxyPort() {
         return _httpsProxyPort;
     }
-    
+
     /**
      * Sets the no proxy.
      * 
-     * @param noProxy the new no proxy
+     * @param noProxy
+     *            the new no proxy
      */
     public void setNoProxy(String[] noProxy) {
         _noProxy = noProxy;
-        if (_noProxy == null) _noProxy = new String[0];
+        if (_noProxy == null)
+            _noProxy = new String[0];
     }
-    
+
     /**
      * Gets the no proxy.
      * 
@@ -223,27 +190,30 @@ public class HTTPClientFactory {
     public String[] getNoProxy() {
         return _noProxy;
     }
-    
+
     /**
      * Sets the timeouts.
      * 
-     * @param connectTimeout the connect timeout
-     * @param readTimeout the read timeout
+     * @param connectTimeout
+     *            the connect timeout
+     * @param readTimeout
+     *            the read timeout
      */
     public void setTimeouts(int connectTimeout, int readTimeout) {
         _connectTimeout = connectTimeout;
         _readTimeout = readTimeout;
     }
-    
+
     /**
      * Sets the authenticator.
      * 
-     * @param authenticator the new authenticator
+     * @param authenticator
+     *            the new authenticator
      */
     public void setAuthenticator(Authenticator authenticator) {
         _authenticator = authenticator;
     }
-    
+
     /**
      * Gets the authenticator.
      * 
@@ -252,7 +222,7 @@ public class HTTPClientFactory {
     public Authenticator getAuthenticator() {
         return _authenticator;
     }
-    
+
     /**
      * Gets the hTTP client.
      * 
@@ -268,20 +238,22 @@ public class HTTPClientFactory {
         uf.setAuthenticator(_authenticator);
         return uf;
     }
-    
+
     /**
      * Fetch response.
      * 
-     * @param request the request
+     * @param request
+     *            the request
      * 
      * @return the response
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
     public Response fetchResponse(Request request) throws IOException {
         HTTPClient hc = null;
         synchronized (_availableClients) {
-            if (_availableClients.size()>0) {
+            if (_availableClients.size() > 0) {
                 hc = (HTTPClient) _availableClients.remove(0);
             } else {
                 _logger.info("Creating a new Fetcher");
@@ -299,8 +271,9 @@ public class HTTPClientFactory {
         synchronized (_availableClients) {
             _availableClients.add(hc);
         }
-        if (ioe != null) throw ioe;
+        if (ioe != null)
+            throw ioe;
         return response;
     }
-    
+
 }

@@ -22,41 +22,38 @@
 
 package edu.lnmiit.wavd.parser;
 
+import java.util.logging.Logger;
 
-import org.htmlparser.Parser;
 import org.htmlparser.Node;
 import org.htmlparser.NodeFilter;
-import org.htmlparser.lexer.Source;
-import org.htmlparser.lexer.InputStreamSource;
+import org.htmlparser.Parser;
 import org.htmlparser.util.NodeList;
-import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.ParserException;
 
 import edu.lnmiit.wavd.model.HttpUrl;
 import edu.lnmiit.wavd.model.Message;
-
-import java.io.InputStreamReader;
-import java.io.ByteArrayInputStream;
-
-import java.util.logging.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class HTMLParser.
  */
 public class HTMLParser implements ContentParser {
-    
+
     /** The _logger. */
     private Logger _logger = Logger.getLogger(this.getClass().getName());
-    
+
     /**
      * Instantiates a new hTML parser.
      */
     public HTMLParser() {
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.parser.ContentParser#parseMessage(edu.lnmiit.wavd.model.HttpUrl, edu.lnmiit.wavd.model.Message)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.parser.ContentParser#parseMessage(edu.lnmiit.wavd.model
+     * .HttpUrl, edu.lnmiit.wavd.model.Message)
      */
     public Object parseMessage(HttpUrl url, Message message) {
         String contentType = message.getHeader("Content-Type");
@@ -70,7 +67,7 @@ public class HTMLParser implements ContentParser {
         Parser parser = Parser.createParser(new String(content), null);
         try {
             NodeList nodelist = parser.extractAllNodesThatMatch(new NodeFilter() {
-		public boolean accept(Node node) {
+                public boolean accept(Node node) {
                     return true;
                 }
             });
@@ -80,5 +77,5 @@ public class HTMLParser implements ContentParser {
             return null;
         }
     }
-    
+
 }

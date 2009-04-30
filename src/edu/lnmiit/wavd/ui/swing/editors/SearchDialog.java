@@ -22,33 +22,38 @@
 
 package edu.lnmiit.wavd.ui.swing.editors;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
-import javax.swing.text.JTextComponent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.KeyStroke;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import javax.swing.text.JTextComponent;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class SearchDialog.
  */
 public class SearchDialog extends javax.swing.JDialog {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -5746202314520331362L;
+
     /** The _text component. */
     private JTextComponent _textComponent = null;
-    
+
     /**
      * Instantiates a new search dialog.
      * 
-     * @param parent the parent
-     * @param textComponent the text component
+     * @param parent
+     *            the parent
+     * @param textComponent
+     *            the text component
      */
     public SearchDialog(java.awt.Frame parent, JTextComponent textComponent) {
         super(parent);
@@ -74,15 +79,20 @@ public class SearchDialog extends javax.swing.JDialog {
         });
         KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
         Action escapeAction = new AbstractAction() {
+            /**
+	     * 
+	     */
+            private static final long serialVersionUID = -5330230306288909675L;
+
             public void actionPerformed(ActionEvent e) {
-                setVisible( false );
+                setVisible(false);
             }
         };
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
         getRootPane().getActionMap().put("ESCAPE", escapeAction);
         getRootPane().setDefaultButton(searchButton);
     }
-    
+
     /**
      * Do search.
      */
@@ -94,7 +104,7 @@ public class SearchDialog extends javax.swing.JDialog {
         String searchText = findTextField.getText();
         if (searchText.length() > 0) {
             int caret = _textComponent.getSelectionStart();
-            int position = _textComponent.getText().indexOf(searchText, caret+1);
+            int position = _textComponent.getText().indexOf(searchText, caret + 1);
             if (position == -1 && caret > 0) {
                 position = _textComponent.getText().indexOf(searchText);
             }
@@ -111,7 +121,7 @@ public class SearchDialog extends javax.swing.JDialog {
             }
         }
     }
-    
+
     /**
      * Do replace.
      */
@@ -133,17 +143,18 @@ public class SearchDialog extends javax.swing.JDialog {
                 System.err.println("Search text not found");
                 return;
             }
-            text = text.substring(0,position) + replaceText + text.substring(position+searchText.length());
+            text = text.substring(0, position) + replaceText + text.substring(position + searchText.length());
             _textComponent.setText(text);
             _textComponent.setCaretPosition(position);
             _textComponent.moveCaretPosition(position + replaceText.length());
         }
     }
-    
+
     /**
      * Inits the components.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed"
+    // desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -260,99 +271,128 @@ public class SearchDialog extends javax.swing.JDialog {
         getContentPane().add(buttonPanel, gridBagConstraints);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-400)/2, (screenSize.height-120)/2, 400, 120);
+        setBounds((screenSize.width - 400) / 2, (screenSize.height - 120) / 2, 400, 120);
     }
+
     // </editor-fold>//GEN-END:initComponents
-    
+
     /**
      * Replace text field action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void replaceTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceTextFieldActionPerformed
+    private void replaceTextFieldActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_replaceTextFieldActionPerformed
         doReplace();
-    }//GEN-LAST:event_replaceTextFieldActionPerformed
-    
+    }// GEN-LAST:event_replaceTextFieldActionPerformed
+
     /**
      * Find text field action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void findTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findTextFieldActionPerformed
+    private void findTextFieldActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_findTextFieldActionPerformed
         doSearch();
-    }//GEN-LAST:event_findTextFieldActionPerformed
-    
+    }// GEN-LAST:event_findTextFieldActionPerformed
+
     /**
      * Replace button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void replaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceButtonActionPerformed
+    private void replaceButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_replaceButtonActionPerformed
         doReplace();
-    }//GEN-LAST:event_replaceButtonActionPerformed
-    
+    }// GEN-LAST:event_replaceButtonActionPerformed
+
     /**
      * Search button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_searchButtonActionPerformed
         doSearch();
-    }//GEN-LAST:event_searchButtonActionPerformed
-    
+    }// GEN-LAST:event_searchButtonActionPerformed
+
     /**
      * Close button action performed.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN
+        // -
+        // FIRST
+        // :
+        // event_closeButtonActionPerformed
         setVisible(false);
-    }//GEN-LAST:event_closeButtonActionPerformed
-    
+    }// GEN-LAST:event_closeButtonActionPerformed
+
     /**
      * Close dialog.
      * 
-     * @param evt the evt
+     * @param evt
+     *            the evt
      */
-    private void closeDialog(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_closeDialog
+    private void closeDialog(java.awt.event.WindowEvent evt) {// GEN-FIRST:
+        // event_closeDialog
         setVisible(false);
-    }//GEN-LAST:event_closeDialog
-    
+    }// GEN-LAST:event_closeDialog
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String args[]) {
         JTextComponent text = new javax.swing.JTextArea();
         text.setEditable(true);
         new SearchDialog(new javax.swing.JFrame(), text).setVisible(true);
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /** The button panel. */
     private javax.swing.JPanel buttonPanel;
-    
+
     /** The close button. */
     private javax.swing.JButton closeButton;
-    
+
     /** The find label. */
     private javax.swing.JLabel findLabel;
-    
+
     /** The find text field. */
     private javax.swing.JTextField findTextField;
-    
+
     /** The replace button. */
     private javax.swing.JButton replaceButton;
-    
+
     /** The replace label. */
     private javax.swing.JLabel replaceLabel;
-    
+
     /** The replace text field. */
     private javax.swing.JTextField replaceTextField;
-    
+
     /** The search button. */
     private javax.swing.JButton searchButton;
     // End of variables declaration//GEN-END:variables
-    
+
 }

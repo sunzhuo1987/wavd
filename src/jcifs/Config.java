@@ -16,11 +16,16 @@
 
 package jcifs;
 
-import java.util.Properties;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Properties;
 import java.util.StringTokenizer;
+
 import jcifs.util.LogStream;
 
 // TODO: Auto-generated Javadoc
@@ -33,7 +38,7 @@ public class Config {
     /** The prp. */
 
     private static Properties prp = new Properties();
-    
+
     /** The log. */
     private static LogStream log;
 
@@ -45,24 +50,24 @@ public class Config {
         log = LogStream.getInstance();
 
         try {
-            filename = System.getProperty( "jcifs.properties" );
-            if( filename != null && filename.length() > 1 ) {
-                in = new FileInputStream( filename );
+            filename = System.getProperty("jcifs.properties");
+            if (filename != null && filename.length() > 1) {
+                in = new FileInputStream(filename);
             }
-            Config.load( in );
-        } catch( IOException ioe ) {
-            if( log.level > 0 )
-                ioe.printStackTrace( log );
+            Config.load(in);
+        } catch (IOException ioe) {
+            if (LogStream.level > 0)
+                ioe.printStackTrace(log);
         }
 
-        if(( level = Config.getInt( "jcifs.util.loglevel", -1 )) != -1 ) {
-            LogStream.setLevel( level );
+        if ((level = Config.getInt("jcifs.util.loglevel", -1)) != -1) {
+            LogStream.setLevel(level);
         }
 
-        if( log.level > 2 ) {
+        if (LogStream.level > 2) {
             try {
-                prp.store( log, "JCIFS PROPERTIES" );
-            } catch( IOException ioe ) {
+                prp.store(log, "JCIFS PROPERTIES");
+            } catch (IOException ioe) {
             }
         }
     }
@@ -74,16 +79,16 @@ public class Config {
     public static void registerSmbURLHandler() {
         String ver, pkgs;
 
-        ver = System.getProperty( "java.version" );
-        if( ver.startsWith( "1.1." ) || ver.startsWith( "1.2." )) {
-             throw new RuntimeException( "jcifs-0.7.0b4+ requires Java 1.3 or above. You are running " + ver );
+        ver = System.getProperty("java.version");
+        if (ver.startsWith("1.1.") || ver.startsWith("1.2.")) {
+            throw new RuntimeException("jcifs-0.7.0b4+ requires Java 1.3 or above. You are running " + ver);
         }
-        pkgs = System.getProperty( "java.protocol.handler.pkgs" );
-        if( pkgs == null ) {
-            System.setProperty( "java.protocol.handler.pkgs", "jcifs" );
-        } else if( pkgs.indexOf( "jcifs" ) == -1 ) {
+        pkgs = System.getProperty("java.protocol.handler.pkgs");
+        if (pkgs == null) {
+            System.setProperty("java.protocol.handler.pkgs", "jcifs");
+        } else if (pkgs.indexOf("jcifs") == -1) {
             pkgs += "|jcifs";
-            System.setProperty( "java.protocol.handler.pkgs", pkgs );
+            System.setProperty("java.protocol.handler.pkgs", pkgs);
         }
     }
 
@@ -91,135 +96,152 @@ public class Config {
     /**
      * Instantiates a new config.
      */
-    Config() {}
+    Config() {
+    }
 
     /**
      * Sets the properties.
      * 
-     * @param prp the new properties
+     * @param prp
+     *            the new properties
      */
 
-    public static void setProperties( Properties prp ) {
-        Config.prp = new Properties( prp );
+    public static void setProperties(Properties prp) {
+        Config.prp = new Properties(prp);
         try {
-            Config.prp.putAll( System.getProperties() );
-        } catch( SecurityException se ) {
-            if( log.level > 1 )
-                log.println( "SecurityException: jcifs will ignore System properties" );
+            Config.prp.putAll(System.getProperties());
+        } catch (SecurityException se) {
+            if (LogStream.level > 1)
+                log.println("SecurityException: jcifs will ignore System properties");
         }
     }
 
     /**
      * Load.
      * 
-     * @param in the in
+     * @param in
+     *            the in
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
 
-    public static void load( InputStream in ) throws IOException {
-        if( in != null ) {
-            prp.load( in );
+    public static void load(InputStream in) throws IOException {
+        if (in != null) {
+            prp.load(in);
         }
         try {
-            prp.putAll( System.getProperties() );
-        } catch( SecurityException se ) {
-            if( log.level > 1 )
-                log.println( "SecurityException: jcifs will ignore System properties" );
+            prp.putAll(System.getProperties());
+        } catch (SecurityException se) {
+            if (LogStream.level > 1)
+                log.println("SecurityException: jcifs will ignore System properties");
         }
     }
 
     /**
      * Store.
      * 
-     * @param out the out
-     * @param header the header
+     * @param out
+     *            the out
+     * @param header
+     *            the header
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
-    public static void store( OutputStream out, String header ) throws IOException {
-        prp.store( out, header );
+    public static void store(OutputStream out, String header) throws IOException {
+        prp.store(out, header);
     }
 
     /**
      * List.
      * 
-     * @param out the out
+     * @param out
+     *            the out
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
 
-    public static void list( PrintStream out ) throws IOException {
-        prp.list( out );
+    public static void list(PrintStream out) throws IOException {
+        prp.list(out);
     }
 
     /**
      * Sets the property.
      * 
-     * @param key the key
-     * @param value the value
+     * @param key
+     *            the key
+     * @param value
+     *            the value
      * 
      * @return the object
      */
 
-    public static Object setProperty( String key, String value ) {
-        return prp.setProperty( key, value );
+    public static Object setProperty(String key, String value) {
+        return prp.setProperty(key, value);
     }
 
     /**
      * Gets the.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      * 
      * @return the object
      */
 
-    public static Object get( String key ) {
-        return prp.get( key );
+    public static Object get(String key) {
+        return prp.get(key);
     }
 
     /**
      * Gets the property.
      * 
-     * @param key the key
-     * @param def the def
+     * @param key
+     *            the key
+     * @param def
+     *            the def
      * 
      * @return the property
      */
 
-    public static String getProperty( String key, String def ) {
-        return prp.getProperty( key, def );
+    public static String getProperty(String key, String def) {
+        return prp.getProperty(key, def);
     }
 
     /**
      * Gets the property.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      * 
      * @return the property
      */
 
-    public static String getProperty( String key ) {
-        return prp.getProperty( key );
+    public static String getProperty(String key) {
+        return prp.getProperty(key);
     }
 
     /**
      * Gets the int.
      * 
-     * @param key the key
-     * @param def the def
+     * @param key
+     *            the key
+     * @param def
+     *            the def
      * 
      * @return the int
      */
 
-    public static int getInt( String key, int def ) {
-        String s = prp.getProperty( key );
-        if( s != null ) {
+    public static int getInt(String key, int def) {
+        String s = prp.getProperty(key);
+        if (s != null) {
             try {
-                def = Integer.parseInt( s );
-            } catch( NumberFormatException nfe ) {
-                if( log.level > 0 )
-                    nfe.printStackTrace( log );
+                def = Integer.parseInt(s);
+            } catch (NumberFormatException nfe) {
+                if (LogStream.level > 0)
+                    nfe.printStackTrace(log);
             }
         }
         return def;
@@ -228,20 +250,21 @@ public class Config {
     /**
      * Gets the int.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      * 
      * @return the int
      */
 
-    public static int getInt( String key ) {
-        String s = prp.getProperty( key );
+    public static int getInt(String key) {
+        String s = prp.getProperty(key);
         int result = -1;
-        if( s != null ) {
+        if (s != null) {
             try {
-                result = Integer.parseInt( s );
-            } catch( NumberFormatException nfe ) {
-                if( log.level > 0 )
-                    nfe.printStackTrace( log );
+                result = Integer.parseInt(s);
+            } catch (NumberFormatException nfe) {
+                if (LogStream.level > 0)
+                    nfe.printStackTrace(log);
             }
         }
         return result;
@@ -250,20 +273,22 @@ public class Config {
     /**
      * Gets the long.
      * 
-     * @param key the key
-     * @param def the def
+     * @param key
+     *            the key
+     * @param def
+     *            the def
      * 
      * @return the long
      */
 
-    public static long getLong( String key, long def ) {
-        String s = prp.getProperty( key );
-        if( s != null ) {
+    public static long getLong(String key, long def) {
+        String s = prp.getProperty(key);
+        if (s != null) {
             try {
-                def = Long.parseLong( s );
-            } catch( NumberFormatException nfe ) {
-                if( log.level > 0 )
-                    nfe.printStackTrace( log );
+                def = Long.parseLong(s);
+            } catch (NumberFormatException nfe) {
+                if (LogStream.level > 0)
+                    nfe.printStackTrace(log);
             }
         }
         return def;
@@ -272,42 +297,44 @@ public class Config {
     /**
      * Gets the inet address.
      * 
-     * @param key the key
-     * @param def the def
+     * @param key
+     *            the key
+     * @param def
+     *            the def
      * 
      * @return the inet address
      */
 
-    public static InetAddress getInetAddress( String key, InetAddress def ) {
-        String addr = prp.getProperty( key );
-        if( addr != null ) {
+    public static InetAddress getInetAddress(String key, InetAddress def) {
+        String addr = prp.getProperty(key);
+        if (addr != null) {
             try {
-                def = InetAddress.getByName( addr );
-            } catch( UnknownHostException uhe ) {
-                if( log.level > 0 ) {
-                    log.println( addr );
-                    uhe.printStackTrace( log );
+                def = InetAddress.getByName(addr);
+            } catch (UnknownHostException uhe) {
+                if (LogStream.level > 0) {
+                    log.println(addr);
+                    uhe.printStackTrace(log);
                 }
             }
         }
         return def;
     }
-    
+
     /**
      * Gets the local host.
      * 
      * @return the local host
      */
     public static InetAddress getLocalHost() {
-        String addr = prp.getProperty( "jcifs.smb.client.laddr" );
+        String addr = prp.getProperty("jcifs.smb.client.laddr");
 
         if (addr != null) {
             try {
-                return InetAddress.getByName( addr );
-            } catch( UnknownHostException uhe ) {
-                if( log.level > 0 ) {
-                    log.println( "Ignoring jcifs.smb.client.laddr address: " + addr );
-                    uhe.printStackTrace( log );
+                return InetAddress.getByName(addr);
+            } catch (UnknownHostException uhe) {
+                if (LogStream.level > 0) {
+                    log.println("Ignoring jcifs.smb.client.laddr address: " + addr);
+                    uhe.printStackTrace(log);
                 }
             }
         }
@@ -318,16 +345,18 @@ public class Config {
     /**
      * Gets the boolean.
      * 
-     * @param key the key
-     * @param def the def
+     * @param key
+     *            the key
+     * @param def
+     *            the def
      * 
      * @return the boolean
      */
 
-    public static boolean getBoolean( String key, boolean def ) {
-        String b = getProperty( key );
-        if( b != null ) {
-            def = b.toLowerCase().equals( "true" );
+    public static boolean getBoolean(String key, boolean def) {
+        String b = getProperty(key);
+        if (b != null) {
+            def = b.toLowerCase().equals("true");
         }
         return def;
     }
@@ -335,27 +364,30 @@ public class Config {
     /**
      * Gets the inet address array.
      * 
-     * @param key the key
-     * @param delim the delim
-     * @param def the def
+     * @param key
+     *            the key
+     * @param delim
+     *            the delim
+     * @param def
+     *            the def
      * 
      * @return the inet address array
      */
 
-    public static InetAddress[] getInetAddressArray( String key, String delim, InetAddress[] def ) {
-        String p = getProperty( key );
-        if( p != null ) {
-            StringTokenizer tok = new StringTokenizer( p, delim );
+    public static InetAddress[] getInetAddressArray(String key, String delim, InetAddress[] def) {
+        String p = getProperty(key);
+        if (p != null) {
+            StringTokenizer tok = new StringTokenizer(p, delim);
             int len = tok.countTokens();
             InetAddress[] arr = new InetAddress[len];
-            for( int i = 0; i < len; i++ ) {
+            for (int i = 0; i < len; i++) {
                 String addr = tok.nextToken();
                 try {
-                    arr[i] = InetAddress.getByName( addr );
-                } catch( UnknownHostException uhe ) {
-                    if( log.level > 0 ) {
-                        log.println( addr );
-                        uhe.printStackTrace( log );
+                    arr[i] = InetAddress.getByName(addr);
+                } catch (UnknownHostException uhe) {
+                    if (LogStream.level > 0) {
+                        log.println(addr);
+                        uhe.printStackTrace(log);
                     }
                     return def;
                 }
@@ -365,4 +397,3 @@ public class Config {
         return def;
     }
 }
-

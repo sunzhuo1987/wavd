@@ -16,50 +16,51 @@
 
 package edu.lnmiit.wavd.plugin.fuzz;
 
-import edu.lnmiit.wavd.model.HttpUrl;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class FuzzerEvent.
  */
 public class FuzzerEvent {
-    
+
     /** The Constant FUZZHEADER_ADDED. */
     public final static int FUZZHEADER_ADDED = 101;
-    
+
     /** The Constant FUZZHEADER_CHANGED. */
     public final static int FUZZHEADER_CHANGED = 102;
-    
+
     /** The Constant FUZZHEADER_REMOVED. */
     public final static int FUZZHEADER_REMOVED = 103;
-    
+
     /** The Constant FUZZPARAMETER_ADDED. */
     public final static int FUZZPARAMETER_ADDED = 104;
-    
+
     /** The Constant FUZZPARAMETER_CHANGED. */
     public final static int FUZZPARAMETER_CHANGED = 105;
-    
+
     /** The Constant FUZZPARAMETER_REMOVED. */
     public final static int FUZZPARAMETER_REMOVED = 106;
-    
+
     /** The _type. */
     private int _type;
-    
+
     /** The _row. */
     private int _row;
-    
+
     /**
      * Instantiates a new fuzzer event.
      * 
-     * @param source the source
-     * @param eventType the event type
-     * @param row the row
+     * @param source
+     *            the source
+     * @param eventType
+     *            the event type
+     * @param row
+     *            the row
      */
     public FuzzerEvent(Object source, int eventType, int row) {
         _type = eventType;
         _row = row;
     }
-    
+
     /**
      * Gets the type.
      * 
@@ -68,7 +69,7 @@ public class FuzzerEvent {
     public int getType() {
         return _type;
     }
-    
+
     /**
      * Gets the row.
      * 
@@ -77,5 +78,5 @@ public class FuzzerEvent {
     public int getRow() {
         return _row;
     }
-    
+
 }

@@ -34,32 +34,36 @@ import edu.lnmiit.wavd.plugin.proxy.Proxy;
  */
 public class ListenerTableModel extends AbstractTableModel {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5809666321442821821L;
+
     /** The _proxy. */
     private Proxy _proxy;
-    
+
     /** The _listeners. */
     private ArrayList _listeners = new ArrayList();
-    
+
     /** The column names. */
-    protected String [] columnNames = {
-        "Address", "Port", "Base URL", "Simulated network", "Primary"
-    };
-    
+    protected String[] columnNames = { "Address", "Port", "Base URL", "Simulated network", "Primary" };
+
     /** The column class. */
-    protected Class[] columnClass = {
-        String.class, Integer.class, String.class, String.class, Boolean.class
-    };
-    
+    protected Class[] columnClass = { String.class, Integer.class, String.class, String.class, Boolean.class };
+
     /**
      * Instantiates a new listener table model.
      * 
-     * @param proxy the proxy
+     * @param proxy
+     *            the proxy
      */
     public ListenerTableModel(Proxy proxy) {
         _proxy = proxy;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.table.AbstractTableModel#getColumnName(int)
      */
     public String getColumnName(int column) {
@@ -68,67 +72,83 @@ public class ListenerTableModel extends AbstractTableModel {
         }
         return "";
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
      */
     public Class getColumnClass(int column) {
         return columnClass[column];
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.table.TableModel#getColumnCount()
      */
     public synchronized int getColumnCount() {
         return columnNames.length;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.table.TableModel#getRowCount()
      */
     public synchronized int getRowCount() {
         return _listeners.size();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.table.TableModel#getValueAt(int, int)
      */
     public synchronized Object getValueAt(int row, int column) {
-        if (row<0 || row >= _listeners.size()) {
+        if (row < 0 || row >= _listeners.size()) {
             System.err.println("Attempt to get row " + row + ", column " + column + " : row does not exist!");
             return null;
         }
         String key = (String) _listeners.get(row);
         if (column <= columnNames.length) {
             switch (column) {
-                case 0: return _proxy.getAddress(key);
-                case 1: return new Integer(_proxy.getPort(key));
-                case 2: return _proxy.getBase(key);
-                case 3: return _proxy.getSimulator(key);
-                case 4: return new Boolean(_proxy.isPrimaryProxy(key));
-                default: return null;
+            case 0:
+                return _proxy.getAddress(key);
+            case 1:
+                return new Integer(_proxy.getPort(key));
+            case 2:
+                return _proxy.getBase(key);
+            case 3:
+                return _proxy.getSimulator(key);
+            case 4:
+                return new Boolean(_proxy.isPrimaryProxy(key));
+            default:
+                return null;
             }
         } else {
             System.err.println("Attempt to get row " + row + ", column " + column + " : column does not exist!");
             return null;
         }
     }
-    
+
     /**
      * Gets the key.
      * 
-     * @param index the index
+     * @param index
+     *            the index
      * 
      * @return the key
      */
     public String getKey(int index) {
         return (String) _listeners.get(index);
     }
-    
+
     /**
      * Proxy removed.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      */
     public void proxyRemoved(String key) {
         int index = _listeners.indexOf(key);
@@ -137,11 +157,12 @@ public class ListenerTableModel extends AbstractTableModel {
             fireTableRowsDeleted(index, index);
         }
     }
-    
+
     /**
      * Proxy added.
      * 
-     * @param key the key
+     * @param key
+     *            the key
      */
     public void proxyAdded(String key) {
         int index = _listeners.indexOf(key);
@@ -150,5 +171,5 @@ public class ListenerTableModel extends AbstractTableModel {
             fireTableRowsInserted(_listeners.size(), _listeners.size());
         }
     }
-    
+
 }

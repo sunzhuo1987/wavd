@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2009 Udai Gupta, Hemant Purohit
  *
@@ -16,92 +15,92 @@
  */
 package no.geosoft.cc.ui;
 
-import java.net.URL;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URL;
 
-import javax.swing.Timer;
 import javax.swing.JWindow;
-
-
+import javax.swing.Timer;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class SplashScreen.
  */
 public class SplashScreen extends JWindow {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 6755880409556259144L;
+
     /** The image_. */
-    private Image  image_;
-    
+    private Image image_;
+
     /** The height_. */
-    private int    x_, y_, width_, height_;
-    
-    
-    
+    private int x_, y_, width_, height_;
+
     /**
      * Instantiates a new splash screen.
      * 
-     * @param imageFileName the image file name
+     * @param imageFileName
+     *            the image file name
      */
     public SplashScreen(String imageFileName) {
         super(new Frame());
-        
+
         try {
             Toolkit toolkit = Toolkit.getDefaultToolkit();
-            
+
             URL imageUrl = getClass().getResource(imageFileName);
             image_ = toolkit.getImage(imageUrl);
-            
+
             MediaTracker mediaTracker = new MediaTracker(this);
             mediaTracker.addImage(image_, 0);
             mediaTracker.waitForID(0);
-            
-            width_  = image_.getWidth(this);
+
+            width_ = image_.getWidth(this);
             height_ = image_.getHeight(this);
-            
+
             Dimension screenSize = toolkit.getScreenSize();
-            
-            x_ = (screenSize.width  - width_)  / 2;
+
+            x_ = (screenSize.width - width_) / 2;
             y_ = (screenSize.height - height_) / 2;
         } catch (Exception exception) {
             exception.printStackTrace();
             image_ = null;
         }
     }
-    
-    
-    
+
     /**
      * Open.
      * 
-     * @param nMilliseconds the n milliseconds
+     * @param nMilliseconds
+     *            the n milliseconds
      */
     public void open(int nMilliseconds) {
-        if (image_ == null) return;
-        
+        if (image_ == null)
+            return;
+
         Timer timer = new Timer(Integer.MAX_VALUE, new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 ((Timer) event.getSource()).stop();
                 close();
             };
         });
-        
+
         timer.setInitialDelay(nMilliseconds);
         timer.start();
-        
+
         setBounds(x_, y_, width_, height_);
         setVisible(true);
     }
-    
-    
-    
+
     /**
      * Close.
      */
@@ -109,15 +108,15 @@ public class SplashScreen extends JWindow {
         setVisible(false);
         dispose();
     }
-    
-    
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.awt.Container#paint(java.awt.Graphics)
      */
     public void paint(Graphics graphics) {
-        if (image_ == null) return;
+        if (image_ == null)
+            return;
         graphics.drawImage(image_, 0, 0, width_, height_, this);
     }
 }
-

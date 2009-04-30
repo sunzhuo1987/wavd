@@ -16,122 +16,134 @@
 
 package edu.lnmiit.wavd.model;
 
-import EDU.oswego.cs.dl.util.concurrent.Sync;
 import java.util.Date;
+
+import EDU.oswego.cs.dl.util.concurrent.Sync;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Interface ConversationModel.
  */
 public interface ConversationModel {
-    
+
     /**
      * Gets the conversation count.
      * 
      * @return the conversation count
      */
     int getConversationCount();
-    
+
     /**
      * Gets the conversation at.
      * 
-     * @param index the index
+     * @param index
+     *            the index
      * 
      * @return the conversation at
      */
     ConversationID getConversationAt(int index);
-    
+
     /**
      * Gets the index of conversation.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return the index of conversation
      */
     int getIndexOfConversation(ConversationID id);
-    
+
     /**
      * Read lock.
      * 
      * @return the sync
      */
     Sync readLock();
-    
+
     /**
      * Gets the conversation origin.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return the conversation origin
      */
     String getConversationOrigin(ConversationID id);
-    
+
     /**
      * Gets the conversation date.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return the conversation date
      */
     Date getConversationDate(ConversationID id);
-    
+
     /**
      * Gets the request method.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return the request method
      */
     String getRequestMethod(ConversationID id);
-    
+
     /**
      * Gets the request url.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return the request url
      */
     HttpUrl getRequestUrl(ConversationID id);
-    
+
     /**
      * Gets the response status.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return the response status
      */
     String getResponseStatus(ConversationID id);
-    
+
     /**
      * Gets the request.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return the request
      */
     Request getRequest(ConversationID id);
-    
+
     /**
      * Gets the response.
      * 
-     * @param id the id
+     * @param id
+     *            the id
      * 
      * @return the response
      */
     Response getResponse(ConversationID id);
-    
+
     /**
      * Adds the conversation listener.
      * 
-     * @param listener the listener
+     * @param listener
+     *            the listener
      */
     void addConversationListener(ConversationListener listener);
-    
+
     /**
      * Removes the conversation listener.
      * 
-     * @param listener the listener
+     * @param listener
+     *            the listener
      */
     void removeConversationListener(ConversationListener listener);
-    
+
 }

@@ -24,9 +24,9 @@ package edu.lnmiit.wavd.ui.swing.editors;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
@@ -35,23 +35,28 @@ import javax.swing.JOptionPane;
  * The Class SerializedObjectPanel.
  */
 public class SerializedObjectPanel extends ObjectPanel implements ByteArrayEditor {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3440451430852832556L;
+
     /** The _data. */
     private byte[] _data = new byte[0];
-    
+
     /** The _editable. */
     private boolean _editable = false;
-    
+
     /** The _error. */
     private boolean _error = false;
-    
+
     /**
      * Instantiates a new serialized object panel.
      */
     public SerializedObjectPanel() {
         setName("Serialized Object");
     }
-    
+
     /**
      * Gets the content types.
      * 
@@ -60,17 +65,23 @@ public class SerializedObjectPanel extends ObjectPanel implements ByteArrayEdito
     public String[] getContentTypes() {
         return new String[] { "application/x-serialized-object" };
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.ui.swing.editors.ObjectPanel#setEditable(boolean)
      */
     public void setEditable(boolean editable) {
         _editable = editable;
         super.setEditable(editable);
     }
-    
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setBytes(java.lang.String, byte[])
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#setBytes(java.lang.String
+     * , byte[])
      */
     public void setBytes(String type, byte[] bytes) {
         _data = bytes;
@@ -81,16 +92,20 @@ public class SerializedObjectPanel extends ObjectPanel implements ByteArrayEdito
             setObject(o);
             _error = false;
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(null, "IOException deserializing the byte stream : " + ioe, "IOException", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "IOException deserializing the byte stream : " + ioe, "IOException",
+                    JOptionPane.ERROR_MESSAGE);
             _error = true;
         } catch (ClassNotFoundException cnfe) {
-            JOptionPane.showMessageDialog(null, "Class not found while deserializing the byte stream : " + cnfe, "Class not found", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Class not found while deserializing the byte stream : " + cnfe,
+                    "Class not found", JOptionPane.ERROR_MESSAGE);
             _error = true;
         }
         super.setEditable(_editable && !_error);
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.ui.swing.editors.ByteArrayEditor#getBytes()
      */
     public byte[] getBytes() {
@@ -110,16 +125,17 @@ public class SerializedObjectPanel extends ObjectPanel implements ByteArrayEdito
         }
         return _data;
     }
-    
+
     /**
      * The main method.
      * 
-     * @param args the arguments
+     * @param args
+     *            the arguments
      */
     public static void main(String[] args) {
         edu.lnmiit.wavd.model.Response response = new edu.lnmiit.wavd.model.Response();
         try {
-            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+            new java.io.ByteArrayOutputStream();
             String filename = "c:/temp/2-response";
             if (args.length == 1) {
                 filename = args[0];
@@ -130,7 +146,7 @@ public class SerializedObjectPanel extends ObjectPanel implements ByteArrayEdito
             e.printStackTrace();
             System.exit(0);
         }
-        
+
         javax.swing.JFrame top = new javax.swing.JFrame("Serialized Object Panel");
         top.getContentPane().setLayout(new java.awt.BorderLayout());
         top.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -138,7 +154,7 @@ public class SerializedObjectPanel extends ObjectPanel implements ByteArrayEdito
                 System.exit(0);
             }
         });
-        
+
         javax.swing.JButton button = new javax.swing.JButton("GET");
         final SerializedObjectPanel sop = new SerializedObjectPanel();
         top.getContentPane().add(sop);
@@ -148,7 +164,7 @@ public class SerializedObjectPanel extends ObjectPanel implements ByteArrayEdito
                 System.out.println(new String(sop.getBytes()));
             }
         });
-        top.setBounds(100,100,600,400);
+        top.setBounds(100, 100, 600, 400);
         top.setVisible(true);
         try {
             sop.setEditable(false);
@@ -157,5 +173,5 @@ public class SerializedObjectPanel extends ObjectPanel implements ByteArrayEdito
             e.printStackTrace();
         }
     }
-    
+
 }

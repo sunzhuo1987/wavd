@@ -23,87 +23,102 @@
 package edu.lnmiit.wavd.util.swing.treetable;
 
 import javax.swing.tree.DefaultTreeModel;
-
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
-
-import java.io.Serializable;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
-
-import java.util.Vector;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class DefaultTreeTableModel.
  */
 public class DefaultTreeTableModel extends DefaultTreeModel implements TreeTableModel {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -341000032122166852L;
+
     /**
      * Instantiates a new default tree table model.
      * 
-     * @param root the root
+     * @param root
+     *            the root
      */
-     public DefaultTreeTableModel(TreeNode root) {
+    public DefaultTreeTableModel(TreeNode root) {
         this(root, false);
     }
 
     /**
      * Instantiates a new default tree table model.
      * 
-     * @param root the root
-     * @param asksAllowsChildren the asks allows children
+     * @param root
+     *            the root
+     * @param asksAllowsChildren
+     *            the asks allows children
      */
     public DefaultTreeTableModel(TreeNode root, boolean asksAllowsChildren) {
         super(root, asksAllowsChildren);
     }
-    
+
     // TreeTable specific methods
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getColumnCount()
      */
     public int getColumnCount() {
         return 1;
     }
 
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getColumnName(int)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getColumnName(int)
      */
     public String getColumnName(int column) {
         return "A";
     }
 
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getColumnClass(int)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getColumnClass(int)
      */
     public Class getColumnClass(int column) {
         return column == 0 ? TreeTableModel.class : Object.class;
     }
 
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getValueAt(java.lang.Object, int)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#getValueAt(java.lang
+     * .Object, int)
      */
     public Object getValueAt(Object node, int column) {
         return column == 0 ? node : "Override getValueAt!!";
     }
 
-   /* (non-Javadoc)
-    * @see edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#isCellEditable(java.lang.Object, int)
-    */ 
-    public boolean isCellEditable(Object node, int column) { 
-         return getColumnClass(column) == TreeTableModel.class; 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#isCellEditable(java
+     * .lang.Object, int)
+     */
+    public boolean isCellEditable(Object node, int column) {
+        return getColumnClass(column) == TreeTableModel.class;
     }
 
-
-    /* (non-Javadoc)
-     * @see edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#setValueAt(java.lang.Object, java.lang.Object, int)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.lnmiit.wavd.util.swing.treetable.TreeTableModel#setValueAt(java.lang
+     * .Object, java.lang.Object, int)
      */
-    public void setValueAt(Object aValue, Object node, int column){
+    public void setValueAt(Object aValue, Object node, int column) {
     }
 
 }

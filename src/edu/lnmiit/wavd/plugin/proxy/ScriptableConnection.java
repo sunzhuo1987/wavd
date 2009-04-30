@@ -16,9 +16,9 @@
 
 package edu.lnmiit.wavd.plugin.proxy;
 
-import java.net.Socket;
-import java.net.InetAddress;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 
 import edu.lnmiit.wavd.model.Request;
 import edu.lnmiit.wavd.model.Response;
@@ -28,77 +28,81 @@ import edu.lnmiit.wavd.model.Response;
  * The Class ScriptableConnection.
  */
 public class ScriptableConnection {
-    
+
     /** The _socket. */
     private Socket _socket = null;
-    
+
     /** The _request. */
     private Request _request = null;
-    
+
     /** The _response. */
     private Response _response = null;
-    
+
     /**
      * Instantiates a new scriptable connection.
      * 
-     * @param socket the socket
+     * @param socket
+     *            the socket
      */
     public ScriptableConnection(Socket socket) {
         _socket = socket;
     }
-    
+
     /**
      * Gets the address.
      * 
      * @return the address
-     */    
+     */
     public InetAddress getAddress() {
         return _socket.getInetAddress();
     }
-    
+
     /**
      * Close connection.
      */
     public void closeConnection() {
         try {
             _socket.close();
-        } catch (IOException ioe) {}
+        } catch (IOException ioe) {
+        }
     }
-    
+
     /**
      * Sets the request.
      * 
-     * @param request the new request
-     */    
+     * @param request
+     *            the new request
+     */
     public void setRequest(Request request) {
         _request = request;
     }
-    
+
     /**
      * Gets the request.
      * 
      * @return the request
-     */    
+     */
     public Request getRequest() {
         return _request;
     }
-    
+
     /**
      * Sets the response.
      * 
-     * @param response the new response
-     */    
+     * @param response
+     *            the new response
+     */
     public void setResponse(Response response) {
         _response = response;
     }
-    
+
     /**
      * Gets the response.
      * 
      * @return the response
-     */    
+     */
     public Response getResponse() {
         return _response;
     }
-    
+
 }

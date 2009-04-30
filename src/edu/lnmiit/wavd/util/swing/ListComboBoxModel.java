@@ -22,80 +22,91 @@
 
 package edu.lnmiit.wavd.util.swing;
 
-import javax.swing.AbstractListModel;
-import javax.swing.ListModel;
-import javax.swing.ComboBoxModel;
-
-import javax.swing.event.ListDataListener;
-import javax.swing.event.ListDataEvent;
-
 import java.util.logging.Logger;
+
+import javax.swing.AbstractListModel;
+import javax.swing.ComboBoxModel;
+import javax.swing.ListModel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ListComboBoxModel.
  */
 public class ListComboBoxModel extends AbstractListModel implements ComboBoxModel {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7326798886363501487L;
+
     /** The _list. */
     ListModel _list;
-    
+
     /** The _selected. */
     Object _selected = null;
-    
+
     /** The _logger. */
     Logger _logger = Logger.getLogger(this.getClass().getName());
-    
+
     /**
      * Instantiates a new list combo box model.
      * 
-     * @param list the list
+     * @param list
+     *            the list
      */
     public ListComboBoxModel(ListModel list) {
         _list = list;
         _list.addListDataListener(new MyListener());
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.ListModel#getElementAt(int)
      */
     public Object getElementAt(int index) {
         return _list.getElementAt(index);
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.ComboBoxModel#getSelectedItem()
      */
     public Object getSelectedItem() {
         return _selected;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.ListModel#getSize()
      */
     public int getSize() {
         return _list.getSize();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.swing.ComboBoxModel#setSelectedItem(java.lang.Object)
      */
     public void setSelectedItem(Object anItem) {
-        if (_selected == null && anItem == null) return;
-        if (_selected == null && anItem != null ||
-                _selected != null && anItem == null ||
-                ! _selected.equals(anItem)) {
+        if (_selected == null && anItem == null)
+            return;
+        if (_selected == null && anItem != null || _selected != null && anItem == null || !_selected.equals(anItem)) {
             _selected = anItem;
             fireContentsChanged(this, -1, -1);
         }
-        
+
     }
-    
+
     /**
-     * The listener interface for receiving my events.
-     * The class that is interested in processing a my
-     * event implements this interface, and the object created
-     * with that class is registered with a component using the
+     * The listener interface for receiving my events. The class that is
+     * interested in processing a my event implements this interface, and the
+     * object created with that class is registered with a component using the
      * component's <code>addMyListener<code> method. When
      * the my event occurs, that object's appropriate
      * method is invoked.
@@ -103,44 +114,59 @@ public class ListComboBoxModel extends AbstractListModel implements ComboBoxMode
      * @see MyEvent
      */
     private class MyListener implements ListDataListener {
-        
-        /* (non-Javadoc)
-         * @see javax.swing.event.ListDataListener#contentsChanged(javax.swing.event.ListDataEvent)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.event.ListDataListener#contentsChanged(javax.swing.event
+         * .ListDataEvent)
          */
         public void contentsChanged(ListDataEvent e) {
             fireContentsChanged(ListComboBoxModel.this, e.getIndex0(), e.getIndex1());
             setSelectedItem(null);
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.event.ListDataListener#intervalAdded(javax.swing.event.ListDataEvent)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.event.ListDataListener#intervalAdded(javax.swing.event
+         * .ListDataEvent)
          */
         public void intervalAdded(ListDataEvent e) {
             fireIntervalAdded(ListComboBoxModel.this, e.getIndex0(), e.getIndex1());
         }
-        
-        /* (non-Javadoc)
-         * @see javax.swing.event.ListDataListener#intervalRemoved(javax.swing.event.ListDataEvent)
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * javax.swing.event.ListDataListener#intervalRemoved(javax.swing.event
+         * .ListDataEvent)
          */
         public void intervalRemoved(ListDataEvent e) {
             fireIntervalRemoved(ListComboBoxModel.this, e.getIndex0(), e.getIndex1());
             // we should notify listeners if the selected item has been removed
-            if (_selected == null) return;
+            if (_selected == null)
+                return;
             int size = getSize();
-            for (int i=0; i<size; i++) {
+            for (int i = 0; i < size; i++) {
                 Object item = getElementAt(i);
-                if (item != null && item.equals(_selected)) return;
+                if (item != null && item.equals(_selected))
+                    return;
             }
             // we haven't found it, it's been removed
             setSelectedItem(null);
         }
-        
+
     }
-    
+
     /**
      * The main method.
      * 
-     * @param argList the arguments
+     * @param argList
+     *            the arguments
      */
     public static void main(String[] argList) {
         javax.swing.JFrame top = new javax.swing.JFrame("ListComboBoxTest");
@@ -150,9 +176,11 @@ public class ListComboBoxModel extends AbstractListModel implements ComboBoxMode
             public void intervalRemoved(ListDataEvent evt) {
                 System.err.println("Interval Removed : " + evt);
             }
+
             public void intervalAdded(ListDataEvent evt) {
                 System.err.println("Interval Added : " + evt);
             }
+
             public void contentsChanged(ListDataEvent evt) {
                 System.err.println("ContentsChanged: " + evt);
             }
@@ -194,7 +222,7 @@ public class ListComboBoxModel extends AbstractListModel implements ComboBoxMode
         // top.setBounds(100,100,600,400);
         top.pack();
         top.setVisible(true);
-        
+
     }
-    
+
 }
